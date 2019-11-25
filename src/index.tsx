@@ -7,7 +7,6 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import client from 'config/apolloClient';
 import './stylesheets/bootstrap-utilities.css';
-import 'antd/dist/antd.css';
 import './stylesheets/app.css';
 
 const rootElement: HTMLElement | null = document.getElementById('root');

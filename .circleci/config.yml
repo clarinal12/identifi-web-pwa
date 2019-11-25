@@ -65,6 +65,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:8.11.3-stretch
+    resource_class: large
     steps:
       - run:
           name: save SHA to a file
