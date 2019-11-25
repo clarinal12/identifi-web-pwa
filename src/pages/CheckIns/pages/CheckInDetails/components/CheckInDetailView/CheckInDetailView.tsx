@@ -23,7 +23,7 @@ const AvatarWrapper = styled.div`
     .ant-avatar {
       cursor: pointer;
       &:not(:first-of-type) {
-        border: 1px solid #e8e8e8;
+        border: 1.5px solid #F5F5F5;
         margin-left: -10px;
       }
     }
