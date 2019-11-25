@@ -1,0 +1,185 @@
+---
+version: 2.1
+
+commands:
+  deploy:
+    parameters:
+      service:
+        type: string
+        default: identifi_development_web
+      host:
+        type: string
+        default: development-web.identifi.com
+    steps:
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - repository-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - version-{{ checksum ".circle-sha" }}
+      - run:
+          name: ecr login
+          command: >
+            cd /home/circleci/ansible && sudo ansible-playbook ecr_login.yml
+      - run:
+          name: update api service image
+          command: >
+            sudo ssh -i /home/circleci/.ssh/highoutput.pem -o ServerAliveInterval=100 -o "StrictHostKeyChecking no"
+            ubuntu@<< parameters.host >>
+            sudo docker service update --image $DOCKER_REGISTRY/${PROJECT_NAME}:`cat .version` --with-registry-auth << parameters.service >>
+
+jobs:
+  checkout_source:
+    docker:
+      - image: circleci/node:8.11.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: repository-{{ checksum ".circle-sha" }}
+          paths:
+            - .
+  install_dependencies:
+    docker:
+      - image: circleci/node:8.11.3-stretch
+    steps:
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - repository-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+  build:
+    docker:
+      - image: circleci/node:8.11.3-stretch
+    steps:
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - repository-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}
+      - run:
+          command: GENERATE_SOURCEMAP=false npm run build
+          no_output_timeout: 30m
+      - save_cache:
+          key: build-{{ checksum ".circle-sha" }}
+          paths:
+            - build
+  build_image:
+    docker:
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - setup_remote_docker:
+          version: 17.06.0-ce
+          reusable: true
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - repository-{{ checksum ".circle-sha" }}
+      - restore_cache:
+          keys:
+            - prod_dependencies-{{ checksum "package.json" }}
+      - restore_cache:
+          keys:
+            - build-{{ checksum ".circle-sha" }}
+      - run:
+          name: build docker image
+          command: >
+            docker build . --build-arg TALK_DISABLE_EMBED_POLYFILL=TRUE
+            --tag $DOCKER_REGISTRY/$PROJECT_NAME:$CIRCLE_BUILD_NUM
+      - run:
+          name: login to docker registry
+          command: eval `aws ecr get-login --no-include-email --region ap-southeast-1`
+      - run:
+          name: push docker image to docker registry
+          command: docker push $DOCKER_REGISTRY/$PROJECT_NAME:$CIRCLE_BUILD_NUM
+      - run:
+          name: tag latest image
+          command: docker tag $DOCKER_REGISTRY/$PROJECT_NAME:$CIRCLE_BUILD_NUM $DOCKER_REGISTRY/$PROJECT_NAME:latest
+      - run:
+          name: push latest image
+          command: docker push $DOCKER_REGISTRY/$PROJECT_NAME:latest
+      - run:
+          name: store version number
+          command: echo $CIRCLE_BUILD_NUM > .version
+      - store_artifacts:
+          path: .version
+      - save_cache:
+          key: version-{{ checksum ".circle-sha" }}
+          paths:
+            - .version
+  deploy_dev:
+    docker:
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - deploy:
+          service: identifi_development_web
+          host: development-web.identifi.com
+  deploy_production:
+    docker:
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - deploy:
+          service: identifi_production_web
+          host: web.identifi.com
+workflows:
+  version: 2
+  build:
+    jobs:
+      - checkout_source
+      - install_dependencies:
+          requires:
+            - checkout_source
+      - build:
+          requires:
+            - install_dependencies
+      - build_image:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - production
+                - master
+      - deploy_dev:
+          requires:
+            - build_image
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_production:
+          requires:
+            - build_image
+          filters:
+            branches:
+              only:
+                - production

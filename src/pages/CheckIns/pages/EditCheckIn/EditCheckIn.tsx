@@ -1,0 +1,94 @@
+import React, { useState } from 'react';
+import { useQuery } from 'react-apollo';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { useMutation } from 'react-apollo';
+import { Row, Col, Typography, Spin } from 'antd';
+
+import AppLayout from 'components/AppLayout';
+import CheckInForm from '../../components/CheckInForm';
+import { IFinalValues } from '../../components/CheckInForm/components/CheckInFormTabs/CheckInFormTabs';
+import { CHECKIN_SCHEDULES, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { UPDATE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useMessageContextValue } from 'contexts/MessageContext';
+import { LoadingIcon, Spinner } from 'components/PageSpinner';
+
+const { Title } = Typography;
+
+const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, match }) => {
+  const [loadingState, setLoadingState] = useState(false);
+  const { alertSuccess, alertError } = useMessageContextValue();
+  const { account } = useUserContextValue();
+  const activeCompany = account && account.activeCompany;
+  const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
+
+  const { data, loading } = useQuery(CHECKIN_SCHEDULE, {
+    variables: { id: match.params.id },
+  });
+
+  const updateCheckInAction = async (values: IFinalValues) => {
+    setLoadingState(true);
+    const { id, ...others } = values;
+    const { timings } = others;
+    try {
+      const result = await updateCheckInSchedule({
+        variables: {
+          id: match.params.id,
+          input: {
+            ...others,
+            timings: {
+              ...timings,
+              time: timings.time.format('HH:mm'),
+            },
+          },
+        },
+        refetchQueries: [{
+          query: CHECKIN_SCHEDULES,
+          variables: {
+            filter: {
+              companyId: activeCompany && activeCompany.id,
+            }
+          },
+        }],
+        awaitRefetchQueries: true,
+      });
+      if (result.data.updateCheckInSchedule) {
+        alertSuccess("Check-in has been updated");
+        history.push('/checkins');
+      }
+    } catch(error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+      setLoadingState(false);
+    } 
+  }
+
+  return (
+    <AppLayout>
+      <Row className="mb-2">
+        <Col>
+          <Title level={3}>Check-ins</Title>
+        </Col>
+      </Row>
+      {loading ? (
+        <Spinner loading label="Loading check-in..." />
+      ) : (
+        <Spin
+          spinning={loadingState}
+          tip="Updating check-in..."
+          indicator={LoadingIcon}
+        >
+          <CheckInForm
+            {...(data && { data: data.checkInSchedule })}
+            parentSubmitAction={updateCheckInAction}
+          />
+        </Spin>
+      )}
+    </AppLayout>
+  );
+};
+
+export default withRouter(EditCheckIn);

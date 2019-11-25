@@ -1,0 +1,42 @@
+#error-msg .ant-message-notice-content {
+  background: #FFF1F0;
+  border: 1px solid #FFCCC7;
+}
+
+#success-msg .ant-message-notice-content {
+  background:#F6FFED;
+  border: 1px solid #B7EB8F;
+}
+
+#warning-msg .ant-message-notice-content {
+  background: #FFFBE6;
+  border: 1px solid #FFE58F;
+}
+
+.ant-card {
+  border-radius: 4px !important;
+}
+
+.ant-popover {
+  z-index: 1050 !important;
+}
+
+.entry-point, .right-content {
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.entry-point .form-content {
+  width: 100%;
+}
+
+.right-content {
+  background: #FAFAFA;
+}
+
+@media (min-width: 992px) {
+  .entry-point .form-content {
+    width: 75%;
+  }
+}
