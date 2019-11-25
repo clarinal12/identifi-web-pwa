@@ -15,5 +15,9 @@ module.exports = override(
       '@text-color': '#595959',
       '@text-color-secondary': '#485362'
     }
-  })
+  }),
+  (config) => {
+    config.optimization.minimizer[0].parallel=false;
+    return config;
+  }
 );
