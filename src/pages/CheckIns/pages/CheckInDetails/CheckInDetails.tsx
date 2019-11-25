@@ -14,6 +14,7 @@ const { Title } = Typography;
 const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const { data, loading } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },
+    fetchPolicy: 'cache-and-network',
   });
   return (
     <AppLayout>

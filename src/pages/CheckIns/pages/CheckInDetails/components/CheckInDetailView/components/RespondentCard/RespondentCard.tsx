@@ -36,16 +36,17 @@ const StyledCard = styled(Card)`
 
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
   const { submitDate, respondent, answers } = response;
-  const { firstname, lastname, email, role } = respondent;
+  const { firstname, lastname, email, role, avatar } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard
       title={(
         <div className="d-flex">
           <div className="mr-3">
-            <Avatar size={56}>
-              {deriviedName.split(" ").map(v => v.charAt(0).toUpperCase())}
-            </Avatar>
+            <Avatar
+              size={56}
+              {...(avatar && { src : avatar })}
+            />
           </div>
           <div>
             <Title className="mb-0" level={4}>{deriviedName}</Title>

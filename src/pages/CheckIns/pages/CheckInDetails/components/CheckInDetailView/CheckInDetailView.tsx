@@ -23,7 +23,7 @@ const AvatarWrapper = styled.div`
     .ant-avatar {
       cursor: pointer;
       &:not(:first-of-type) {
-        border: 1px solid #F5F5F5;
+        border: 1px solid #e8e8e8;
         margin-left: -10px;
       }
     }
@@ -42,13 +42,13 @@ const EmptyState = () => (
 
 const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
   return <>
-    {source.map(({ id, email, firstname, lastname }) => {
+    {source.map(({ id, email, firstname, lastname, avatar }) => {
       const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
       return (
         <Tooltip key={id} placement="topRight" title={derivedLabel}>
-          <Avatar>
-            {derivedLabel.split(" ").map(v => v.charAt(0).toUpperCase())}
-          </Avatar>
+          <Avatar
+            {...(avatar && { src : avatar })}
+          />
         </Tooltip>
       );
     })}
