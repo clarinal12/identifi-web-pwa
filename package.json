@@ -46,7 +46,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run build-fragment\" \"wait-on src/fragmentTypes.json && react-app-rewired start\"",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired --max-old-space-size=8192 build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "build-fragment": "node src/schemaQuery.js"
