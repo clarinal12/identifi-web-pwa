@@ -76,12 +76,18 @@ const CheckInCard: React.FC<ICheckinCard> = ({
     <Spin spinning={cardLoadingState} indicator={LoadingIcon}>
       <StyledCard
         hoverable
-        onClick={() => history.push(`/checkins/${id}`)}
+        onClick={() => history.push({
+          pathname: `/checkins/${id}`,
+          state: {
+            id_alias: name,
+          },
+        })}
         className="d-flex"
         title={<Tag style={{ color: '#595959' }} color={COLOR_MAP[status]}>{status}</Tag>}
         extra={(
           <CardActions
             id={id}
+            name={name}
             isLastItem={isLastItem}
             isOwner={memberInfo.isOwner}
             setCardLoadingState={setCardLoadingState}

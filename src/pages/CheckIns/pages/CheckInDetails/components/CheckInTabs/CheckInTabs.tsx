@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Tabs, Typography, Button } from 'antd';
 
 import { ICheckinData } from 'apollo/types/graphql-types';
@@ -8,9 +9,16 @@ import PastCheckInList from '../PastCheckInList';
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const CheckInTabs: React.FC<{ data: ICheckinData }> = ({ data }) => {
-  const [activeTab, setActiveTab] = useState(1);
+interface ICheckInTabs extends RouteComponentProps<{ date: string, id: string }> {
+  data: ICheckinData
+}
+
+const CheckInTabs: React.FC<ICheckInTabs> = ({ data, match, history, location }) => {
+  const defaultActiveTab = match.params.date;
+
+  const [activeTab, setActiveTab] = useState(defaultActiveTab ? 2 : 1);
   const pastCheckInRef = useRef<{ resetCheckInId: () => void }>();
+
   return (
     <Tabs
       activeKey={activeTab.toString()}
@@ -38,10 +46,13 @@ const CheckInTabs: React.FC<{ data: ICheckinData }> = ({ data }) => {
         <PastCheckInList
           ref={pastCheckInRef}
           data={data.pastCheckIns}
+          history={history}
+          location={location}
+          routeParams={match.params}
         />
       </TabPane>
     </Tabs>
   );
 }
 
-export default CheckInTabs;
+export default withRouter(CheckInTabs);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Row, Col, Typography, Tag } from 'antd';
+import { Row, Col, Typography, Tag, Alert } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
@@ -11,13 +11,28 @@ import CheckInTabs from './components/CheckInTabs';
 
 const { Title } = Typography;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
-  const { data, loading } = useQuery(CHECKIN_SCHEDULE, {
+const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, history }) => {
+  const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },
     fetchPolicy: 'cache-and-network',
+    onCompleted: data => history.replace({ state: { id_alias: data.checkInSchedule.name } }),
   });
-  return (
-    <AppLayout>
+
+  const contentBody = error ? (
+    <Alert
+      showIcon
+      type="warning"
+      message={function() {
+        let errorMessage = "Network error";
+        if (error.graphQLErrors[0]) {
+          errorMessage = error.graphQLErrors[0].message;
+        }
+        return errorMessage;
+      }()}
+      description="The check-in you're looking for isn't available"
+    />
+  ) : (
+    <>
       {loading ? (
         <Spinner loading label="Loading check-in..." />
       ) : (
@@ -41,6 +56,12 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match }
           />
         </>
       )}
+    </>
+  );
+
+  return (
+    <AppLayout>
+      {contentBody}
     </AppLayout>
   );
 };

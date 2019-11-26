@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
 import { Dropdown, Menu, Popconfirm, Typography, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
@@ -11,21 +11,23 @@ import { DELETE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
 
 const { Title, Text } = Typography;
 
-interface IMenuOverlay extends Partial<RouteComponentProps> {
+interface IMenuOverlay {
   id: string,
+  name: string,
   isOwner: boolean,
   setVisible: (state: boolean) => void,
   deleteAction: () => void,
 }
 
-interface ICardActions extends RouteComponentProps {
+interface ICardActions {
   id: string,
+  name: string,
   isOwner: boolean,
   setCardLoadingState: (state: boolean) => void,
   isLastItem: boolean,
 }
 
-const MenuOverlay: React.FC<IMenuOverlay> = ({ id, isOwner, setVisible, deleteAction, history }) => (
+const MenuOverlay: React.FC<IMenuOverlay> = ({ id, name, isOwner, setVisible, deleteAction }) => (
   <Menu
     onClick={({ key, domEvent }: ClickParam) => {
       domEvent.stopPropagation();
@@ -37,8 +39,15 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({ id, isOwner, setVisible, deleteAc
     <Menu.Item key={0}>
       <a href="#!">Deactivate</a>
     </Menu.Item>
-    <Menu.Item key={1} onClick={() => history && history.push(`/checkins/${id}/edit`)}>
-      <a href="#!">Edit</a>
+    <Menu.Item key={1}>
+      <Link
+        to={{
+          pathname: `/checkins/${id}/edit`,
+          state: { id_alias: name },
+        }}
+      >
+        Edit
+      </Link>
     </Menu.Item>
     {isOwner && (
       <Menu.Item key={2}>
@@ -67,7 +76,7 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({ id, isOwner, setVisible, deleteAc
 );
 
 const CardActions: React.FC<ICardActions> = ({
-  isOwner, id, setCardLoadingState, isLastItem, history,
+  isOwner, id, name, setCardLoadingState, isLastItem,
 }) => {
   const { account } = useUserContextValue();
   const [deleteCheckInSchedule] = useMutation(DELETE_CHECKIN_SCHEDULE);
@@ -110,10 +119,10 @@ const CardActions: React.FC<ICardActions> = ({
       placement="bottomRight"
       overlay={MenuOverlay({
         id,
+        name,
         deleteAction,
         setVisible,
         isOwner,
-        history,
       })}
       trigger={['click']}
       onVisibleChange={visibility => setVisible(visibility)}
@@ -126,4 +135,4 @@ const CardActions: React.FC<ICardActions> = ({
   );
 };
 
-export default withRouter(CardActions);
+export default CardActions;

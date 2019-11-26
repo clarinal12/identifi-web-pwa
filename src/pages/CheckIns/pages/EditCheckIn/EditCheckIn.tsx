@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
-import { Row, Col, Typography, Spin } from 'antd';
+import { Row, Col, Typography, Spin, Alert } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import CheckInForm from '../../components/CheckInForm';
@@ -22,9 +22,15 @@ const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, m
   const activeCompany = account && account.activeCompany;
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
-  const { data, loading } = useQuery(CHECKIN_SCHEDULE, {
+  const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },
+    onCompleted: data => data.checkInSchedule && history.replace({ state: { id_alias: data.checkInSchedule.name } }),
   });
+
+  let errorMessage = "Network error";
+  if (error && error.graphQLErrors[0]) {
+    errorMessage = error.graphQLErrors[0].message;
+  }
 
   const updateCheckInAction = async (values: IFinalValues) => {
     setLoadingState(true);
@@ -76,16 +82,27 @@ const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, m
       {loading ? (
         <Spinner loading label="Loading check-in..." />
       ) : (
-        <Spin
-          spinning={loadingState}
-          tip="Updating check-in..."
-          indicator={LoadingIcon}
-        >
-          <CheckInForm
-            {...(data && { data: data.checkInSchedule })}
-            parentSubmitAction={updateCheckInAction}
-          />
-        </Spin>
+        <>
+          {error ? (
+            <Alert
+              showIcon
+              type="warning"
+              message={errorMessage}
+              description="The check-in you're trying to update isn't available"
+            />
+          ) : (
+            <Spin
+              spinning={loadingState}
+              tip="Updating check-in..."
+              indicator={LoadingIcon}
+            >
+              <CheckInForm
+                {...(data && { data: data.checkInSchedule })}
+                parentSubmitAction={updateCheckInAction}
+              />
+            </Spin>
+          )}
+        </>
       )}
     </AppLayout>
   );

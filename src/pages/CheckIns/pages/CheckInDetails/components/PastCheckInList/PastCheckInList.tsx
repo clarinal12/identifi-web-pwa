@@ -1,4 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import * as H from 'history';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Icon, Typography, Row, Col, List, Tabs } from 'antd';
@@ -12,6 +13,12 @@ const { TabPane } = Tabs;
 interface IPastCheckInList {
   data: TPastCheckIns[],
   ref: any,
+  routeParams: {
+    date: string,
+    id: string,
+  },
+  history: H.History<any>,
+  location: H.Location<any>,
 }
 
 const StyledTabs = styled(Tabs)`
@@ -50,19 +57,33 @@ const EmptyState = () => (
   </StyledEmptyRow>
 );
 
-const PastCheckInList: React.FC<IPastCheckInList> = forwardRef(({ data }, ref) => {
-  const [pastCheckInId, setPastCheckInId] = useState('');
+const PastCheckInList: React.FC<IPastCheckInList> = forwardRef(({ data, routeParams, history, location }, ref) => {
+  const { id } = data.find(({ date }) => {
+    const dateFromRoute = moment(new Date(routeParams.date)).format('MMM DD, YYYY hh:mm A');
+    const pastCheckInDate = moment(date).format('MMM DD, YYYY hh:mm A');
+    return dateFromRoute === pastCheckInDate;
+  }) || { id: routeParams.date ? 'invalid-checkin-id' : '' };
+
+  const [pastCheckInId, setPastCheckInId] = useState<string>(id);
 
   useImperativeHandle(ref, () => ({
     resetCheckInId() {
-      setPastCheckInId('');
+      if (pastCheckInId) {
+        setPastCheckInId('');
+        history.push({
+          pathname: `/checkins/${routeParams.id}`,
+          state: {
+            id_alias: location.state.id_alias,
+          },
+        });
+      }
     }
   }));
 
   return (data.length > 0) ? (
     <StyledTabs
       className="mt-2"
-      activeKey={pastCheckInId ? '2' : '1'}
+      activeKey={(pastCheckInId && routeParams.date) ? '2' : '1'}
     >
       <TabPane tab="Past check-in list" key="1">
         <StyledListWrapper>
@@ -75,7 +96,15 @@ const PastCheckInList: React.FC<IPastCheckInList> = forwardRef(({ data }, ref) =
               <List.Item
                 key={id}
                 onClick={() => {
+                  const formatDate = moment(date);
                   setPastCheckInId(id);
+                  history.push({
+                    pathname: `/checkins/${routeParams.id}/${formatDate.format('MM-DD-YYYY-HH:mm')}`,
+                    state: {
+                      ...location.state,
+                      date_alias: moment(date).format('MMM DD, YYYY'),
+                    },
+                  });
                 }}
               >
                 <div className="d-flex list-content-wrapper">
