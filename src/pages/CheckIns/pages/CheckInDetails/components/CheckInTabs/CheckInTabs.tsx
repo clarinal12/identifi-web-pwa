@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { Tabs, Typography, Button } from 'antd';
 
 import { ICheckinData } from 'apollo/types/graphql-types';
@@ -29,14 +29,21 @@ const CheckInTabs: React.FC<ICheckInTabs> = ({ data, match, history, location })
         }
       }}
       tabBarExtraContent={(
-        <Button
-          size="large"
-          icon="edit"
-          type="link"
-          style={{ color: '#595959' }}
+        <Link
+          to={{
+            pathname: `/checkins/${match.params.id}/edit`,
+            state: location.state,
+          }}
         >
-          Settings
-        </Button>
+          <Button
+            size="large"
+            icon="edit"
+            type="link"
+            style={{ color: '#595959' }}
+          >
+            Settings
+          </Button>
+        </Link>
       )}
     >
       <TabPane tab={<Title style={{ fontSize: 16 }}>Current check-in</Title>} key="1">

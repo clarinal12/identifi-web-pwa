@@ -63,6 +63,7 @@ const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[]
           loading={loading}
           value={loading ? [] : values.respondents}
           placeholder="Select members"
+          optionFilterProp="label"
           optionLabelProp="label"
           onChange={(value) => {
             setFieldValue('respondents', value);

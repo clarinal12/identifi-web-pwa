@@ -61,7 +61,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       {answers.map(({ question, answer }, idx) => (
         <div className="qa-wrapper" key={idx}>
           <Title type="secondary" style={{ fontSize: 14 }}>{question}</Title>
-          <Title style={{ fontSize: 16 }}>{answer}</Title>
+          <Title style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
         </div>
       ))}
     </StyledCard>

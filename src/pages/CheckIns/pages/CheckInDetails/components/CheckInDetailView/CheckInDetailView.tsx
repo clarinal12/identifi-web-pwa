@@ -9,6 +9,7 @@ import RespondentCard from './components/RespondentCard';
 const { Title, Text } = Typography;
 
 interface ICheckInDetailView {
+  done?: boolean,
   data: TCurrentCheckIn,
 }
 
@@ -30,12 +31,12 @@ const AvatarWrapper = styled.div`
   }
 `;
 
-const EmptyState = () => (
+const EmptyState = ({ done = false }: { done?: boolean }) => (
   <StyledEmptyRow className="d-flex">
     <Col sm={6} className="text-center">
       <Icon type="message" style={{ fontSize: 75, color: '#DADADA' }} />
-      <Title className="mt-4" level={2}>No replies yet</Title>
-      <Text>Once replies start coming in they’ll appear here.</Text>
+      <Title className="mt-4" level={2}>No replies {done ? '' : 'yet'}</Title>
+      {!done && <Text>Once replies start coming in they’ll appear here.</Text>}
     </Col>
   </StyledEmptyRow>
 );
@@ -55,7 +56,7 @@ const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
   </>
 };
 
-const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data }) => {
+const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, done }) => {
   return data ? (
     <>
       <Row className="mb-4 mt-2">
@@ -73,11 +74,15 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data }) => {
           </AvatarWrapper>
         </Col>
       </Row>
-      <div>
-        {data.responses.map((response, idx) => (
-          <RespondentCard key={idx} response={response} />
-        ))}
-      </div>
+      {(data.responses.length > 0) ? (
+        <div>
+          {data.responses.map((response, idx) => (
+            <RespondentCard key={idx} response={response} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState done />
+      )}
     </>
   ) : (
     <EmptyState />

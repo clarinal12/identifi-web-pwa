@@ -43,7 +43,7 @@ const PastCheckInDetails: React.FC<IPastChecInDetails> = ({ id, history, locatio
   return loading ? (
     <Spinner loading label="Loading check-in details..." />
   ): (
-    <CheckInDetailView data={data.checkIn} />
+    <CheckInDetailView done data={data.checkIn} />
   );
 }
 

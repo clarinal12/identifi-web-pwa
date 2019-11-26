@@ -44,6 +44,7 @@ const Schedule: React.FC<IExternalProps & FormikProps<IScheduleFormValues>> = ({
             size="large"
             disabled={isSubmitting}
             value={values.frequency}
+            optionFilterProp="value"
             onChange={(value) => {
               if (value === 'WORKDAYS') {
                 setFieldValue('days', WORKDAYS_VALUE);
@@ -124,6 +125,7 @@ const Schedule: React.FC<IExternalProps & FormikProps<IScheduleFormValues>> = ({
             size="large"
             value={values.timezone || 'disabled'}
             disabled={isSubmitting}
+            optionFilterProp="value"
             onChange={(value) => {
               setFieldValue('timezone', value);
               setFieldTouched('timezone');

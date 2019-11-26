@@ -70,6 +70,7 @@ const Settings: React.FC<IExternalProps & FormikProps<ISettingsFormValues>> = ({
               disabled={isSubmitting}
               value={loading ? 'loading' : (values.slackChannelId || 'disabled')}
               loading={loading}
+              optionFilterProp="label"
               optionLabelProp="label"
               onChange={(value) => {
                 setFieldTouched('slackChannelId');

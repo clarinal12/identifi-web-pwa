@@ -21,7 +21,7 @@ const App = () => (
           render={(props: RouteComponentProps & any) => <Component {...props} {...rest} />}
         />
       ))}
-      <Redirect exact from="/" to="/timeline"/>
+      <Redirect exact from="/" to="/checkins"/>
       <Route component={FourOhFour} />
     </Switch>
   </AppProviders>
