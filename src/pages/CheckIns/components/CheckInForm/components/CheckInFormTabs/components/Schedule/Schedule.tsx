@@ -156,6 +156,7 @@ const Schedule: React.FC<IExternalProps & FormikProps<IScheduleFormValues>> = ({
             disabled={isSubmitting}
             value={values.waitingTime}
             formatter={value => `${value} minutes`}
+            parser={value => value ? value.replace('minutes', '').trim() : ''}
             onChange={(value) => {
               setFieldValue('waitingTime', value);
               setFieldTouched('waitingTime');
@@ -182,6 +183,7 @@ const Schedule: React.FC<IExternalProps & FormikProps<IScheduleFormValues>> = ({
             disabled={isSubmitting}
             value={values.remindTime}
             formatter={value => `${value} minutes`}
+            parser={value => value ? value.replace('minutes', '').trim() : ''}
             onChange={(value) => {
               setFieldValue('remindTime', value);
               setFieldTouched('remindTime');
