@@ -40,3 +40,7 @@
     width: 75%;
   }
 }
+
+.text-muted {
+  color: #8C8C8C !important;
+}

@@ -51,7 +51,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
           <div>
             <Title className="mb-0" level={4}>{deriviedName}</Title>
             {role && (
-              <Text style={{ fontSize: 12, color: '#8C8C8C' }}>{role}</Text>
+              <Text className="text-muted" style={{ fontSize: 12 }}>{role}</Text>
             )}
           </div>
         </div>

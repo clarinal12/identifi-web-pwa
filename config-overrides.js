@@ -12,8 +12,8 @@ module.exports = override(
       '@primary-color': '#08979C',
       '@layout-header-background': '#002329',
       '@heading-color': '#2F3640',
-      '@text-color': '#595959',
-      '@text-color-secondary': '#485362'
+      '@text-color': '#262626', // #595959
+      '@text-color-secondary': '#595959' // #485362
     }
   })
 );

@@ -10,6 +10,12 @@ const MEMBER_FIELDS = `
   role
 `;
 
+const CHECKIN_GOAL = `
+  createdAt
+  goal
+  completed
+`;
+
 const CHECKIN_FIELDS = `
   id
   name
@@ -20,6 +26,7 @@ const CHECKIN_FIELDS = `
   waitingTime
   remindTime
   timezone
+  goalsEnabled
   respondents {
     ${MEMBER_FIELDS}
   }
@@ -48,6 +55,13 @@ const CHECKIN_FIELDS = `
         answer
       }
       onTime
+      goalCompleted
+      currentGoal {
+        ${CHECKIN_GOAL}
+      }
+      previousGoal {
+        ${CHECKIN_GOAL}
+      }
     }
   }
   pastCheckIns {

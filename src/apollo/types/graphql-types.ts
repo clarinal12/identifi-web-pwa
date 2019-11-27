@@ -4,6 +4,12 @@ export type TActiveCompany = {
   slackEnabled: boolean,
 }
 
+export type TCheckInGoal = {
+  createdAt: string,
+  goal: string,
+  completed: boolean,
+}
+
 export type TResponse = {
   respondent: IAccount,
   submitDate: Date,
@@ -12,6 +18,9 @@ export type TResponse = {
     answer: string
   }>,
   onTime: boolean,
+  goalCompleted: boolean,
+  currentGoal: TCheckInGoal,
+  previousGoal: TCheckInGoal,
 }
 
 export type TPastCheckIns = {
@@ -76,6 +85,7 @@ export interface ICheckinData {
   waitingTime: number,
   remindTime: number,
   timezone: string
+  goalsEnabled: boolean,
   respondents: IAccount[],
   questions: string[]
   slackChannel: {
