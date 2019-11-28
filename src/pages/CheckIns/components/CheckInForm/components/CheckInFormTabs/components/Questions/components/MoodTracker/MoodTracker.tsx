@@ -6,7 +6,7 @@ const { Text } = Typography;
 
 interface IMoodTracker {
   isSubmitting: boolean,
-  moodEnabled: boolean,
+  moodsEnabled: boolean,
   mergeMoodStatusToState: (value: boolean) => void,
 }
 
@@ -23,8 +23,8 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const MoodTracker: React.FC<IMoodTracker> = ({ isSubmitting, moodEnabled, mergeMoodStatusToState }) => {
-  const [switchState, setSwitchState] = useState(moodEnabled);
+const MoodTracker: React.FC<IMoodTracker> = ({ isSubmitting, moodsEnabled, mergeMoodStatusToState }) => {
+  const [switchState, setSwitchState] = useState(moodsEnabled);
   return (
     <StyledCard
       className="mt-2"

@@ -27,6 +27,7 @@ const CHECKIN_FIELDS = `
   remindTime
   timezone
   goalsEnabled
+  moodsEnabled
   respondents {
     ${MEMBER_FIELDS}
   }
@@ -56,6 +57,7 @@ const CHECKIN_FIELDS = `
       }
       onTime
       goalCompleted
+      mood
       currentGoal {
         ${CHECKIN_GOAL}
       }

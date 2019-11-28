@@ -4,28 +4,31 @@ import { Form, Button, Typography, Col, Row } from 'antd';
 
 import GoalTracker from './components/GoalTracker';
 import CustomQuestions from './components/CustomQuestions';
-// import MoodTracker from './components/MoodTracker';
+import MoodTracker from './components/MoodTracker';
 
 const { Text, Title } = Typography;
 
 interface IExternalProps {
   defaultValue: string[],
   goalsEnabled: boolean,
+  moodsEnabled: boolean,
   onNextStep: () => void,
   onBackStep: () => void,
   parentValid: boolean,
   mergeQuestionsToState: (values: string[]) => void,
   mergeGoalStatusToState: (value: boolean) => void,
+  mergeMoodStatusToState: (value: boolean) => void,
 }
 
 export interface IQuestionsFormValues {
   questions: string[],
   goalsEnabled: boolean,
+  moodsEnabled: boolean,
 }
 
 const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = ({
-  values, isSubmitting, handleSubmit, errors, touched, isValid, setFieldTouched, setFieldValue,
-  parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState,
+  values, isSubmitting, handleSubmit, isValid,
+  parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState, mergeMoodStatusToState,
 }) => (
   <Form colon={false} onSubmit={handleSubmit}>
     <Row gutter={48}>
@@ -49,11 +52,11 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
           isSubmitting={isSubmitting}
           mergeGoalStatusToState={mergeGoalStatusToState}
         />
-        {/* <MoodTracker
-          moodEnabled={values.goalsEnabled}
+        <MoodTracker
+          moodsEnabled={values.moodsEnabled}
           isSubmitting={isSubmitting}
-          mergeMoodStatusToState={(value: boolean) => console.log(value)}
-        /> */}
+          mergeMoodStatusToState={mergeMoodStatusToState}
+        />
       </Col>
     </Row>
     <div className="float-right mt-4">
@@ -80,9 +83,10 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
 
 export default withFormik<IExternalProps, IQuestionsFormValues>({
   isInitialValid: true,
-  mapPropsToValues: ({ defaultValue, goalsEnabled }) => ({
+  mapPropsToValues: ({ defaultValue, goalsEnabled, moodsEnabled }) => ({
     questions: defaultValue,
-    goalsEnabled
+    goalsEnabled,
+    moodsEnabled,
   }),
   handleSubmit: (_, formikBag) => {
     const { setSubmitting, props } = formikBag;

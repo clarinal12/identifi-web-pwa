@@ -30,6 +30,7 @@ export interface IFinalValues {
   questions: string[],
   slackChannelId: string,
   goalsEnabled: boolean,
+  moodsEnabled: boolean,
   timings: {
     frequency: string,
     days: string[],
@@ -83,6 +84,7 @@ const TAB_STEPS = [{
     <Questions
       defaultValue={defaultValues.questions}
       goalsEnabled={defaultValues.goalsEnabled}
+      moodsEnabled={defaultValues.moodsEnabled}
       parentValid={parentValid}
       onNextStep={() => setActiveTabKey && setActiveTabKey('slack')}
       onBackStep={() => setActiveTabKey && setActiveTabKey('respondents')}
@@ -96,6 +98,12 @@ const TAB_STEPS = [{
         setFormValue({
           ...defaultValues,
           goalsEnabled,
+        })
+      }}
+      mergeMoodStatusToState={(moodsEnabled: boolean) => {
+        setFormValue({
+          ...defaultValues,
+          moodsEnabled,
         })
       }}
     />
@@ -141,7 +149,7 @@ const CheckInFormTabs: React.FC<ICheckInFormTabs> = ({ defaultValues, parentVali
     <Card
       activeTabKey={activeTabKey}
       tabList={TAB_STEPS}
-      onTabChange={key => setActiveTabKey(key)}
+      // onTabChange={key => setActiveTabKey(key)}
     >
       <TabComponent
         parentSubmitAction={parentSubmitAction}

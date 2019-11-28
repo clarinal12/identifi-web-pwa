@@ -1,11 +1,41 @@
 import React from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Typography, Avatar, Badge, Icon } from 'antd';
+import { Card, Typography, Avatar, Badge, Icon, Tooltip } from 'antd';
+import emoji from 'node-emoji';
 
 import { TResponse } from 'apollo/types/graphql-types';
 
 const { Text, Title } = Typography;
+
+const MOOD_MAP = [{
+  emoji: ':smiley:',
+  moodLabel: 'Cheerful',
+}, {
+  emoji: ':slightly_smiling_face:',
+  moodLabel: 'Happy',
+}, {
+  emoji: ':star-struck:',
+  moodLabel: 'Excited',
+}, {
+  emoji: ':rage:',
+  moodLabel: 'Angry',
+}, {
+  emoji: ':thinking_face:',
+  moodLabel: 'Thoughtful',
+}, {
+  emoji: ':neutral_face:',
+  moodLabel: 'Unimpressed',
+}, {
+  emoji: ':confused:',
+  moodLabel: 'Confused',
+}, {
+  emoji: ':sleeping:',
+  moodLabel: 'Tired',
+}, {
+  emoji: ':face_with_thermometer:',
+  moodLabel: 'Sick',
+}];
 
 interface IRespondentCard {
   response: TResponse,
@@ -23,7 +53,15 @@ const StyledCard = styled(Card)`
       .ant-card-head-title {
         padding: 0;
         .ant-badge {
-          .anticon {
+          .mood {
+            background: transparent;
+            top: 10px;
+            right: 10px;
+            border: none;
+            font-size: 16px;
+            box-shadow: none;
+          }
+          .goal-completed {
             font-size: 20px;
             top: auto;
             bottom: -10px;
@@ -37,7 +75,7 @@ const StyledCard = styled(Card)`
     }
   }
   .ant-card-body {
-    .current-goal, .qa-wrapper:not(:last-of-type) {
+    .div-wrapper:not(:last-of-type) {
       border-bottom: 1px solid #E1E4E9;
       margin-bottom: 16px;
       padding-bottom: 16px;
@@ -46,7 +84,7 @@ const StyledCard = styled(Card)`
 `;
 
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
-  const { submitDate, respondent, answers, currentGoal, previousGoal } = response;
+  const { submitDate, respondent, answers, currentGoal, previousGoal, mood } = response;
   const { firstname, lastname, email, role, avatar } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
@@ -56,13 +94,21 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
           <div className="mr-3">
             <Badge
               {...((previousGoal && previousGoal.completed) && {
-                count: <Icon type="check-circle" />,
+                count: <Icon className="goal-completed" type="check-circle" />,
               })}
             >
-              <Avatar
-                size={56}
-                {...(avatar && { src : avatar })}
-              />
+              <Badge
+                {...(mood && {
+                  count: <Tooltip title={MOOD_MAP[mood].moodLabel} className="mood">
+                    {emoji.emojify(MOOD_MAP[mood].emoji)}
+                  </Tooltip>,
+                })}
+              >
+                <Avatar
+                  size={56}
+                  {...(avatar && { src : avatar })}
+                />
+              </Badge>
             </Badge>
           </div>
           <div>
@@ -79,18 +125,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         </Text>
       )}
     >
-      <div className="current-goal mb-3">
+      <div className="div-wrapper mb-3">
         <Text type="secondary" strong>TODAY:</Text>
         <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
           {currentGoal.goal}
         </Title>
       </div>
       {previousGoal && (
-        <div className="current-goal mb-3">
+        <div className="div-wrapper">
           <Text type="secondary" strong>
             {function() {
               const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase();
-              return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `timeAgo:`;
+              return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo}:`;
             }()}
           </Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
@@ -98,11 +144,13 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
           </Title>
         </div>
       )}
-      <div className="mb-3">
-        <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
-      </div>
+      {answers.length > 0 && (
+        <div className="my-3">
+          <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
+        </div>
+      )}
       {answers.map(({ question, answer }, idx) => (
-        <div className="qa-wrapper" key={idx}>
+        <div className="div-wrapper" key={idx}>
           <Text type="secondary" strong>{question}</Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
         </div>

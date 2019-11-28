@@ -19,6 +19,7 @@ export type TResponse = {
   }>,
   onTime: boolean,
   goalCompleted: boolean,
+  mood: number,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
 }
@@ -86,6 +87,7 @@ export interface ICheckinData {
   remindTime: number,
   timezone: string
   goalsEnabled: boolean,
+  moodsEnabled: boolean,
   respondents: IAccount[],
   questions: string[]
   slackChannel: {
