@@ -21,8 +21,6 @@ const BreadcrumbProvider: React.FC<PropsWithChildren<RouteComponentProps>> = ({ 
   const pathSegments = match.path.split("/").filter(v => v);
   const urlSegments = match.url.split("/");
   let restorableStates = {};
-  console.log(location.state);
-
   const links: TBreadcrumb[] = pathSegments.map((segment: string, idx: number) => {
     const formatSegment = `${segment.replace(':', '')}_alias`;
     restorableStates = {

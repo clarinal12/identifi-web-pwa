@@ -23,11 +23,10 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
     name: values.name,
     respondents: data ? data.respondents.map(({ memberId }) => memberId) : [],
     questions: data ? data.questions : [
-      'Do you have any obstacles at the moment?',
-      'What did you accomplish yesterday?',
-      'What do you plan on doing today?'
+      'Are you blocked?',
     ],
     slackChannelId: data ? data.slackChannel.id : '',
+    goalsEnabled: data ? data.goalsEnabled : true,
     timings: {
       frequency: data ? data.frequency : 'WORKDAYS',
       days: data ? data.days : WORKDAYS_VALUE,

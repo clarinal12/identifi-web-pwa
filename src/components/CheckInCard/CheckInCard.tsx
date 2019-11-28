@@ -72,6 +72,8 @@ const CheckInCard: React.FC<ICheckinCard> = ({
   const { account } = useUserContextValue();
   const [cardLoadingState, setCardLoadingState] = useState(false);
   const { memberInfo } = account || { memberInfo: { memberId: '', isOwner: false } };
+  const derivedTimezone = account ? account.timezone : timezone;
+
   return (
     <Spin spinning={cardLoadingState} indicator={LoadingIcon}>
       <StyledCard
@@ -105,7 +107,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         <Row className="push-bottom">
           <Col xs={16}>
             <Icon type="clock-circle" className="mr-2" />
-            <Text>{moment(nextCheckInDate).tz(timezone).format('MMM DD, hh:mm A')}</Text>
+            <Text>{moment(nextCheckInDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}</Text>
           </Col>
           <Col xs={8} className="text-right">
             <Icon type="reload" className="mr-2" />

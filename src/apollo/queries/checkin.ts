@@ -120,6 +120,13 @@ export const CHECKIN = gql`
           answer
         }
         onTime
+        goalCompleted
+        currentGoal {
+          ${CHECKIN_GOAL}
+        }
+        previousGoal {
+          ${CHECKIN_GOAL}
+        }
       }
     }
   }

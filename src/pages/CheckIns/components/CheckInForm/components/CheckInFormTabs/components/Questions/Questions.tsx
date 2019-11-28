@@ -1,93 +1,61 @@
 import React from 'react';
 import { withFormik, FormikProps } from 'formik';
-import { Form, Input, Button, Typography } from 'antd';
+import { Form, Button, Typography, Col, Row } from 'antd';
 
-import { questionFormSchema } from './validation';
+import GoalTracker from './components/GoalTracker';
+import CustomQuestions from './components/CustomQuestions';
+// import MoodTracker from './components/MoodTracker';
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 interface IExternalProps {
   defaultValue: string[],
+  goalsEnabled: boolean,
   onNextStep: () => void,
   onBackStep: () => void,
   parentValid: boolean,
-  mergeValuesToState: (values: IQuestionsFormValues) => void,
+  mergeQuestionsToState: (values: string[]) => void,
+  mergeGoalStatusToState: (value: boolean) => void,
 }
 
 export interface IQuestionsFormValues {
-  question1: string,
-  question2: string,
-  question3: string,
+  questions: string[],
+  goalsEnabled: boolean,
 }
 
 const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = ({
   values, isSubmitting, handleSubmit, errors, touched, isValid, setFieldTouched, setFieldValue,
-  parentValid, onBackStep, mergeValuesToState,
+  parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState,
 }) => (
   <Form colon={false} onSubmit={handleSubmit}>
-    <div className="mb-4">
-      <Title style={{ fontSize: 16 }}>Ask the respondents following questions:</Title>
-    </div>
-    <Form.Item
-      label="Question 1"
-      {...((touched.question1 && errors.question1) && {
-        validateStatus: "error",
-        help: errors.question1,
-      })}
-    >
-      <Input
-        name="question1"
-        size="large"
-        disabled={isSubmitting}
-        value={values.question1}
-        placeholder="First question"
-        onChange={(e) => {
-          setFieldTouched('question1');
-          setFieldValue('question1', e.target.value);
-          mergeValuesToState(values);
-        }}
-      />
-    </Form.Item>
-    <Form.Item
-      label="Question 2"
-      {...((touched.question2 && errors.question2) && {
-        validateStatus: "error",
-        help: errors.question2,
-      })}
-    >
-      <Input
-        name="question2"
-        size="large"
-        disabled={isSubmitting}
-        value={values.question2}
-        placeholder="2nd question"
-        onChange={(e) => {
-          setFieldTouched('question2');
-          setFieldValue('question2', e.target.value);
-          mergeValuesToState(values);
-        }}
-      />
-    </Form.Item>
-    <Form.Item
-      label="Question 3"
-      {...((touched.question3 && errors.question3) && {
-        validateStatus: "error",
-        help: errors.question3,
-      })}
-    >
-      <Input
-        name="question3"
-        size="large"
-        disabled={isSubmitting}
-        value={values.question3}
-        placeholder="3rd question"
-        onChange={(e) => {
-          setFieldTouched('question3');
-          setFieldValue('question3', e.target.value);
-          mergeValuesToState(values);
-        }}
-      />
-    </Form.Item>
+    <Row gutter={48}>
+      <Col sm={24} md={12}>
+        <div className="mb-4">
+          <Title level={4}>Questions</Title>
+          <Text style={{ fontSize: 16 }}>Your custom questions go here.</Text>
+        </div>
+        <CustomQuestions
+          questions={values.questions}
+          isSubmitting={isSubmitting}
+          mergeQuestionsToState={mergeQuestionsToState}
+        />
+      </Col>
+      <Col sm={24} md={12}>
+        <div>
+          <Title level={4}>Add-ons</Title>
+        </div>
+        <GoalTracker
+          goalsEnabled={values.goalsEnabled}
+          isSubmitting={isSubmitting}
+          mergeGoalStatusToState={mergeGoalStatusToState}
+        />
+        {/* <MoodTracker
+          moodEnabled={values.goalsEnabled}
+          isSubmitting={isSubmitting}
+          mergeMoodStatusToState={(value: boolean) => console.log(value)}
+        /> */}
+      </Col>
+    </Row>
     <div className="float-right mt-4">
       <Button
         style={{ minWidth: 85 }}
@@ -111,14 +79,12 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
 );
 
 export default withFormik<IExternalProps, IQuestionsFormValues>({
-  validationSchema: questionFormSchema,
   isInitialValid: true,
-  mapPropsToValues: ({ defaultValue }) => ({
-    question1: defaultValue[0],
-    question2: defaultValue[1],
-    question3: defaultValue[2],
+  mapPropsToValues: ({ defaultValue, goalsEnabled }) => ({
+    questions: defaultValue,
+    goalsEnabled
   }),
-  handleSubmit: (values, formikBag) => {
+  handleSubmit: (_, formikBag) => {
     const { setSubmitting, props } = formikBag;
     setSubmitting(false);
     props.onNextStep();

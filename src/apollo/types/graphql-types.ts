@@ -44,7 +44,7 @@ export interface IAccount {
   role: string | null,
   location: string | null,
   avatar: string | null
-  timezone: string | null,
+  timezone: string,
   onboarded: boolean,
   invited: boolean,
   memberId: string,

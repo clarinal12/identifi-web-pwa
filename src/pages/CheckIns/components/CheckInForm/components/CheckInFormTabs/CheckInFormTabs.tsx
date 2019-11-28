@@ -7,7 +7,6 @@ import Schedule from './components/Schedule';
 import { IScheduleFormValues } from './components/Schedule/Schedule';
 import Respondents from './components/Respondents';
 import Questions from './components/Questions';
-import { IQuestionsFormValues } from './components/Questions/Questions';
 import Settings from './components/Settings';
 
 const { Title } = Typography;
@@ -30,6 +29,7 @@ export interface IFinalValues {
   respondents: string[],
   questions: string[],
   slackChannelId: string,
+  goalsEnabled: boolean,
   timings: {
     frequency: string,
     days: string[],
@@ -82,14 +82,20 @@ const TAB_STEPS = [{
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Questions
       defaultValue={defaultValues.questions}
+      goalsEnabled={defaultValues.goalsEnabled}
       parentValid={parentValid}
       onNextStep={() => setActiveTabKey && setActiveTabKey('slack')}
       onBackStep={() => setActiveTabKey && setActiveTabKey('respondents')}
-      mergeValuesToState={(values: IQuestionsFormValues | any) => {
-        const questions = Object.keys(values).map(key => values[key]);
+      mergeQuestionsToState={(questions: string[]) => {
         setFormValue({
           ...defaultValues,
           questions,
+        })
+      }}
+      mergeGoalStatusToState={(goalsEnabled: boolean) => {
+        setFormValue({
+          ...defaultValues,
+          goalsEnabled,
         })
       }}
     />
@@ -135,6 +141,7 @@ const CheckInFormTabs: React.FC<ICheckInFormTabs> = ({ defaultValues, parentVali
     <Card
       activeTabKey={activeTabKey}
       tabList={TAB_STEPS}
+      onTabChange={key => setActiveTabKey(key)}
     >
       <TabComponent
         parentSubmitAction={parentSubmitAction}
