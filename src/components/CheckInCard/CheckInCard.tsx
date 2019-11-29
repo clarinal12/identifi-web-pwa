@@ -90,6 +90,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
           <CardActions
             id={id}
             name={name}
+            active={status !== 'DEACTIVATED'}
             isLastItem={isLastItem}
             isOwner={memberInfo.isOwner}
             setCardLoadingState={setCardLoadingState}
