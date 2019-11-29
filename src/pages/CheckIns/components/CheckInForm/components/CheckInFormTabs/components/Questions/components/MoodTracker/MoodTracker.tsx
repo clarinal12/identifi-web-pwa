@@ -8,6 +8,8 @@ interface IMoodTracker {
   isSubmitting: boolean,
   moodsEnabled: boolean,
   mergeMoodStatusToState: (value: boolean) => void,
+  setFieldValue: (key: string, value: boolean) => void,
+  setFieldTouched: (key: string, value?: boolean) => void,
 }
 
 const StyledCard = styled(Card)`
@@ -23,7 +25,9 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const MoodTracker: React.FC<IMoodTracker> = ({ isSubmitting, moodsEnabled, mergeMoodStatusToState }) => {
+const MoodTracker: React.FC<IMoodTracker> = ({
+  isSubmitting, moodsEnabled, mergeMoodStatusToState, setFieldTouched, setFieldValue,
+}) => {
   const [switchState, setSwitchState] = useState(moodsEnabled);
   return (
     <StyledCard
@@ -37,6 +41,8 @@ const MoodTracker: React.FC<IMoodTracker> = ({ isSubmitting, moodsEnabled, merge
           checked={switchState}
           onChange={() => {
             const reversedState = !switchState;
+            setFieldTouched('moodsEnabled');
+            setFieldValue('moodsEnabled', reversedState);
             setSwitchState(reversedState);
             mergeMoodStatusToState(reversedState);
           }}

@@ -8,6 +8,8 @@ interface IGoalTracker {
   isSubmitting: boolean,
   goalsEnabled: boolean,
   mergeGoalStatusToState: (value: boolean) => void,
+  setFieldValue: (key: string, value: boolean) => void,
+  setFieldTouched: (key: string, value?: boolean) => void,
 }
 
 const StyledCard = styled(Card)`
@@ -23,7 +25,9 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const GoalTracker: React.FC<IGoalTracker> = ({ isSubmitting, goalsEnabled, mergeGoalStatusToState }) => {
+const GoalTracker: React.FC<IGoalTracker> = ({
+  isSubmitting, goalsEnabled, mergeGoalStatusToState, setFieldTouched, setFieldValue,
+}) => {
   const [switchState, setSwitchState] = useState(goalsEnabled);
   return (
     <StyledCard
@@ -36,6 +40,8 @@ const GoalTracker: React.FC<IGoalTracker> = ({ isSubmitting, goalsEnabled, merge
           checked={switchState}
           onChange={() => {
             const reversedState = !switchState;
+            setFieldTouched('goalsEnabled');
+            setFieldValue('goalsEnabled', reversedState);
             setSwitchState(reversedState);
             mergeGoalStatusToState(reversedState);
           }}

@@ -5,6 +5,7 @@ import { Form, Button, Typography, Col, Row } from 'antd';
 import GoalTracker from './components/GoalTracker';
 import CustomQuestions from './components/CustomQuestions';
 import MoodTracker from './components/MoodTracker';
+import { questionFormSchema } from './validation';
 
 const { Text, Title } = Typography;
 
@@ -27,7 +28,7 @@ export interface IQuestionsFormValues {
 }
 
 const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = ({
-  values, isSubmitting, handleSubmit, isValid,
+  values, isSubmitting, handleSubmit, isValid, setFieldValue, setFieldTouched, errors, touched,
   parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState, mergeMoodStatusToState,
 }) => (
   <Form colon={false} onSubmit={handleSubmit}>
@@ -37,22 +38,36 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
           <Title level={4}>Questions</Title>
           <Text style={{ fontSize: 16 }}>Your custom questions go here.</Text>
         </div>
-        <CustomQuestions
-          questions={values.questions}
-          isSubmitting={isSubmitting}
-          mergeQuestionsToState={mergeQuestionsToState}
-        />
+        <Form.Item
+          className="mb-0"
+          {...((touched.questions && errors.questions) && {
+            validateStatus: "error",
+            help: typeof errors.questions === 'string' ? errors.questions : errors.questions[0],
+          })}
+        >
+          <CustomQuestions
+            setFieldValue={setFieldValue}
+            setFieldTouched={setFieldTouched}
+            questions={values.questions}
+            isSubmitting={isSubmitting}
+            mergeQuestionsToState={mergeQuestionsToState}
+          />
+        </Form.Item>
       </Col>
       <Col sm={24} md={12}>
         <div>
           <Title level={4}>Add-ons</Title>
         </div>
         <GoalTracker
+          setFieldValue={setFieldValue}
+          setFieldTouched={setFieldTouched}
           goalsEnabled={values.goalsEnabled}
           isSubmitting={isSubmitting}
           mergeGoalStatusToState={mergeGoalStatusToState}
         />
         <MoodTracker
+          setFieldValue={setFieldValue}
+          setFieldTouched={setFieldTouched}
           moodsEnabled={values.moodsEnabled}
           isSubmitting={isSubmitting}
           mergeMoodStatusToState={mergeMoodStatusToState}
@@ -83,6 +98,7 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
 
 export default withFormik<IExternalProps, IQuestionsFormValues>({
   isInitialValid: true,
+  validationSchema: questionFormSchema,
   mapPropsToValues: ({ defaultValue, goalsEnabled, moodsEnabled }) => ({
     questions: defaultValue,
     goalsEnabled,

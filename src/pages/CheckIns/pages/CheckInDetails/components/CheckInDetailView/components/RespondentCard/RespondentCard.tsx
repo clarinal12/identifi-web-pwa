@@ -125,12 +125,14 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         </Text>
       )}
     >
-      <div className="div-wrapper mb-3">
-        <Text type="secondary" strong>TODAY:</Text>
-        <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
-          {currentGoal.goal}
-        </Title>
-      </div>
+      {currentGoal && (
+        <div className="div-wrapper mb-3">
+          <Text type="secondary" strong>TODAY:</Text>
+          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+            {currentGoal.goal}
+          </Title>
+        </div>
+      )}
       {previousGoal && (
         <div className="div-wrapper">
           <Text type="secondary" strong>

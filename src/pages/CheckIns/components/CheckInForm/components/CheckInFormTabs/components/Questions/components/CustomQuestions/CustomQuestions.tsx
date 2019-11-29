@@ -6,6 +6,8 @@ interface ICustomQuestions {
   isSubmitting: boolean,
   questions: string[],
   mergeQuestionsToState: (values: string[]) => void,
+  setFieldValue: (key: string, values: string[]) => void,
+  setFieldTouched: (key: string, value?: boolean) => void,
 }
 
 const StyledFormItem = styled(Form.Item)`
@@ -14,7 +16,9 @@ const StyledFormItem = styled(Form.Item)`
   }
 `;
 
-const CustomQuestions: React.FC<ICustomQuestions> = ({ isSubmitting, questions, mergeQuestionsToState }) => {
+const CustomQuestions: React.FC<ICustomQuestions> = ({
+  isSubmitting, questions, mergeQuestionsToState, setFieldValue, setFieldTouched,
+}) => {
   const [customQuestions, setCustomQuestions] = useState(questions);
   const [questionsCount, setQuestionsCount] = useState(questions.length || 1);
   return (
@@ -33,6 +37,8 @@ const CustomQuestions: React.FC<ICustomQuestions> = ({ isSubmitting, questions, 
             onChange={(e) => {
               const clonedQuestions = [...customQuestions];
               clonedQuestions[idx] = e.target.value;
+              setFieldTouched('questions');
+              setFieldValue('questions', clonedQuestions);
               setCustomQuestions(clonedQuestions);
               mergeQuestionsToState(clonedQuestions);
             }}
@@ -45,6 +51,8 @@ const CustomQuestions: React.FC<ICustomQuestions> = ({ isSubmitting, questions, 
               onClick={() => {
                 const clonedQuestions = [...customQuestions];
                 clonedQuestions.splice(idx, 1);
+                setFieldTouched('questions');
+                setFieldValue('questions', clonedQuestions);
                 setCustomQuestions(clonedQuestions);
                 setQuestionsCount(questionsCount - 1);
                 mergeQuestionsToState(clonedQuestions);
@@ -53,7 +61,7 @@ const CustomQuestions: React.FC<ICustomQuestions> = ({ isSubmitting, questions, 
           </Tooltip>
         </StyledFormItem>
       ))}
-      <div>
+      <Form.Item>
         <Button
           icon="plus-circle"
           size="large"
@@ -64,7 +72,7 @@ const CustomQuestions: React.FC<ICustomQuestions> = ({ isSubmitting, questions, 
         >
           New question
         </Button>
-      </div>
+      </Form.Item>
     </>
   );
 };
