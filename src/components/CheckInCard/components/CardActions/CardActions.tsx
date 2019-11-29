@@ -41,12 +41,14 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
       }
     }}
   >
-    <Menu.Item
-      key={0}
-      onClick={toggleCheckInStatus}
-    >
-      <a href="#!">{active ? 'Deactivate' : 'Activate'}</a>
-    </Menu.Item>
+    {isOwner && (
+      <Menu.Item
+        key={0}
+        onClick={toggleCheckInStatus}
+      >
+        <a href="#!">{active ? 'Deactivate' : 'Activate'}</a>
+      </Menu.Item>
+    )}
     <Menu.Item key={1}>
       <Link
         to={{
