@@ -2,38 +2,37 @@ import React from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Card, Typography, Avatar, Badge, Icon, Tooltip } from 'antd';
-import emoji from 'node-emoji';
 
 import { TResponse } from 'apollo/types/graphql-types';
 
 const { Text, Title } = Typography;
 
 const MOOD_MAP = [{
-  emoji: ':smiley:',
+  emoji: '😃',
   moodLabel: 'Cheerful',
 }, {
-  emoji: ':slightly_smiling_face:',
+  emoji: '🙂',
   moodLabel: 'Happy',
 }, {
-  emoji: ':star-struck:',
+  emoji: '🤗',
   moodLabel: 'Excited',
 }, {
-  emoji: ':rage:',
+  emoji: '😠',
   moodLabel: 'Angry',
 }, {
-  emoji: ':thinking_face:',
+  emoji: '🤔',
   moodLabel: 'Thoughtful',
 }, {
-  emoji: ':neutral_face:',
+  emoji: '😐',
   moodLabel: 'Unimpressed',
 }, {
-  emoji: ':confused:',
+  emoji: '😕',
   moodLabel: 'Confused',
 }, {
-  emoji: ':sleeping:',
+  emoji: '😴',
   moodLabel: 'Tired',
 }, {
-  emoji: ':face_with_thermometer:',
+  emoji: '🤒',
   moodLabel: 'Sick',
 }];
 
@@ -100,7 +99,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
               <Badge
                 {...(mood && {
                   count: <Tooltip title={MOOD_MAP[mood].moodLabel} className="mood">
-                    {emoji.emojify(MOOD_MAP[mood].emoji)}
+                    {MOOD_MAP[mood].emoji}
                   </Tooltip>,
                 })}
               >
@@ -153,7 +152,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       )}
       {answers.map(({ question, answer }, idx) => (
         <div className="div-wrapper" key={idx}>
-          <Text type="secondary" strong>{question}</Text>
+          <Text type="secondary">{question}</Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
         </div>
       ))}

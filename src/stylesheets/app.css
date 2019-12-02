@@ -44,3 +44,16 @@
 .text-muted {
   color: #8C8C8C !important;
 }
+
+.ant-tabs-tab {
+  padding: 12px 0 !important;
+}
+
+.ant-tabs-tab:not(.ant-tabs-tab-active) > h1 {
+  color: #595959;
+  font-weight: normal;
+}
+
+.checkin-form .ant-tabs-tab:not(.ant-tabs-tab-active) {
+  cursor: default;
+}

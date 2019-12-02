@@ -149,6 +149,7 @@ const CheckInFormTabs: React.FC<ICheckInFormTabs> = ({ defaultValues, parentVali
     <Card
       activeTabKey={activeTabKey}
       tabList={TAB_STEPS}
+      className="checkin-form"
       // onTabChange={key => setActiveTabKey(key)}
     >
       <TabComponent

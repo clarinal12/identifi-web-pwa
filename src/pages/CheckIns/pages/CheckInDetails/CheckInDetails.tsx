@@ -44,7 +44,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, 
             <Col sm={12} className="py-2">
               <Tag
                 className="float-right"
-                style={{ color: '#595959' }}
+                style={{ color: '#595959', fontSize: 16 }}
                 color={COLOR_MAP[data.checkInSchedule.status]}
               >
                 {data.checkInSchedule.status}
