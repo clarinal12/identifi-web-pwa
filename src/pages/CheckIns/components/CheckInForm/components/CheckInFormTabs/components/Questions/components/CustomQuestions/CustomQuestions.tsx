@@ -46,6 +46,7 @@ const CustomQuestions: React.FC<ICustomQuestions> = ({
           <Tooltip title="Delete question" placement="bottom">
             <Button
               type="link"
+              style={{ color: '#DADADA' }}
               icon="delete"
               size="large"
               onClick={() => {

@@ -1,9 +1,10 @@
 import React from 'react';
 import moment from 'moment';
+import cx from 'classnames';
 import styled from 'styled-components';
 import { Card, Typography, Avatar, Badge, Icon, Tooltip } from 'antd';
 
-import { TResponse } from 'apollo/types/graphql-types';
+import { TResponse, TCheckInGoal } from 'apollo/types/graphql-types';
 
 const { Text, Title } = Typography;
 
@@ -40,6 +41,13 @@ interface IRespondentCard {
   response: TResponse,
 }
 
+interface IRespondentAvatar {
+  previousGoal: TCheckInGoal,
+  mood: number,
+  blocker: string,
+  avatar: string | null,
+}
+
 const StyledCard = styled(Card)`
   &:not(:last-of-type) {
     margin-bottom: 24px;
@@ -52,6 +60,11 @@ const StyledCard = styled(Card)`
       .ant-card-head-title {
         padding: 0;
         .ant-badge {
+          .blocked {
+            top: 54px;
+            right: 54px;
+            font-size: 16px;
+          }
           .mood {
             background: transparent;
             top: 10px;
@@ -82,8 +95,35 @@ const StyledCard = styled(Card)`
   }
 `;
 
+const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar }) => (
+  <Badge
+    {...((previousGoal && previousGoal.completed) && {
+      count: <Icon className="goal-completed" type="check-circle" />,
+    })}
+  >
+    <Badge
+      {...((typeof mood === 'number') && {
+        count: <Tooltip title={MOOD_MAP[mood].moodLabel} className="mood">
+          {MOOD_MAP[mood].emoji}
+        </Tooltip>,
+      })}
+    >
+      <Badge
+        {...(blocker && {
+          count: <span className="blocked" role="img" aria-label="blocked">🚫</span>,
+        })}
+      >
+        <Avatar
+          size={64}
+          {...(avatar && { src : avatar })}
+        />
+      </Badge>
+    </Badge>
+  </Badge>
+);
+
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
-  const { submitDate, respondent, answers, currentGoal, previousGoal, mood } = response;
+  const { submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker } = response;
   const { firstname, lastname, email, role, avatar } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
@@ -91,24 +131,12 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       title={(
         <div className="d-flex">
           <div className="mr-3">
-            <Badge
-              {...((previousGoal && previousGoal.completed) && {
-                count: <Icon className="goal-completed" type="check-circle" />,
-              })}
-            >
-              <Badge
-                {...(mood && {
-                  count: <Tooltip title={MOOD_MAP[mood].moodLabel} className="mood">
-                    {MOOD_MAP[mood].emoji}
-                  </Tooltip>,
-                })}
-              >
-                <Avatar
-                  size={56}
-                  {...(avatar && { src : avatar })}
-                />
-              </Badge>
-            </Badge>
+            <RespondentAvatar
+              avatar={avatar}
+              mood={mood}
+              blocker={blocker}
+              previousGoal={previousGoal}
+            />
           </div>
           <div>
             <Title className="mb-0" level={4}>{deriviedName}</Title>
@@ -126,7 +154,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
     >
       {currentGoal && (
         <div className="div-wrapper mb-3">
-          <Text type="secondary" strong>TODAY:</Text>
+          <Text strong>TODAY:</Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
             {currentGoal.goal}
           </Title>
@@ -134,7 +162,13 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       )}
       {previousGoal && (
         <div className="div-wrapper">
-          <Text type="secondary" strong>
+          <Text 
+            strong
+            className={cx({
+              'text-success': previousGoal.completed,
+              'text-danger': !previousGoal.completed,
+            })}
+          >
             {function() {
               const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase();
               return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo}:`;
@@ -142,6 +176,14 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
           </Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
             {previousGoal.goal}
+          </Title>
+        </div>
+      )}
+      {blocker && (
+        <div className="div-wrapper">
+          <Text strong className="text-danger">BLOCKED:</Text>
+          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+            {blocker}
           </Title>
         </div>
       )}

@@ -20,6 +20,7 @@ export type TResponse = {
   onTime: boolean,
   goalCompleted: boolean,
   mood: number,
+  blocker: string,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
 }
@@ -88,6 +89,7 @@ export interface ICheckinData {
   timezone: string
   goalsEnabled: boolean,
   moodsEnabled: boolean,
+  blockersEnabled: boolean,
   respondents: IAccount[],
   questions: string[]
   slackChannel: {

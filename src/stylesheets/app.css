@@ -57,3 +57,11 @@
 .checkin-form .ant-tabs-tab:not(.ant-tabs-tab-active) {
   cursor: default;
 }
+
+.text-danger {
+  color: #D4380D !important;
+}
+
+.text-success {
+  color: #237804 !important;
+}

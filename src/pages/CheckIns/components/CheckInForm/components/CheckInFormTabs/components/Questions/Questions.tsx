@@ -5,6 +5,7 @@ import { Form, Button, Typography, Col, Row } from 'antd';
 import GoalTracker from './components/GoalTracker';
 import CustomQuestions from './components/CustomQuestions';
 import MoodTracker from './components/MoodTracker';
+import BlockTracker from './components/BlockTracker';
 import { questionFormSchema } from './validation';
 
 const { Text, Title } = Typography;
@@ -13,23 +14,26 @@ interface IExternalProps {
   defaultValue: string[],
   goalsEnabled: boolean,
   moodsEnabled: boolean,
+  blockersEnabled: boolean,
   onNextStep: () => void,
   onBackStep: () => void,
   parentValid: boolean,
   mergeQuestionsToState: (values: string[]) => void,
   mergeGoalStatusToState: (value: boolean) => void,
   mergeMoodStatusToState: (value: boolean) => void,
+  mergeBlockerStatusToState: (value: boolean) => void,
 }
 
 export interface IQuestionsFormValues {
   questions: string[],
   goalsEnabled: boolean,
   moodsEnabled: boolean,
+  blockersEnabled: boolean,
 }
 
 const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = ({
   values, isSubmitting, handleSubmit, isValid, setFieldValue, setFieldTouched, errors, touched,
-  parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState, mergeMoodStatusToState,
+  parentValid, onBackStep, mergeQuestionsToState, mergeGoalStatusToState, mergeMoodStatusToState, mergeBlockerStatusToState
 }) => (
   <Form colon={false} onSubmit={handleSubmit}>
     <Row gutter={48}>
@@ -72,6 +76,13 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
           isSubmitting={isSubmitting}
           mergeMoodStatusToState={mergeMoodStatusToState}
         />
+        <BlockTracker
+          setFieldValue={setFieldValue}
+          setFieldTouched={setFieldTouched}
+          blockersEnabled={values.blockersEnabled}
+          isSubmitting={isSubmitting}
+          mergeBlockerStatusToState={mergeBlockerStatusToState}
+        />
       </Col>
     </Row>
     <div className="float-right mt-4">
@@ -99,10 +110,11 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
 export default withFormik<IExternalProps, IQuestionsFormValues>({
   isInitialValid: true,
   validationSchema: questionFormSchema,
-  mapPropsToValues: ({ defaultValue, goalsEnabled, moodsEnabled }) => ({
+  mapPropsToValues: ({ defaultValue, goalsEnabled, moodsEnabled, blockersEnabled }) => ({
     questions: defaultValue,
     goalsEnabled,
     moodsEnabled,
+    blockersEnabled,
   }),
   handleSubmit: (_, formikBag) => {
     const { setSubmitting, props } = formikBag;

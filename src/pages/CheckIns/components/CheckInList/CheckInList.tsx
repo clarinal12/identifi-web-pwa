@@ -14,6 +14,7 @@ const { Title } = Typography;
 
 interface ICheckInList {
   setCheckInButtonState: (state: boolean) => void,
+  participatingOnly?: boolean,
 }
 
 const StyledRow = styled(Row)`
@@ -49,7 +50,7 @@ const EmptyState = () => (
   </StyledRow>
 );
 
-const CheckInList: React.FC<ICheckInList> = ({ setCheckInButtonState }) => {
+const CheckInList: React.FC<ICheckInList> = ({ setCheckInButtonState, participatingOnly = false }) => {
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
 
@@ -57,6 +58,7 @@ const CheckInList: React.FC<ICheckInList> = ({ setCheckInButtonState }) => {
     variables: {
       filter: {
         companyId: activeCompany && activeCompany.id,
+        participatingOnly,
       }
     },
     onCompleted: data => setCheckInButtonState(!!data.checkInSchedules.length),

@@ -28,6 +28,7 @@ const CHECKIN_FIELDS = `
   timezone
   goalsEnabled
   moodsEnabled
+  blockersEnabled
   respondents {
     ${MEMBER_FIELDS}
   }
@@ -58,6 +59,7 @@ const CHECKIN_FIELDS = `
       onTime
       goalCompleted
       mood
+      blocker
       currentGoal {
         ${CHECKIN_GOAL}
       }

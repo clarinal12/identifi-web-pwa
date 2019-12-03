@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom';
+import styled from 'styled-components';
 import { useMutation } from 'react-apollo';
-import { Row, Col, Typography, Button } from 'antd';
+import { Row, Col, Typography, Button, Tabs, Tooltip } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import { Spinner } from 'components/PageSpinner';
@@ -15,6 +16,13 @@ import { MEMBERS } from 'apollo/queries/member';
 import { ERROR_MAP } from 'utils/errorUtils';
 
 const { Title } = Typography;
+const { TabPane } = Tabs;
+
+const StyledTabs = styled(Tabs)`
+  .ant-tabs-bar {
+    margin-bottom: 24px;
+  }
+`;
 
 const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
   const [integrateSlack] = useMutation(INTEGRATE_SLACK);
@@ -97,7 +105,28 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
           {!(activeCompany && activeCompany.slackEnabled) ? (
             <ConnectSlack />
           ) : (
-            <CheckInList setCheckInButtonState={setCheckInButtonState} />
+            <StyledTabs defaultActiveKey="1">
+              <TabPane
+                key="1"
+                tab={(
+                  <Tooltip title="All check-ins I am participating in.">
+                    <Title style={{ fontSize: 16 }}>My check-ins</Title>
+                  </Tooltip>
+                )}
+              >
+                <CheckInList participatingOnly setCheckInButtonState={setCheckInButtonState} />
+              </TabPane>
+              <TabPane
+                key="2"
+                tab={(
+                  <Tooltip title="All check-ins across the company.">
+                    <Title style={{ fontSize: 16 }}>All check-ins</Title>
+                  </Tooltip>
+                )}
+              >
+                <CheckInList setCheckInButtonState={setCheckInButtonState} />
+              </TabPane>
+            </StyledTabs>
           )}
         </>
       )}

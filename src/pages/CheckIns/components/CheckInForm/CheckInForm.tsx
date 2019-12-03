@@ -28,6 +28,7 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
     slackChannelId: data ? data.slackChannel.id : '',
     goalsEnabled: data ? data.goalsEnabled : true,
     moodsEnabled: data ? data.moodsEnabled : true,
+    blockersEnabled: data ? data.blockersEnabled : true,
     timings: {
       frequency: data ? data.frequency : 'WORKDAYS',
       days: data ? data.days : WORKDAYS_VALUE,

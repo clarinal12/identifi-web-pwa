@@ -45,6 +45,11 @@ const StyledSider = styled(Sider)`
   left: 0;
 `;
 
+const StyledMainWrapper = styled.div`
+  max-width: 960px;
+  margin: 0 auto;
+`;
+
 const AppLayout: React.FC<PropsWithChildren<any>> = ({ children }) => (
   <BreadcrumbProviderWithRouter>
     <StyledLayout>
@@ -58,7 +63,9 @@ const AppLayout: React.FC<PropsWithChildren<any>> = ({ children }) => (
           <UserMenu />
         </StyledHeader>
         <Content className="p-4">
-          {children}
+          <StyledMainWrapper>
+            {children}
+          </StyledMainWrapper>
         </Content>
       </Layout>
     </StyledLayout>

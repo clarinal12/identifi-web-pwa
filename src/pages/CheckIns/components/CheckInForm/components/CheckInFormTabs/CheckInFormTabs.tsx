@@ -31,6 +31,7 @@ export interface IFinalValues {
   slackChannelId: string,
   goalsEnabled: boolean,
   moodsEnabled: boolean,
+  blockersEnabled: boolean,
   timings: {
     frequency: string,
     days: string[],
@@ -85,6 +86,7 @@ const TAB_STEPS = [{
       defaultValue={defaultValues.questions}
       goalsEnabled={defaultValues.goalsEnabled}
       moodsEnabled={defaultValues.moodsEnabled}
+      blockersEnabled={defaultValues.blockersEnabled}
       parentValid={parentValid}
       onNextStep={() => setActiveTabKey && setActiveTabKey('slack')}
       onBackStep={() => setActiveTabKey && setActiveTabKey('respondents')}
@@ -104,6 +106,12 @@ const TAB_STEPS = [{
         setFormValue({
           ...defaultValues,
           moodsEnabled,
+        })
+      }}
+      mergeBlockerStatusToState={(blockersEnabled: boolean) => {
+        setFormValue({
+          ...defaultValues,
+          blockersEnabled,
         })
       }}
     />
