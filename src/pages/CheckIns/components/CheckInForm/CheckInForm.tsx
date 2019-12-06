@@ -22,9 +22,7 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
     id: data ? data.id : '',
     name: values.name,
     respondents: data ? data.respondents.map(({ memberId }) => memberId) : [],
-    questions: data ? data.questions : [
-      'Are you blocked?',
-    ],
+    questions: data ? data.questions : [],
     slackChannelId: data ? data.slackChannel.id : '',
     goalsEnabled: data ? data.goalsEnabled : true,
     moodsEnabled: data ? data.moodsEnabled : true,
