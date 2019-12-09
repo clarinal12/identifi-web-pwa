@@ -170,8 +170,8 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
             })}
           >
             {function() {
-              const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase();
-              return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo}:`;
+              const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
+              return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
             }()}
           </Text>
           <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
