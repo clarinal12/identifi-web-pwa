@@ -12,6 +12,6 @@ export const questionFormSchema = Yup.object().shape({
       is: (goalsEnabled, moodsEnabled) => !goalsEnabled && !moodsEnabled,
       then: Yup.array()
         .of(Yup.string().required('Custom questions must not be empty'))
-        .min(1, 'Must have at least 1 custom question when both trackers are disabled')
+        .min(1, 'Must have at least 1 custom question when all trackers are disabled')
     })
 });
