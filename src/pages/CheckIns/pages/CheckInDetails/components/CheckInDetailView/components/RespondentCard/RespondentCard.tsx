@@ -2,40 +2,12 @@ import React from 'react';
 import moment from 'moment';
 import cx from 'classnames';
 import styled from 'styled-components';
-import { Card, Typography, Avatar, Badge, Icon, Tooltip } from 'antd';
+import { Card, Typography, Avatar, Badge, Icon } from 'antd';
 
+import { MOOD_MAP } from 'utils/moodUtils';
 import { TResponse, TCheckInGoal } from 'apollo/types/graphql-types';
 
 const { Text, Title } = Typography;
-
-const MOOD_MAP = [{
-  emoji: '😃',
-  moodLabel: 'Cheerful',
-}, {
-  emoji: '🙂',
-  moodLabel: 'Happy',
-}, {
-  emoji: '🤗',
-  moodLabel: 'Excited',
-}, {
-  emoji: '😠',
-  moodLabel: 'Angry',
-}, {
-  emoji: '🤔',
-  moodLabel: 'Thoughtful',
-}, {
-  emoji: '😐',
-  moodLabel: 'Unimpressed',
-}, {
-  emoji: '😕',
-  moodLabel: 'Confused',
-}, {
-  emoji: '😴',
-  moodLabel: 'Tired',
-}, {
-  emoji: '🤒',
-  moodLabel: 'Sick',
-}];
 
 interface IRespondentCard {
   response: TResponse,
@@ -103,9 +75,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
   >
     <Badge
       {...((typeof mood === 'number') && {
-        count: <Tooltip title={MOOD_MAP[mood].moodLabel} className="mood">
-          {MOOD_MAP[mood].emoji}
-        </Tooltip>,
+        count: <span className="mood" role="img" aria-label="mood">{MOOD_MAP[mood].emoji}</span>,
       })}
     >
       <Badge
@@ -148,7 +118,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       )}
       extra={(
         <Text className="d-none d-sm-block" type="secondary">
-          {moment(submitDate).format('MMM DD, hh:mm A').toUpperCase()}
+          {moment(submitDate).format('MMM DD, hh:mm a')}
         </Text>
       )}
     >

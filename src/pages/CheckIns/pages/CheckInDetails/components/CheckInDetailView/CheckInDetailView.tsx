@@ -69,7 +69,7 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, done }) => {
     <>
       <Row className="mb-4 mt-2">
         <Col xs={12}>
-          <Title type="secondary" level={4}>{moment(data.date).format('MMM DD, hh:mm A')}</Title>
+          <Title type="secondary" level={4}>{moment(data.date).format('MMM DD, hh:mm a')}</Title>
         </Col>
         <Col xs={12}>
           <AvatarWrapper className="float-right d-flex">
