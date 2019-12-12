@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Row, Col, Typography, Tag, Alert, Affix, Icon, Card } from 'antd';
+import { Row, Col, Typography, Alert, Affix, Icon, Card } from 'antd';
 
 import AppLayout from 'components/AppLayout';
-import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { Spinner } from 'components/PageSpinner';
-import { COLOR_MAP } from 'components/CheckInCard/CheckInCard';
-import CheckInTabs from './components/CheckInTabs';
+import PastCheckInListNew from './components/PastCheckInListNew';
+import CheckInDetailContainer from './components/CheckInDetailContainer';
+import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 
 const { Title } = Typography;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, history }) => {
+const StyledCard = styled(Card)`
+  .ant-card-head {
+    padding: 0 16px;
+    border: none;
+  }
+  .ant-card-body {
+    padding: 0 16px 16px;
+  }
+`;
+
+const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, history, location }) => {
+  const [pastCheckInId, setPastCheckInId] = useState<string>('');
+
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },
     fetchPolicy: 'cache-and-network',
@@ -38,27 +51,14 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, 
       ) : (
         <Row className="mx-0" gutter={24}>
           <Col sm={24} md={16} className="pl-0">
-            <Row className="mb-2">
-              <Col sm={12}>
-                <Title level={3}>{data.checkInSchedule.name}</Title>
-              </Col>
-              <Col sm={12} className="py-2">
-                <Tag
-                  className="float-right"
-                  style={{ color: '#595959', fontSize: 16 }}
-                  color={COLOR_MAP[data.checkInSchedule.status]}
-                >
-                  {data.checkInSchedule.status}
-                </Tag>
-              </Col>
-            </Row>
-            <CheckInTabs
-              {...(data.checkInSchedule && { data: data.checkInSchedule })}
+            <CheckInDetailContainer
+              data={data.checkInSchedule}
+              pastCheckInId={pastCheckInId}
             />
           </Col>
           <Col sm={24} md={8} className="pr-0">
             <Affix offsetTop={24}>
-              <Card
+              <StyledCard
                 title={(
                   <div className="d-flex" style={{ alignItems: 'center' }}>
                     <Icon type="calendar" className="mr-2 text-muted" />
@@ -68,10 +68,11 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, 
                   </div>
                 )}
               >
-                <p>Card content</p>
-                <p>Card content</p>
-                <p>Card content</p>
-              </Card>
+                <PastCheckInListNew
+                  data={data.checkInSchedule.pastCheckIns}
+                  setPastCheckInId={setPastCheckInId}
+                />
+              </StyledCard>
             </Affix>
           </Col>
         </Row>
