@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -6,9 +7,10 @@ import { Row, Col, Typography, Alert, Affix, Icon, Card } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import { Spinner } from 'components/PageSpinner';
-import PastCheckInListNew from './components/PastCheckInListNew';
+import PastCheckInList from './components/PastCheckInList';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { TPastCheckIns } from 'apollo/types/graphql-types';
 
 const { Title } = Typography;
 
@@ -22,14 +24,32 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, history, location }) => {
+const CheckInDetails: React.FC<RouteComponentProps<{ id: string, date: string }>> = ({ match, history }) => {
   const [pastCheckInId, setPastCheckInId] = useState<string>('');
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },
     fetchPolicy: 'cache-and-network',
-    onCompleted: data => history.replace({ state: { id_alias: data.checkInSchedule.name } }),
+    onCompleted: data => {
+      history.replace({ state: { id_alias: data.checkInSchedule.name } });
+      setPastCheckInByDate();
+    },
   });
+
+  const setPastCheckInByDate = () => {
+    const { id } = data.checkInSchedule.pastCheckIns.find(({ date }: TPastCheckIns) => {
+      const dateFromRoute = moment(new Date(match.params.date)).format('MMM DD, YYYY hh:mm A');
+      const pastCheckInDate = moment(date).format('MMM DD, YYYY hh:mm A');
+      return dateFromRoute === pastCheckInDate;
+    }) || { id: match.params.date ? 'invalid-checkin-id' : '' };
+    setPastCheckInId(id);
+  }
+
+  useEffect(() => {
+    if (!match.params.date) {
+      setPastCheckInId('');
+    }
+  }, [match.params.date]);
 
   const contentBody = error ? (
     <Alert
@@ -68,8 +88,9 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string }>> = ({ match, 
                   </div>
                 )}
               >
-                <PastCheckInListNew
-                  data={data.checkInSchedule.pastCheckIns}
+                <PastCheckInList
+                  data={data.checkInSchedule}
+                  pastCheckInId={pastCheckInId}
                   setPastCheckInId={setPastCheckInId}
                 />
               </StyledCard>

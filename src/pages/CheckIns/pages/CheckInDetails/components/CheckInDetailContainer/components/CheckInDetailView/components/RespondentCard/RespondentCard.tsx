@@ -22,7 +22,7 @@ interface IRespondentAvatar {
 
 const StyledCard = styled(Card)`
   &:not(:last-of-type) {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .ant-card-head {
     border-bottom: none;

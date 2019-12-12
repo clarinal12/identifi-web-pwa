@@ -27,7 +27,7 @@ export type TResponse = {
 
 export type TPastCheckIns = {
   id: string,
-  date: Date
+  date: string,
 }
 
 export type TCurrentCheckIn = {

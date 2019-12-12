@@ -1,8 +1,11 @@
 import React from 'react';
 import moment from 'moment';
+import { Alert } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from 'react-apollo';
 
+import CheckInDetailView from './components/CheckInDetailView';
+import { Spinner } from 'components/PageSpinner';
 import { CHECKIN } from 'apollo/queries/checkin';
 import { ICheckinData } from 'apollo/types/graphql-types';
 
@@ -24,11 +27,28 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
     },
     skip: !pastCheckInId,
   });
-  return (
-    <div>
-      Check-in container
-    </div>
-  )
+
+  const checkInSource = (pastCheckInData && !loading) ? pastCheckInData.checkIn : data.currentCheckIn;
+  const contentBody = error ? (
+    <Alert
+      showIcon
+      type="warning"
+      message={function() {
+        let errorMessage = "Network error";
+        if (error.graphQLErrors[0]) {
+          errorMessage = error.graphQLErrors[0].message;
+        }
+        return errorMessage;
+      }()}
+      description="The check-in you're looking for isn't available"
+    />
+  ) : (
+    <CheckInDetailView done={!!pastCheckInId} data={checkInSource} />
+  );
+
+  return loading ? (
+    <Spinner loading label="Loading check-in details..." />
+  ): contentBody;
 };
 
 export default withRouter(CheckInDetailContainer);
