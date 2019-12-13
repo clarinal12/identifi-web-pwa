@@ -57,6 +57,7 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, ch
         goals={data.completedGoals}
         blockers={data.blockers}
         checkins={data.checkedIn}
+        respondentCount={(data.notSubmitted.length + data.submitted.length)}
       />
       {(data.responses.length > 0) ? (
         <div>
