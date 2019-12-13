@@ -10,6 +10,11 @@ export type TCheckInGoal = {
   completed: boolean,
 }
 
+export type TCheckInStats = {
+  percentage: number,
+  count: number,
+}
+
 export type TResponse = {
   respondent: IAccount,
   submitDate: Date,
@@ -36,6 +41,9 @@ export type TCurrentCheckIn = {
   submitted: IAccount[],
   notSubmitted: IAccount[],
   responses: TResponse[],
+  checkedIn: TCheckInStats,
+  completedGoals: TCheckInStats,
+  blockers: TCheckInStats,
 }
 
 export interface IAccount {

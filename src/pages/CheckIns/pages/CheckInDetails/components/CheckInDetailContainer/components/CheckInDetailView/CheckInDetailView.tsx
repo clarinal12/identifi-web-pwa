@@ -53,7 +53,11 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, ch
         checkInName={checkInName}
         checkInState={ done ? 'FINISHED' : checkInStatus}
       />
-      <CheckInStats />
+      <CheckInStats
+        goals={data.completedGoals}
+        blockers={data.blockers}
+        checkins={data.checkedIn}
+      />
       {(data.responses.length > 0) ? (
         <div>
           {data.responses.map((response, idx) => (

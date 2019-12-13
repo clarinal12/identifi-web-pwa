@@ -1,5 +1,10 @@
 import { gql } from 'apollo-boost';
 
+const CHECKIN_STATS = `
+  percentage
+  count
+`;
+
 const MEMBER_FIELDS = `
   id
   email
@@ -14,6 +19,46 @@ const CHECKIN_GOAL = `
   createdAt
   goal
   completed
+`;
+
+const SINGLE_CHECKIN_FIELDS = `
+  id
+  date
+  submitted {
+    ${MEMBER_FIELDS}
+  }
+  notSubmitted {
+    ${MEMBER_FIELDS}
+  }
+  responses {
+    respondent {
+      ${MEMBER_FIELDS}
+    }
+    submitDate
+    answers {
+      question
+      answer
+    }
+    onTime
+    goalCompleted
+    mood
+    blocker
+    currentGoal {
+      ${CHECKIN_GOAL}
+    }
+    previousGoal {
+      ${CHECKIN_GOAL}
+    }
+  }
+  checkedIn {
+    ${CHECKIN_STATS}
+  }
+  completedGoals {
+    ${CHECKIN_STATS}
+  }
+  blockers {
+    ${CHECKIN_STATS}
+  }
 `;
 
 const CHECKIN_FIELDS = `
@@ -39,34 +84,7 @@ const CHECKIN_FIELDS = `
   }
   status
   currentCheckIn {
-    id
-    date
-    submitted {
-      ${MEMBER_FIELDS}
-    }
-    notSubmitted {
-      ${MEMBER_FIELDS}
-    }
-    responses {
-      respondent {
-        ${MEMBER_FIELDS}
-      }
-      submitDate
-      answers {
-        question
-        answer
-      }
-      onTime
-      goalCompleted
-      mood
-      blocker
-      currentGoal {
-        ${CHECKIN_GOAL}
-      }
-      previousGoal {
-        ${CHECKIN_GOAL}
-      }
-    }
+    ${SINGLE_CHECKIN_FIELDS}
   }
   pastCheckIns {
     id
@@ -106,32 +124,7 @@ export const CHECKIN_SCHEDULE = gql`
 export const CHECKIN = gql`
   query CheckIn($id: ID!) {
     checkIn(id: $id) {
-      id
-      date
-      submitted {
-        ${MEMBER_FIELDS}
-      }
-      notSubmitted {
-        ${MEMBER_FIELDS}
-      }
-      responses {
-        respondent {
-          ${MEMBER_FIELDS}
-        }
-        submitDate
-        answers {
-          question
-          answer
-        }
-        onTime
-        goalCompleted
-        currentGoal {
-          ${CHECKIN_GOAL}
-        }
-        previousGoal {
-          ${CHECKIN_GOAL}
-        }
-      }
+      ${SINGLE_CHECKIN_FIELDS}
     }
   }
 `;
