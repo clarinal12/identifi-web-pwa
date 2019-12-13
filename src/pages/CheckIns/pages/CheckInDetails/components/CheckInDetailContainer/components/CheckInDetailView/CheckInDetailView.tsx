@@ -1,10 +1,11 @@
 import React from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
-import { Typography, Row, Col, Avatar, Tooltip } from 'antd';
+import { Typography, Row, Col } from 'antd';
 
-import { TCurrentCheckIn, IAccount } from 'apollo/types/graphql-types';
+import CheckInHeader from './components/CheckInHeader';
+import CheckInStats from './components/CheckInStats';
 import RespondentCard from './components/RespondentCard';
+import { TCurrentCheckIn } from 'apollo/types/graphql-types';
 
 const { Title, Text } = Typography;
 
@@ -23,6 +24,8 @@ const IconMessage = () => (
 
 interface ICheckInDetailView {
   done?: boolean,
+  checkInName: string,
+  checkInStatus: string,
   data: TCurrentCheckIn,
 }
 
@@ -30,18 +33,6 @@ const StyledEmptyRow = styled(Row)`
   min-height: 350px;
   justify-content: center;
   align-items: center;
-`;
-
-const AvatarWrapper = styled.div`
-  .active-avatars, .inactive-avatars {
-    .ant-avatar {
-      cursor: pointer;
-      &:not(:first-of-type) {
-        border: 1.5px solid #F5F5F5;
-        margin-left: -10px;
-      }
-    }
-  }
 `;
 
 const EmptyState = ({ done = false }: { done?: boolean }) => (
@@ -54,39 +45,15 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
-  return <>
-    {source.map(({ id, email, firstname, lastname, avatar }) => {
-      const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
-      return (
-        <Tooltip key={id} placement="topRight" title={derivedLabel}>
-          <Avatar
-            {...(avatar && { src : avatar })}
-          />
-        </Tooltip>
-      );
-    })}
-  </>
-};
-
-const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, done }) => {
+const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, checkInStatus, done }) => {
   return data ? (
     <>
-      <Row className="mb-4 mt-2">
-        <Col xs={12}>
-          <Title type="secondary" level={4}>{moment(data.date).format('MMM DD, hh:mm a')}</Title>
-        </Col>
-        <Col xs={12}>
-          <AvatarWrapper className="float-right d-flex">
-            <div className="mr-3 active-avatars">
-              <StackedAvatars source={data.submitted} />
-            </div>
-            <div className="inactive-avatars">
-              <StackedAvatars source={data.notSubmitted} />
-            </div>
-          </AvatarWrapper>
-        </Col>
-      </Row>
+      <CheckInHeader
+        data={data}
+        checkInName={checkInName}
+        checkInState={ done ? 'FINISHED' : checkInStatus}
+      />
+      <CheckInStats />
       {(data.responses.length > 0) ? (
         <div>
           {data.responses.map((response, idx) => (

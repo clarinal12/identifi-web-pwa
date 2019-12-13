@@ -9,7 +9,7 @@ import { Spinner } from 'components/PageSpinner';
 import { CHECKIN } from 'apollo/queries/checkin';
 import { ICheckinData } from 'apollo/types/graphql-types';
 
-interface ICheckInDetailContainer extends RouteComponentProps<{ id: string, date: string }> {
+interface ICheckInDetailContainer extends RouteComponentProps {
   data: ICheckinData,
   pastCheckInId: string,
 }
@@ -17,11 +17,11 @@ interface ICheckInDetailContainer extends RouteComponentProps<{ id: string, date
 const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckInId, history, location, data }) => {
   const { data: pastCheckInData, loading, error } = useQuery(CHECKIN, {
     variables: { id: pastCheckInId },
-    onCompleted: data => {
+    onCompleted: response => {
       history.replace({
         state: {
           ...location.state,
-          ...(data.checkIn && { date_alias: moment(data.checkIn.date).format('MMM DD, YYYY') }),
+          ...(response.checkIn && { date_alias: moment(response.checkIn.date).format('MMM DD, YYYY') }),
         }
       });
     },
@@ -43,7 +43,12 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
       description="The check-in you're looking for isn't available"
     />
   ) : (
-    <CheckInDetailView done={!!pastCheckInId} data={checkInSource} />
+    <CheckInDetailView
+      checkInName={data.name}
+      checkInStatus={data.status}
+      done={!!pastCheckInId}
+      data={checkInSource}
+    />
   );
 
   return loading ? (

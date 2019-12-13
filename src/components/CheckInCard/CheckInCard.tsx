@@ -8,19 +8,13 @@ import { LoadingIcon } from 'components/PageSpinner';
 import CardActions from './components/CardActions';
 import { ICheckinData } from 'apollo/types/graphql-types';
 import { useUserContextValue } from 'contexts/UserContext';
+import { COLOR_MAP } from 'utils/colorUtils';
 
 const { Title, Text } = Typography;
 
 interface ICheckinCard extends RouteComponentProps {
   item: ICheckinData,
   isLastItem: boolean,
-}
-
-export const COLOR_MAP: { [key: string]: string } = {
-  WAITING: '#FFE58F',
-  FINISHED: '#87E8DE',
-  DEACTIVATED: '#E8E8E8',
-  SCHEDULED: '#91D5FF',
 }
 
 const StyledCard = styled(Card)`
