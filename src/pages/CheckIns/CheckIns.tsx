@@ -29,6 +29,7 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
+  const memberInfo = account && account.memberInfo;
 
   const [loadingState, setLoadingState] = useState(false);
   const [checkInButtonState, setCheckInButtonState] = useState(false);
@@ -105,7 +106,7 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
           {!(activeCompany && activeCompany.slackEnabled) ? (
             <ConnectSlack />
           ) : (
-            <StyledTabs defaultActiveKey="1">
+            <StyledTabs defaultActiveKey={(memberInfo && memberInfo.isOwner) ? '2' : '1'}>
               <TabPane
                 key="1"
                 tab={(

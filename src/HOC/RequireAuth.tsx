@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import { isLoggedIn, getAuthToken } from 'utils/userUtils';
 import { ACCOUNT } from 'apollo/queries/user';
 import { IAccount } from 'apollo/types/graphql-types';
@@ -58,9 +58,11 @@ export default <P extends object>(
     });
 
     if (error) {
+      localStorage.clear();
       return <>
-        <p>Error component here</p>
+        {/* <p>Error component here</p> */}
         <pre>{error.graphQLErrors[0].message}</pre>
+        <Link to="/login">Go to login page</Link>
       </>;
     }
 
