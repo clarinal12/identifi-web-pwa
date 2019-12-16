@@ -8,11 +8,11 @@ import { ADD_COMMENT } from 'apollo/mutations/comments';
 import { COMMENTS } from 'apollo/queries/comments';
 import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
+// import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
 
 const { TextArea } = Input;
 
-interface IUserCommentForm extends RouteComponentProps<{ id: string, date: string }> {
+interface IUserCommentForm extends RouteComponentProps<{ id: string, past_checkin_id: string }> {
   sourceId: string,
 }
 
@@ -20,7 +20,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({ sourceId, match }) => {
   const [comment, setComment] = useState('');
   const [loadingState, setLoadingState] = useState(false);
 
-  const { pastCheckInId } = usePastCheckInContextValue();
+  // const { pastCheckInId } = usePastCheckInContextValue();
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const [addComment] = useMutation(ADD_COMMENT);
@@ -41,10 +41,10 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({ sourceId, match }) => {
             checkInResponseId: sourceId,
           },
         }, {
-          query: match.params.date ? CHECKIN : CHECKIN_SCHEDULE,
+          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
           variables: {
-            id: match.params.date ? pastCheckInId : match.params.id,
-          }
+            id: match.params.past_checkin_id || match.params.id,
+          },
         }],
         awaitRefetchQueries: true,
       });

@@ -26,7 +26,7 @@ const StyledCollapse = styled(Collapse)`
     }
     .ant-collapse-content {
       .ant-collapse-content-box {
-        padding: 0 24px !important;
+        padding: 0 24px 24px !important;
       }
     }
     &.empty-comments {
@@ -44,6 +44,9 @@ const StyledList = styled(List)`
     padding-top: 0 !important;
     padding-bottom: 16px !important;
     border: none !important;
+    &:last-of-type {
+      padding-bottom: 0 !important;
+    }
   }
 `;
 

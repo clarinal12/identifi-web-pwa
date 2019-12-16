@@ -21,7 +21,7 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
       history.replace({
         state: {
           ...location.state,
-          ...(response.checkIn && { date_alias: moment(response.checkIn.date).format('MMM DD, YYYY') }),
+          ...(response.checkIn && { past_checkin_id_alias: moment(response.checkIn.date).format('MMM DD, YYYY') }),
         }
       });
     },

@@ -91,7 +91,7 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
         size="large"
         dataSource={[{ date: '', id: '' }].concat(pastCheckIns)}
         renderItem={({ date, id }) => {
-          const isActive = id === pastCheckInId;
+          const isActive = (id === pastCheckInId);
           const isPastCheckIn = (date && id);
           const dateString = isPastCheckIn ?
             moment(date).format('MMM DD, YYYY hh:mm A') : moment(currentCheckIn.date).calendar();
@@ -103,12 +103,11 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
                 scrollToTop();
                 setPastCheckInId(id);
                 if (isPastCheckIn) {
-                  const formatDate = moment(date);
                   history.push({
-                    pathname: `/checkins/${match.params.id}/${formatDate.format('MM-DD-YYYY-HH:mm')}`,
+                    pathname: `/checkins/${match.params.id}/${id}`,
                     state: {
                       ...location.state,
-                      date_alias: moment(date).format('MMM DD, YYYY'),
+                      past_checkin_id_alias: moment(date).format('MMM DD, YYYY'),
                     },
                   });
                 } else {

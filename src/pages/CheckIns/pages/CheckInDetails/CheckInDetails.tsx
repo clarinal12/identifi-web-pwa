@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -10,7 +9,6 @@ import { Spinner } from 'components/PageSpinner';
 import PastCheckInList from './components/PastCheckInList';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
-import { TPastCheckIns } from 'apollo/types/graphql-types';
 import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
 
 const { Title } = Typography;
@@ -25,7 +23,7 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ id: string, date: string }>> = ({ match, history }) => {
+const CheckInDetails: React.FC<RouteComponentProps<{ id: string, past_checkin_id: string }>> = ({ match, history }) => {
   const { pastCheckInId, setPastCheckInId } = usePastCheckInContextValue();
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
@@ -33,24 +31,15 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string, date: string }>
     fetchPolicy: 'cache-and-network',
     onCompleted: data => {
       history.replace({ state: { id_alias: data.checkInSchedule.name } });
-      setPastCheckInByDate();
+      setPastCheckInId(match.params.past_checkin_id || 'invalid-checkin-id');
     },
   });
 
-  const setPastCheckInByDate = () => {
-    const { id } = data.checkInSchedule.pastCheckIns.find(({ date }: TPastCheckIns) => {
-      const dateFromRoute = moment(new Date(match.params.date)).format('MMM DD, YYYY hh:mm A');
-      const pastCheckInDate = moment(date).format('MMM DD, YYYY hh:mm A');
-      return dateFromRoute === pastCheckInDate;
-    }) || { id: match.params.date ? 'invalid-checkin-id' : '' };
-    setPastCheckInId(id);
-  }
-
   useEffect(() => {
-    if (!match.params.date) {
+    if (!match.params.past_checkin_id) {
       setPastCheckInId('');
     }
-  }, [match.params.date]);
+  }, [match.params.past_checkin_id, setPastCheckInId]);
 
   const contentBody = error ? (
     <Alert
