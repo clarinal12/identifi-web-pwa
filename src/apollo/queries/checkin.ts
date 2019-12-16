@@ -31,6 +31,7 @@ const SINGLE_CHECKIN_FIELDS = `
     ${MEMBER_FIELDS}
   }
   responses {
+    id
     respondent {
       ${MEMBER_FIELDS}
     }
@@ -49,6 +50,7 @@ const SINGLE_CHECKIN_FIELDS = `
     previousGoal {
       ${CHECKIN_GOAL}
     }
+    numberOfComments
   }
   checkedIn {
     ${CHECKIN_STATS}

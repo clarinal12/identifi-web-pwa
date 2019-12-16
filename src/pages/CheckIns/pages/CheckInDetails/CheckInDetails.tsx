@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
@@ -11,6 +11,7 @@ import PastCheckInList from './components/PastCheckInList';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { TPastCheckIns } from 'apollo/types/graphql-types';
+import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
 
 const { Title } = Typography;
 
@@ -25,7 +26,7 @@ const StyledCard = styled(Card)`
 `;
 
 const CheckInDetails: React.FC<RouteComponentProps<{ id: string, date: string }>> = ({ match, history }) => {
-  const [pastCheckInId, setPastCheckInId] = useState<string>('');
+  const { pastCheckInId, setPastCheckInId } = usePastCheckInContextValue();
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.id },

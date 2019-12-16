@@ -16,6 +16,7 @@ export type TCheckInStats = {
 }
 
 export type TResponse = {
+  id: string,
   respondent: IAccount,
   submitDate: Date,
   answers: Array<{
@@ -28,6 +29,7 @@ export type TResponse = {
   blocker: string,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
+  numberOfComments: number,
 }
 
 export type TPastCheckIns = {
@@ -111,4 +113,12 @@ export interface ICheckinData {
     expected: number,
     total: number,
   }
+}
+
+export interface IComment {
+  id: string,
+  author: IAccount,
+  comment: string,
+  createdAt: string,
+  updatedAt: string,
 }

@@ -69,7 +69,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, m
       }
       alertError(errorMessage);
       setLoadingState(false);
-    } 
+    }
   }
 
   return (

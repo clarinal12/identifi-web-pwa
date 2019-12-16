@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Dropdown, Menu, Avatar, Typography } from 'antd';
 import { useUserContextValue } from 'contexts/UserContext';
+import { getDisplayName } from 'utils/userUtils';
 
 const { Text } = Typography;
 
@@ -18,8 +19,7 @@ const menu = ({ redirectToLogin }: { redirectToLogin: () => void }) => (
 
 const UserMenu: React.FC<RouteComponentProps> = ({ history }) => {
   const { account } = useUserContextValue();
-  const nameString = account && account.firstname && account.lastname ?
-    `${account.firstname} ${account.lastname}` : (account || { email: undefined }).email;
+  const nameString = getDisplayName(account);
   return (
     <Dropdown
       className="float-right"

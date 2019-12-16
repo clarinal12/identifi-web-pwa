@@ -4,6 +4,7 @@ import cx from 'classnames';
 import styled from 'styled-components';
 import { Card, Typography, Avatar, Badge, Icon } from 'antd';
 
+import Comments from 'components/Comments';
 import { MOOD_MAP } from 'utils/moodUtils';
 import { TResponse, TCheckInGoal } from 'apollo/types/graphql-types';
 
@@ -59,10 +60,19 @@ const StyledCard = styled(Card)`
     }
   }
   .ant-card-body {
-    .div-wrapper:not(:last-of-type) {
+    padding: 0;
+    .respondent-details {
+      padding: 24px 24px 0;
       border-bottom: 1px solid #E1E4E9;
-      margin-bottom: 16px;
-      padding-bottom: 16px;
+      .div-wrapper {
+        border-bottom: 1px solid #E1E4E9;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        &.last {
+          border: none;
+          margin-bottom: 0;
+        }
+      }
     }
   }
 `;
@@ -93,7 +103,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
 );
 
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
-  const { submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker } = response;
+  const { id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments } = response;
   const { firstname, lastname, email, role, avatar } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
@@ -122,52 +132,64 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         </Text>
       )}
     >
-      {currentGoal && (
-        <div className="div-wrapper mb-3">
-          <Text strong>TODAY:</Text>
-          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
-            {currentGoal.goal}
-          </Title>
-        </div>
-      )}
-      {previousGoal && (
-        <div className="div-wrapper">
-          <Text 
-            strong
+      <div className="respondent-details">
+        {currentGoal && (
+          <div className="div-wrapper mb-3">
+            <Text strong>TODAY:</Text>
+            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+              {currentGoal.goal}
+            </Title>
+          </div>
+        )}
+        {previousGoal && (
+          <div className="div-wrapper">
+            <Text 
+              strong
+              className={cx({
+                'text-success': previousGoal.completed,
+                'text-danger': !previousGoal.completed,
+              })}
+            >
+              {function() {
+                const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
+                return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
+              }()}
+            </Text>
+            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+              {previousGoal.goal}
+            </Title>
+          </div>
+        )}
+        {blocker && (
+          <div className="div-wrapper">
+            <Text strong className="text-danger">BLOCKED:</Text>
+            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+              {blocker}
+            </Title>
+          </div>
+        )}
+        {answers.length > 0 && (
+          <div className="my-3">
+            <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
+          </div>
+        )}
+        {answers.map(({ question, answer }, idx) => (
+          <div
+            key={idx}
             className={cx({
-              'text-success': previousGoal.completed,
-              'text-danger': !previousGoal.completed,
+              'div-wrapper': true,
+              'last': idx === (answers.length - 1),
             })}
           >
-            {function() {
-              const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
-              return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
-            }()}
-          </Text>
-          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
-            {previousGoal.goal}
-          </Title>
-        </div>
-      )}
-      {blocker && (
-        <div className="div-wrapper">
-          <Text strong className="text-danger">BLOCKED:</Text>
-          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
-            {blocker}
-          </Title>
-        </div>
-      )}
-      {answers.length > 0 && (
-        <div className="my-3">
-          <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
-        </div>
-      )}
-      {answers.map(({ question, answer }, idx) => (
-        <div className="div-wrapper" key={idx}>
-          <Text type="secondary">{question}</Text>
-          <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
-        </div>
-      ))}
+            <Text type="secondary">{question}</Text>
+            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
+          </div>
+        ))}
+      </div>
+      <Comments
+        sourceId={id}
+        numberOfComments={numberOfComments}
+      />
     </StyledCard>
   );
 };
