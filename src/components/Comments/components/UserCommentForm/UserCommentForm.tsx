@@ -8,7 +8,6 @@ import { ADD_COMMENT } from 'apollo/mutations/comments';
 import { COMMENTS } from 'apollo/queries/comments';
 import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
-// import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
 
 const { TextArea } = Input;
 
@@ -20,7 +19,6 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({ sourceId, match }) => {
   const [comment, setComment] = useState('');
   const [loadingState, setLoadingState] = useState(false);
 
-  // const { pastCheckInId } = usePastCheckInContextValue();
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const [addComment] = useMutation(ADD_COMMENT);

@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Collapse, Typography, List, Avatar, Spin, Icon } from 'antd';
+import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
 
 import UserCommentForm from './components/UserCommentForm';
 import { getDisplayName } from 'utils/userUtils';
@@ -86,12 +86,57 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId }) => {
     }
   }, [emptyComments]);
 
+  const contentBody = error ? (
+    <Alert
+      showIcon
+      type="warning"
+      message={function() {
+        let errorMessage = "Network error";
+        if (error.graphQLErrors[0]) {
+          errorMessage = error.graphQLErrors[0].message;
+        }
+        return errorMessage;
+      }()}
+      description="Could not load the comments at the moment"
+    />
+  ) : (
+    <StyledList>
+      <UserCommentForm sourceId={sourceId} />
+      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt }: IComment) => {
+        const nameString = getDisplayName(author);
+        return (
+          <List.Item key={id}>
+            <List.Item.Meta
+              avatar={<Avatar {...((author && author.avatar) && { src: author.avatar })} />}
+              description={
+                <>
+                  <Text style={{ color: '#006D75' }} strong className="mr-2">{nameString}</Text>
+                  <Text type="secondary">{comment}</Text>
+                </>
+              }
+            />
+            <Text
+              className="ml-2"
+              type="secondary"
+              style={{ fontSize: 12 }}
+            >
+              {moment(createdAt).fromNow()}
+            </Text>
+          </List.Item>
+        );
+      })}
+    </StyledList>
+  );
+
   return (
     <StyledCollapse
       bordered={false}
       onChange={key => {
         const derivedKey = (key.length > 0) ? key[0] : undefined;
         setCollapseKey(derivedKey);
+        if (derivedKey) {
+          // onchange should center the respondentcard with comments on the screen
+        }
       }}
       activeKey={collapseKey}
     >
@@ -110,34 +155,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId }) => {
       >
         {loading ? (
           <CommentLoading />
-        ) : (
-          <StyledList>
-            <UserCommentForm sourceId={sourceId} />
-            {data && data.checkInResponseComments.map(({ author, comment, id, createdAt }: IComment) => {
-              const nameString = getDisplayName(author);
-              return (
-                <List.Item key={id}>
-                  <List.Item.Meta
-                    avatar={<Avatar {...((author && author.avatar) && { src: author.avatar })} />}
-                    description={
-                      <>
-                        <Text style={{ color: '#006D75' }} strong className="mr-2">{nameString}</Text>
-                        <Text type="secondary">{comment}</Text>
-                      </>
-                    }
-                  />
-                  <Text
-                    className="ml-2"
-                    type="secondary"
-                    style={{ fontSize: 12 }}
-                  >
-                    {moment(createdAt).fromNow()}
-                  </Text>
-                </List.Item>
-              );
-            })}
-          </StyledList>
-        )}
+        ) : contentBody}
       </Panel>
     </StyledCollapse>
   );

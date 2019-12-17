@@ -31,7 +31,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ id: string, past_checkin_id
     fetchPolicy: 'cache-and-network',
     onCompleted: data => {
       history.replace({ state: { id_alias: data.checkInSchedule.name } });
-      setPastCheckInId(match.params.past_checkin_id || 'invalid-checkin-id');
+      setPastCheckInId(match.params.past_checkin_id || '');
     },
   });
 
