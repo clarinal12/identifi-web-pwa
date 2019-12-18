@@ -36,6 +36,7 @@ const StyledPopoverContentWrapper = styled.div`
 
 const StyledAvatarWrapper = styled.div`
   .ant-badge {
+    cursor: pointer;
     position: relative;
     .blocked {
       top: 54px;
@@ -82,7 +83,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
                 </Text>
               </div>
             )}
-            {mood && (
+            {typeof mood === 'number' && (
               <div>
                 <Text style={{ fontSize: 16 }} type="secondary">
                   {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].moodLabel}

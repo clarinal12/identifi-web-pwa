@@ -37,10 +37,10 @@ const StyledCard = styled(Card)`
         border-bottom: 1px solid #E1E4E9;
         margin-bottom: 16px;
         padding-bottom: 16px;
-        &.last {
-          border: none;
-          margin-bottom: 0;
-        }
+      }
+      [class~='div-wrapper']:last-of-type {
+        border: none;
+        margin-bottom: 0 !important;
       }
     }
   }
@@ -119,13 +119,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
           </div>
         )}
         {answers.map(({ question, answer }, idx) => (
-          <div
-            key={idx}
-            className={cx({
-              'div-wrapper': true,
-              'last': idx === (answers.length - 1),
-            })}
-          >
+          <div key={idx} className="div-wrapper">
             <Text type="secondary">{question}</Text>
             <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
           </div>
