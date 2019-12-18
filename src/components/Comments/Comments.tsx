@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import cx from 'classnames';
 import { useQuery } from 'react-apollo';
 import moment from 'moment';
@@ -13,7 +14,7 @@ import { IComment } from 'apollo/types/graphql-types';
 const { Panel } = Collapse;
 const { Text } = Typography;
 
-interface IComments {
+interface IComments extends RouteComponentProps {
   sourceId: string,
   numberOfComments: number,
 }
@@ -69,7 +70,7 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, sourceId }) => {
+const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location }) => {
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const emptyComments = numberOfComments === 0;
 
@@ -81,10 +82,14 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId }) => {
   });
 
   useEffect(() => {
-    if (emptyComments) {
+    const queryParams = new URLSearchParams(location.search);
+    const responseId = queryParams.get('responseId');
+    const commentId = queryParams.get('commentId');
+    const isLinkFromNotification = (responseId && commentId) && (responseId === sourceId);
+    if (emptyComments || isLinkFromNotification) {
       setCollapseKey('1');
     }
-  }, [emptyComments]);
+  }, [emptyComments, location.search, sourceId]);
 
   const contentBody = error ? (
     <Alert
@@ -161,4 +166,4 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId }) => {
   );
 }
 
-export default Comments;
+export default withRouter(Comments);

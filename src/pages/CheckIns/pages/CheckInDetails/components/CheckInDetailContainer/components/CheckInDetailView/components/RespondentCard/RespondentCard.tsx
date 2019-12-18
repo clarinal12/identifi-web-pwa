@@ -2,23 +2,16 @@ import React from 'react';
 import moment from 'moment';
 import cx from 'classnames';
 import styled from 'styled-components';
-import { Card, Typography, Avatar, Badge, Icon } from 'antd';
+import { Card, Typography } from 'antd';
 
 import Comments from 'components/Comments';
-import { MOOD_MAP } from 'utils/moodUtils';
-import { TResponse, TCheckInGoal } from 'apollo/types/graphql-types';
+import RespondentAvatar from './components/RespondentAvatar';
+import { TResponse } from 'apollo/types/graphql-types';
 
 const { Text, Title } = Typography;
 
 interface IRespondentCard {
   response: TResponse,
-}
-
-interface IRespondentAvatar {
-  previousGoal: TCheckInGoal,
-  mood: number,
-  blocker: string,
-  avatar: string | null,
 }
 
 const StyledCard = styled(Card)`
@@ -32,30 +25,6 @@ const StyledCard = styled(Card)`
     .ant-card-head-wrapper {
       .ant-card-head-title {
         padding: 0;
-        .ant-badge {
-          .blocked {
-            top: 54px;
-            right: 54px;
-            font-size: 16px;
-          }
-          .mood {
-            background: transparent;
-            top: 10px;
-            right: 10px;
-            border: none;
-            font-size: 16px;
-            box-shadow: none;
-          }
-          .goal-completed {
-            font-size: 20px;
-            top: auto;
-            bottom: -10px;
-            right: 10px;
-            color: #FFF;
-            background: #52C41A;
-            border-radius: 50%;
-          }
-        }
       }
     }
   }
@@ -77,37 +46,13 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar }) => (
-  <Badge
-    {...((previousGoal && previousGoal.completed) && {
-      count: <Icon className="goal-completed" type="check-circle" />,
-    })}
-  >
-    <Badge
-      {...((typeof mood === 'number') && {
-        count: <span className="mood" role="img" aria-label="mood">{MOOD_MAP[mood].emoji}</span>,
-      })}
-    >
-      <Badge
-        {...(blocker && {
-          count: <span className="blocked" role="img" aria-label="blocked">🚫</span>,
-        })}
-      >
-        <Avatar
-          size={64}
-          {...(avatar && { src : avatar })}
-        />
-      </Badge>
-    </Badge>
-  </Badge>
-);
-
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
   const { id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments } = response;
   const { firstname, lastname, email, role, avatar } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard
+      id={id}
       title={(
         <div className="d-flex">
           <div className="mr-3">
