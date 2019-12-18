@@ -73,7 +73,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({ sourceId, match }) => {
               }
             }}
             placeholder="Add a comment"
-            autoSize={{ minRows: 2 }}
+            autoSize={{ minRows: 1 }}
           />
         )}
       />

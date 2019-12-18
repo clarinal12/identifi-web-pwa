@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
 
 import UserCommentForm from './components/UserCommentForm';
+import CommentActions from './components/CommentActions';
+import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { COMMENTS } from 'apollo/queries/comments';
 import { IComment } from 'apollo/types/graphql-types';
@@ -48,6 +50,9 @@ const StyledList = styled(List)`
     &:last-of-type {
       padding-bottom: 0 !important;
     }
+    .ant-list-item-action {
+      margin-left: 24px;
+    }
   }
 `;
 
@@ -72,6 +77,8 @@ const CommentLoading = () => (
 
 const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location }) => {
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
+  const { account } = useUserContextValue();
+  const memberInfo = account && account.memberInfo;
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -106,11 +113,19 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
     />
   ) : (
     <StyledList>
-      <UserCommentForm sourceId={sourceId} />
       {data && data.checkInResponseComments.map(({ author, comment, id, createdAt }: IComment) => {
         const nameString = getDisplayName(author);
+        const commentOwner = memberInfo && (author.memberId === memberInfo.memberId);
         return (
-          <List.Item key={id}>
+          <List.Item
+            key={id}
+            id={id}
+            {...(commentOwner && {
+              actions: [
+                <CommentActions commentId={id} responseId={sourceId} />,
+              ],
+            })}
+          >
             <List.Item.Meta
               avatar={<Avatar {...((author && author.avatar) && { src: author.avatar })} />}
               description={
@@ -120,16 +135,13 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
                 </>
               }
             />
-            <Text
-              className="ml-2"
-              type="secondary"
-              style={{ fontSize: 12 }}
-            >
+            <Text className="ml-2" type="secondary">
               {moment(createdAt).fromNow()}
             </Text>
           </List.Item>
         );
       })}
+      <UserCommentForm sourceId={sourceId} />
     </StyledList>
   );
 
@@ -139,9 +151,6 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
       onChange={key => {
         const derivedKey = (key.length > 0) ? key[0] : undefined;
         setCollapseKey(derivedKey);
-        if (derivedKey) {
-          // onchange should center the respondentcard with comments on the screen
-        }
       }}
       activeKey={collapseKey}
     >
