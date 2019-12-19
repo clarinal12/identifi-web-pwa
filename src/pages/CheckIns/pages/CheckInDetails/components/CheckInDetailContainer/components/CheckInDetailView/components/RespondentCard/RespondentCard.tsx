@@ -33,14 +33,14 @@ const StyledCard = styled(Card)`
     .respondent-details {
       padding: 24px 24px 0;
       border-bottom: 1px solid #E1E4E9;
-      .div-wrapper {
+      [class~='div-wrapper'] {
         border-bottom: 1px solid #E1E4E9;
         margin-bottom: 16px;
         padding-bottom: 16px;
-      }
-      [class~='div-wrapper']:last-of-type {
-        border: none;
-        margin-bottom: 0 !important;
+        &:last-of-type {
+          border: none;
+          margin-bottom: 0 !important;  
+        }
       }
     }
   }
