@@ -75,7 +75,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         onClick={() => history.push({
           pathname: `/checkins/${id}`,
           state: {
-            id_alias: name,
+            checkin_id_alias: name,
           },
         })}
         className="d-flex"

@@ -11,7 +11,7 @@ import { useMessageContextValue } from 'contexts/MessageContext';
 
 const { Text} = Typography;
 
-interface IDeleteModal extends RouteComponentProps<{ past_checkin_id: string, id: string }> {
+interface IDeleteModal extends RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {
   commentId: string,
   responseId: string,
   visibility: boolean,
@@ -42,7 +42,7 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         }, {
           query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
           variables: {
-            id: match.params.past_checkin_id || match.params.id,
+            id: match.params.past_checkin_id || match.params.checkin_id,
           },
         }],
         awaitRefetchQueries: true,

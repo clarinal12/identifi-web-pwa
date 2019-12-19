@@ -14,9 +14,9 @@ export default () => (
     <Switch>
       <Route exact path="/checkins" component={CheckIns} />
       <Route exact path="/checkins/new" component={NewCheckIn} />
-      <Route exact path="/checkins/:id" component={CheckInDetails} />
-      <Route exact path="/checkins/:id/edit" component={EditCheckIn} />
-      <Route exact path="/checkins/:id/:past_checkin_id" component={CheckInDetails} />
+      <Route exact path="/checkins/:checkin_id" component={CheckInDetails} />
+      <Route exact path="/checkins/:checkin_id/edit" component={EditCheckIn} />
+      <Route exact path="/checkins/:checkin_id/:past_checkin_id" component={CheckInDetails} />
       <Route component={FourOhFour} />
     </Switch>
   </PastCheckInProvider>

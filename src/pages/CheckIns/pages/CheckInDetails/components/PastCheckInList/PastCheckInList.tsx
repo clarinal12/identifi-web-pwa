@@ -23,7 +23,7 @@ const PastClockIcon = () => (
   </svg>
 );
 
-interface IPastCheckInList extends RouteComponentProps<{ id: string, date: string }> {
+interface IPastCheckInList extends RouteComponentProps<{ checkin_id: string }> {
   data: ICheckinData,
   pastCheckInId: string,
   setPastCheckInId: (id: string) => void,
@@ -104,7 +104,7 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
                 setPastCheckInId(id);
                 if (isPastCheckIn) {
                   history.push({
-                    pathname: `/checkins/${match.params.id}/${id}`,
+                    pathname: `/checkins/${match.params.checkin_id}/${id}`,
                     state: {
                       ...location.state,
                       past_checkin_id_alias: moment(date).format('MMM DD, YYYY'),
@@ -112,9 +112,9 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
                   });
                 } else {
                   history.push({
-                    pathname: `/checkins/${match.params.id}`,
+                    pathname: `/checkins/${match.params.checkin_id}`,
                     state: {
-                      id_alias: name,
+                      checkin_id_alias: name,
                     },
                   });
                 }

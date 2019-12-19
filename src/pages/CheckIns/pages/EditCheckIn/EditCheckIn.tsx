@@ -15,7 +15,7 @@ import { LoadingIcon, Spinner } from 'components/PageSpinner';
 
 const { Title } = Typography;
 
-const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, match }) => {
+const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ history, match }) => {
   const [loadingState, setLoadingState] = useState(false);
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
@@ -23,8 +23,8 @@ const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, m
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
-    variables: { id: match.params.id },
-    onCompleted: data => data.checkInSchedule && history.replace({ state: { id_alias: data.checkInSchedule.name } }),
+    variables: { id: match.params.checkin_id },
+    onCompleted: data => data.checkInSchedule && history.replace({ state: { checkin_id_alias: data.checkInSchedule.name } }),
   });
 
   let errorMessage = "Network error";
@@ -39,7 +39,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ id: string }>> = ({ history, m
     try {
       const result = await updateCheckInSchedule({
         variables: {
-          id: match.params.id,
+          id: match.params.checkin_id,
           input: {
             ...others,
             timings: {

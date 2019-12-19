@@ -53,7 +53,7 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
       <Link
         to={{
           pathname: `/checkins/${id}/edit`,
-          state: { id_alias: name },
+          state: { checkin_id_alias: name },
         }}
       >
         Edit

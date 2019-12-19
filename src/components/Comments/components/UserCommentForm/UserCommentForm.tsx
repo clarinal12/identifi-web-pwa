@@ -12,7 +12,7 @@ import { useMessageContextValue } from 'contexts/MessageContext';
 const { TextArea } = Input;
 const { Text } = Typography;
 
-interface IUserCommentForm extends RouteComponentProps<{ id: string, past_checkin_id: string }> {
+interface IUserCommentForm extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
   sourceId: string,
   commentId?: string,
   defaultComment?: string,
@@ -56,7 +56,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   }, {
     query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
     variables: {
-      id: match.params.past_checkin_id || match.params.id,
+      id: match.params.past_checkin_id || match.params.checkin_id,
     },
   }];
 

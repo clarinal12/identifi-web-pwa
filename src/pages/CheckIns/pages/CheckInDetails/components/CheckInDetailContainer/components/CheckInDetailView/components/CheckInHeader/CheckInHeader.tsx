@@ -1,4 +1,5 @@
 import React from 'react';
+import cx from 'classnames';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -10,7 +11,7 @@ import { IAccount, TCurrentCheckIn } from 'apollo/types/graphql-types';
 
 const { Title, Text } = Typography;
 
-interface ICheckInHeader extends RouteComponentProps<{ id: string }> {
+interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
   data: TCurrentCheckIn,
   checkInName: string,
   checkInState: string,
@@ -64,7 +65,7 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
             </Tag>
           </div>
         </div>
-        <Link to={`/checkins/${match.params.id}/edit`}>
+        <Link to={`/checkins/${match.params.checkin_id}/edit`}>
           <Button
             type="link"
             htmlType="button"
@@ -84,7 +85,12 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
         </Col>
         <Col xs={12}>
           <AvatarWrapper className="float-right d-flex">
-            <div className="mr-3 active-avatars">
+            <div
+              className={cx({
+                'active-avatars': true,
+                'mr-3': data.notSubmitted.length > 0,
+              })}
+            >
               <StackedAvatars source={data.submitted} />
             </div>
             <div className="inactive-avatars">

@@ -23,15 +23,15 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ id: string, past_checkin_id: string }>> = ({ match, history, location }) => {
+const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({ match, history, location }) => {
   const { pastCheckInId, setPastCheckInId } = usePastCheckInContextValue();
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
-    variables: { id: match.params.id },
+    variables: { id: match.params.checkin_id },
     fetchPolicy: 'cache-and-network',
     onCompleted: data => {
       history.replace({
-        state: { id_alias: data.checkInSchedule.name },
+        state: { checkin_id_alias: data.checkInSchedule.name },
         ...(location.search && { search: location.search }),
       });
       setPastCheckInId(match.params.past_checkin_id || '');
