@@ -10,9 +10,9 @@ interface IMessageContext {
 }
 
 const MessageContext = createContext<IMessageContext>({
-  alertError: (text: string) => {},
-  alertSuccess: (text: string) => {},
-  alertWarning: (text: string) => {},
+  alertError: (_: string) => {},
+  alertSuccess: (_: string) => {},
+  alertWarning: (_: string) => {},
 });
 
 const MessageProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {

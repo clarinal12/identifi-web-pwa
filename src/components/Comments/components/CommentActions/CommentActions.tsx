@@ -7,11 +7,13 @@ const { Text } = Typography;
 
 interface IDropdownMenu {
   setVisibility: (visibility: boolean) => void,
+  setEditCommentId: () => void,
 }
 
 interface ICommentActions {
   commentId: string,
   responseId: string,
+  setEditCommentId: (commentId: string) => void,
 }
 
 const MoreVertIcon = () => (
@@ -26,10 +28,10 @@ const MoreVertIcon = () => (
   </svg>
 );
 
-const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility }) => {
+const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditCommentId }) => {
   return (
     <Menu>
-      <Menu.Item key="0">
+      <Menu.Item key="0" onClick={setEditCommentId}>
         <Text>Edit</Text>
       </Menu.Item>
       <Menu.Item key="1" onClick={() => setVisibility(true)}>
@@ -39,13 +41,16 @@ const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility }) => {
   );
 }
 
-const CommentActions: React.FC<ICommentActions> = ({ commentId, responseId }) => {
+const CommentActions: React.FC<ICommentActions> = ({ commentId, responseId, setEditCommentId }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <>
       <Dropdown
         placement="bottomRight"
-        overlay={DropdownMenu({ setVisibility })}
+        overlay={DropdownMenu({
+          setVisibility,
+          setEditCommentId: () => setEditCommentId(commentId),
+        })}
         trigger={['click']}
       >
         <a href="#!">

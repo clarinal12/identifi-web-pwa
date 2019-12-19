@@ -7,6 +7,7 @@ import { Modal, Typography } from 'antd';
 import { DELETE_COMMENT } from 'apollo/mutations/comments';
 import { COMMENTS } from 'apollo/queries/comments';
 import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
+import { useMessageContextValue } from 'contexts/MessageContext';
 
 const { Text} = Typography;
 
@@ -26,26 +27,35 @@ const StyledModal = styled(Modal)`
 const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId }) => {
   const [deleteComment] = useMutation(DELETE_COMMENT);
   const [loadingState, setLoadingState] = useState(false);
+  const { alertError } = useMessageContextValue();
 
   const deleteAction = async () => {
     setLoadingState(true);
-    await deleteComment({
-      variables: { id: commentId },
-      refetchQueries: [{
-        query: COMMENTS,
-        variables: {
-          checkInResponseId: responseId,
-        },
-      }, {
-        query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-        variables: {
-          id: match.params.past_checkin_id || match.params.id,
-        },
-      }],
-      awaitRefetchQueries: true,
-    });
-    setLoadingState(false);
-    setVisibility(false);
+    try {
+      await deleteComment({
+        variables: { id: commentId },
+        refetchQueries: [{
+          query: COMMENTS,
+          variables: {
+            checkInResponseId: responseId,
+          },
+        }, {
+          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
+          variables: {
+            id: match.params.past_checkin_id || match.params.id,
+          },
+        }],
+        awaitRefetchQueries: true,
+      });
+    } catch(error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+      setLoadingState(false);
+      setVisibility(false);
+    }
   }
 
   return (

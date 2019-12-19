@@ -76,6 +76,7 @@ const CommentLoading = () => (
 );
 
 const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location }) => {
+  const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
@@ -116,13 +117,26 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
       {data && data.checkInResponseComments.map(({ author, comment, id, createdAt }: IComment) => {
         const nameString = getDisplayName(author);
         const commentOwner = memberInfo && (author.memberId === memberInfo.memberId);
-        return (
+        const isEditing = (editCommentId === id);
+        return isEditing ? (
+          <UserCommentForm
+            key={id}
+            sourceId={sourceId}
+            commentId={id}
+            defaultComment={comment}
+            setEditCommentId={setEditCommentId}
+          />
+        ) : (
           <List.Item
             key={id}
             id={id}
             {...(commentOwner && {
               actions: [
-                <CommentActions commentId={id} responseId={sourceId} />,
+                <CommentActions
+                  commentId={id}
+                  responseId={sourceId}
+                  setEditCommentId={setEditCommentId}
+                />,
               ],
             })}
           >
