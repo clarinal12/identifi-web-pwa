@@ -8,7 +8,7 @@ import { Spinner } from 'components/PageSpinner';
 import CheckInCard from 'components/CheckInCard';
 import { ICheckinData } from 'apollo/types/graphql-types';
 import { CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
-import { useUserContextValue } from 'contexts/UserContext'
+import { useUserContextValue } from 'contexts/UserContext';
 
 const { Title } = Typography;
 

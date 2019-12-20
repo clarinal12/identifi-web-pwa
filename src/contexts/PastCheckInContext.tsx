@@ -7,7 +7,7 @@ interface IPastCheckInContext {
 
 const PastCheckInContext = createContext<IPastCheckInContext>({
   pastCheckInId: '',
-  setPastCheckInId: (_: string) => {},
+  setPastCheckInId: _ => {},
 });
 
 const PastCheckInProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {

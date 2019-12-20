@@ -1,12 +1,15 @@
 // should be placed in a component that is being rendered in all parts of the app
 // so the `match` can get all updated url params
-import React, { createContext, useContext, PropsWithChildren } from 'react';
+import React, { createContext, useContext, PropsWithChildren, ReactNode } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+
+import { ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU } from 'utils/breadcrumbUtils';
 
 type TBreadcrumb = {
   label: string,
   path?: string,
   restorableStates?: any,
+  subMenu?: ReactNode,
 }
 
 interface IBreadcrumbContext {
@@ -21,8 +24,12 @@ const BreadcrumbProvider: React.FC<PropsWithChildren<RouteComponentProps>> = ({ 
   const pathSegments = match.path.split("/").filter(v => v);
   const urlSegments = match.url.split("/");
   let restorableStates = {};
-  const links: TBreadcrumb[] = pathSegments.map((segment: string, idx: number) => {
+  const breadcrumbLinks: TBreadcrumb[] = pathSegments.map((segment: string, idx: number) => {
     const formatSegment = `${segment.replace(':', '')}_alias`;
+    const segmentWithSubmenu = ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU.find(({ routeSegment }) => {
+      return routeSegment === segment;
+    });
+
     restorableStates = {
       ...restorableStates,
       ...((location.state && location.state[formatSegment]) && {
@@ -35,10 +42,13 @@ const BreadcrumbProvider: React.FC<PropsWithChildren<RouteComponentProps>> = ({ 
         path: [...urlSegments].splice(0, idx + 2).join("/"),
         restorableStates,
       }),
+      ...(segmentWithSubmenu && {
+        subMenu: segmentWithSubmenu.SubMenu,
+      }),
     };
   });
   return (
-    <BreadcrumbContext.Provider value={{ breadcrumbLinks: links }}>
+    <BreadcrumbContext.Provider value={{ breadcrumbLinks }}>
       {children}
     </BreadcrumbContext.Provider>
   );

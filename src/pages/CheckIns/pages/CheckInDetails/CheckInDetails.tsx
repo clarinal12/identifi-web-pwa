@@ -7,6 +7,7 @@ import { Row, Col, Typography, Alert, Affix, Icon, Card } from 'antd';
 import AppLayout from 'components/AppLayout';
 import { Spinner } from 'components/PageSpinner';
 import PastCheckInList from './components/PastCheckInList';
+import CheckInNavigation from './components/CheckInNavigation';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
@@ -71,22 +72,26 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
           </Col>
           <Col sm={24} md={8} className="pr-0">
             <Affix offsetTop={24}>
-              <StyledCard
-                title={(
-                  <div className="d-flex" style={{ alignItems: 'center' }}>
-                    <Icon type="calendar" className="mr-2 text-muted" />
-                    <Title className="mb-0" style={{ fontSize: 16 }}>
-                      Check-in history
-                    </Title>
-                  </div>
-                )}
-              >
-                <PastCheckInList
-                  data={data.checkInSchedule}
-                  pastCheckInId={pastCheckInId}
-                  setPastCheckInId={setPastCheckInId}
-                />
-              </StyledCard>
+              <>
+                <StyledCard
+                  className="mb-3"
+                  title={(
+                    <div className="d-flex" style={{ alignItems: 'center' }}>
+                      <Icon type="calendar" className="mr-2 text-muted" />
+                      <Title className="mb-0" style={{ fontSize: 16 }}>
+                        Check-in history
+                      </Title>
+                    </div>
+                  )}
+                >
+                  <PastCheckInList
+                    data={data.checkInSchedule}
+                    pastCheckInId={pastCheckInId}
+                    setPastCheckInId={setPastCheckInId}
+                  />
+                </StyledCard>
+                <CheckInNavigation />
+              </>
             </Affix>
           </Col>
         </Row>

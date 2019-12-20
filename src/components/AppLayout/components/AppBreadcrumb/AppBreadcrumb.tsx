@@ -8,9 +8,14 @@ const AppBreadcrumb = () => {
   const { breadcrumbLinks } = useBreadcrumbContextValue();
   return (
     <Breadcrumb style={{ textTransform: 'capitalize' }}>
-      {breadcrumbLinks.map(({ label, path, restorableStates }, idx) => (
-        <Breadcrumb.Item key={idx}>
-          { path ? (
+      {breadcrumbLinks.map(({ label, path, restorableStates, subMenu }, idx) => (
+        <Breadcrumb.Item
+          key={idx}
+          {...(subMenu && {
+            overlay: subMenu,
+          })}
+        >
+          {path ? (
             <Link
               to={{
                 pathname: path,
