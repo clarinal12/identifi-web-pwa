@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Popover, Typography, Badge, Avatar } from 'antd';
 
-import { useUserContextValue } from 'contexts/UserContext';
 import { TCheckInGoal } from 'apollo/types/graphql-types';
 import { MOOD_MAP } from 'utils/moodUtils';
-import { getDisplayName } from 'utils/userUtils';
 
 const { Text } = Typography;
 
@@ -14,6 +12,7 @@ interface IRespondentAvatar {
   mood: number,
   blocker: string,
   avatar: string | null,
+  name: string | undefined,
 }
 
 const GoalCompletedIcon = () => (
@@ -58,14 +57,13 @@ const StyledAvatarWrapper = styled.div`
   }
 `;
 
-const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar }) => {
-  const { account } = useUserContextValue();
+const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name }) => {
   const hasHoverInfo = mood || blocker || previousGoal;
 
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
-        title={<Text strong style={{ fontSize: 16 }}>{getDisplayName(account)}</Text>}
+        title={<Text strong style={{ fontSize: 16 }}>{name}</Text>}
         placement="bottom"
         content={(
           <StyledPopoverContentWrapper>

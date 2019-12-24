@@ -6,7 +6,7 @@ export const getAuthToken = (): string => localStorage.getItem('auth_token') || 
 
 export const isLoggedIn = (): boolean => getAuthToken().length > 0;
 
-export const getDisplayName = (account: IAccount | undefined) => {
+export const getDisplayName = (account: Partial<IAccount> | undefined) => {
   const nameString = account && account.firstname && account.lastname ?
   `${account.firstname} ${account.lastname}` : (account || { email: undefined }).email;
   return nameString;

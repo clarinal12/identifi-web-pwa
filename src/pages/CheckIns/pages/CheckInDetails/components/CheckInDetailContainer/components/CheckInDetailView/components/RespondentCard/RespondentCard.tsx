@@ -7,6 +7,7 @@ import { Card, Typography } from 'antd';
 import Comments from 'components/Comments';
 import RespondentAvatar from './components/RespondentAvatar';
 import { TResponse } from 'apollo/types/graphql-types';
+import { getDisplayName } from 'utils/userUtils';
 
 const { Text, Title } = Typography;
 
@@ -61,6 +62,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
               mood={mood}
               blocker={blocker}
               previousGoal={previousGoal}
+              name={getDisplayName(respondent)}
             />
           </div>
           <div>
