@@ -55,6 +55,14 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
               companyId: activeCompany && activeCompany.id,
             }
           },
+        }, {
+          query: CHECKIN_SCHEDULES,
+          variables: {
+            filter: {
+              companyId: activeCompany && activeCompany.id,
+              participatingOnly: true,
+            }
+          },
         }],
         awaitRefetchQueries: true,
       });

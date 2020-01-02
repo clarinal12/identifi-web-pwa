@@ -87,6 +87,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
       checkInResponseId: sourceId,
     },
     skip: !collapseKey,
+    onCompleted: () => console.log(`wtf ${sourceId}`)
   });
 
   useEffect(() => {

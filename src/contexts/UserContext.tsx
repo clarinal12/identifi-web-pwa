@@ -22,8 +22,10 @@ const UserProvider: React.FC<PropsWithChildren<{ value: any }>> = ({ value, chil
   );
 }
 
+const UserConsumer = UserContext.Consumer;
+
 const useUserContextValue = () => useContext(UserContext);
 
-export { UserProvider, useUserContextValue };
+export { UserProvider, useUserContextValue, UserConsumer };
 
 export default UserContext;

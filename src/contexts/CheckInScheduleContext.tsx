@@ -7,10 +7,12 @@ import { CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
 
 interface ICheckInScheduleContext {
   checkInSchedules: ICheckinData[],
+  loading: boolean,
 }
 
 const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
   checkInSchedules: [],
+  loading: true,
 });
 
 const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
@@ -30,6 +32,7 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
     <CheckInScheduleContext.Provider
       value={{
         checkInSchedules: (!loading && data) ? [...data.checkInSchedules] : [],
+        loading,
       }}
     >
       {children}

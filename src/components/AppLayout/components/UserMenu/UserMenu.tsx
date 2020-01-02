@@ -6,10 +6,21 @@ import { getDisplayName } from 'utils/userUtils';
 
 const { Text } = Typography;
 
-const menu = ({ redirectToLogin }: { redirectToLogin: () => void }) => (
+interface IMenu {
+  redirectToLogin: () => void,
+  goToProfile: () => void,
+}
+
+const MenuOptions: React.FC<IMenu> = ({ redirectToLogin, goToProfile }) => (
   <Menu style={{ minWidth: 150 }}>
     <Menu.Item
       key={0}
+      onClick={goToProfile}
+    >
+      Profile
+    </Menu.Item>
+    <Menu.Item
+      key={1}
       onClick={redirectToLogin}
     >
       Logout
@@ -23,7 +34,10 @@ const UserMenu: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <Dropdown
       className="float-right"
-      overlay={menu({
+      overlay={MenuOptions({
+        goToProfile: () => {
+          history.push('/profile');
+        },
         redirectToLogin: () => {
           localStorage.clear();
           history.push('/login');

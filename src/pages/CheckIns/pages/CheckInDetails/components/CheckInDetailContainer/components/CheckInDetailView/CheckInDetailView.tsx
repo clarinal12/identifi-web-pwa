@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography, Row, Col } from 'antd';
 
@@ -46,6 +46,9 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
 );
 
 const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, checkInStatus, done }) => {
+  useEffect(() => {
+    console.log('done loading');
+  }, []);
   return data ? (
     <>
       <CheckInHeader

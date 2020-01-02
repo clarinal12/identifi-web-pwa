@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
@@ -9,12 +9,16 @@ import CheckInCard from 'components/CheckInCard';
 import { ICheckinData } from 'apollo/types/graphql-types';
 import { CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 
 const { Title } = Typography;
 
 interface ICheckInList {
-  setCheckInButtonState: (state: boolean) => void,
   participatingOnly?: boolean,
+}
+
+interface IEmptyState {
+  participatingOnly: boolean,
 }
 
 const StyledRow = styled(Row)`
@@ -22,21 +26,25 @@ const StyledRow = styled(Row)`
   align-items: center;
 `;
 
-const EmptyState = () => (
+const EmptyState: React.FC<IEmptyState> = ({ participatingOnly }) => (
   <StyledRow className="d-flex">
     <Col sm={24} md={12} className="text-center">
-      <Title level={1}>Create your first check-in</Title>
+      <Title level={1}>
+        {participatingOnly ? 'You are not assigned to any check-ins yet' : 'Create your first check-in'}
+      </Title>
       <Title level={4} type="secondary" className="my-4">
         Use check-ins to get regular input from your teammates on things you care about. You could run daily standups, weekly retrospectives, or something that works for your team.
       </Title>
-      <Link to="/checkins/new">
-        <Button
-          size="large"
-          type="primary"
-        >
-          New check-in
-        </Button>
-      </Link>
+      {!participatingOnly && (
+        <Link to="/checkins/new">
+          <Button
+            size="large"
+            type="primary"
+          >
+            New check-in
+          </Button>
+        </Link>
+      )}
       <div className="my-4">
         <Icon
           style={{
@@ -50,7 +58,8 @@ const EmptyState = () => (
   </StyledRow>
 );
 
-const CheckInList: React.FC<ICheckInList> = ({ setCheckInButtonState, participatingOnly = false }) => {
+const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
+  const { checkInSchedules, loading: contextLoadingState } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
 
@@ -61,27 +70,23 @@ const CheckInList: React.FC<ICheckInList> = ({ setCheckInButtonState, participat
         participatingOnly,
       }
     },
-    onCompleted: data => setCheckInButtonState(!!data.checkInSchedules.length),
+    skip: !participatingOnly,
   });
 
-  useEffect(() => {
-    if (data) {
-      setCheckInButtonState(!!data.checkInSchedules.length);
-    }
-  }, [data, setCheckInButtonState]);
+  const checkInScheduleSource = (participatingOnly && !loading) ? data.checkInSchedules : checkInSchedules;
 
-  return loading ? (
+  return (loading || contextLoadingState) ? (
     <Spinner />
   ) : (
     <>
-      {(data.checkInSchedules || []).length === 0 ? (
-        <EmptyState />
+      {(checkInScheduleSource || []).length === 0 ? (
+        <EmptyState participatingOnly={participatingOnly} />
       ): (
         <Row gutter={[24, 24]}>
-          {data.checkInSchedules.map((item: ICheckinData, idx: number) => (
+          {checkInScheduleSource.map((item: ICheckinData, idx: number) => (
             <Col xs={24} sm={24} md={8} key={idx}>
               <CheckInCard
-                isLastItem={(data.checkInSchedules.length - 1) === idx}
+                isLastItem={(checkInScheduleSource.length - 1) === idx}
                 item={item}
               />
             </Col>

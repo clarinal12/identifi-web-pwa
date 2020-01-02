@@ -9,6 +9,7 @@ import { Spinner } from 'components/PageSpinner';
 import ConnectSlack from './components/ConnectSlack';
 import CheckInList from './components/CheckInList';
 import { useUserContextValue } from 'contexts/UserContext'
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext'
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { INTEGRATE_SLACK } from 'apollo/mutations/integration';
 import { ACCOUNT } from 'apollo/queries/user';
@@ -27,12 +28,12 @@ const StyledTabs = styled(Tabs)`
 const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
   const [integrateSlack] = useMutation(INTEGRATE_SLACK);
   const { alertSuccess, alertError } = useMessageContextValue();
+  const { checkInSchedules } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
   const memberInfo = account && account.memberInfo;
 
   const [loadingState, setLoadingState] = useState(false);
-  const [checkInButtonState, setCheckInButtonState] = useState(false);
 
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
@@ -87,7 +88,7 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
           <Title level={3}>Check-ins</Title>
         </Col>
         <Col sm={12}>
-          {checkInButtonState && (
+          {(checkInSchedules.length > 0) && (
             <Link className="float-right" to="/checkins/new">
               <Button
                 size="large"
@@ -115,7 +116,7 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
                   </Tooltip>
                 )}
               >
-                <CheckInList participatingOnly setCheckInButtonState={setCheckInButtonState} />
+                <CheckInList participatingOnly />
               </TabPane>
               <TabPane
                 key="2"
@@ -125,7 +126,7 @@ const CheckIns: React.FC<RouteComponentProps> = ({ location }) => {
                   </Tooltip>
                 )}
               >
-                <CheckInList setCheckInButtonState={setCheckInButtonState} />
+                <CheckInList />
               </TabPane>
             </StyledTabs>
           )}
