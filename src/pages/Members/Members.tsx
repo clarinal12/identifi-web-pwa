@@ -9,7 +9,11 @@ import { MembersProvider, MembersConsumer } from 'contexts/MembersContext';
 
 const { Text } = Typography;
 
-const StyledList = styled(List)``;
+const StyledList = styled(List)`
+  .antd-list-item {
+    border: 1px solid #D9D9D9;
+  }
+`;
 
 const Members = () => (
   <MembersProvider>
