@@ -38,16 +38,16 @@ const APP_ROUTES: IAppRoute[] = [{
   label: 'Check-ins',
   icon: <Icon type="flag" />,
   route: '/checkins',
+}, {
+  label: 'Members',
+  icon: <Icon type="team" />,
+  route: '/members',
 },
 // {
 //   label: 'My Profile',
 //   icon: <Icon type="user" />,
 //   route: '/profile',
-// }, {
-//   label: 'Members',
-//   icon: <Icon type="team" />,
-//   route: '/members',
-// },
+// }, 
 {
   label: 'Settings',
   icon: <Icon type="setting" />,

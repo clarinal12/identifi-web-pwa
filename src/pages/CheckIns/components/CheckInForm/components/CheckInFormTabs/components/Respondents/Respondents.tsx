@@ -8,14 +8,6 @@ import { useUserContextValue } from 'contexts/UserContext';
 import { respondentFormSchema } from './validation';
 import { IAccount } from 'apollo/types/graphql-types';
 
-// needed to avoid Select.Option throwing error for missing label property
-// TODO: move in a global declaration file index.d.ts
-declare module "antd/lib/select" {
-  export interface OptionProps {
-    label?: string;
-  }
-}
-
 interface IExternalProps {
   defaultValue: string[],
   onNextStep: () => void,

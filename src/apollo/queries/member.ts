@@ -9,6 +9,7 @@ const MEMBER_FIELDS = `
   status
   role
   memberId
+  avatar
 `;
 
 export const MEMBERS = gql`
