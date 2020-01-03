@@ -7,10 +7,12 @@ import { MEMBERS } from 'apollo/queries/member';
 
 interface IMembersContext {
   members: IAccount[],
+  loading: boolean,
 }
 
 const MembersContext = createContext<IMembersContext>({
   members: [],
+  loading: true,
 });
 
 const MembersProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
@@ -21,12 +23,14 @@ const MembersProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
     variables: {
       companyId: activeCompany && activeCompany.id,
     },
+    skip: !(activeCompany && activeCompany.slackEnabled),
   });
 
   return (
     <MembersContext.Provider
       value={{
         members: (!loading && data) ? [...data.members] : [],
+        loading,
       }}
     >
       {children}

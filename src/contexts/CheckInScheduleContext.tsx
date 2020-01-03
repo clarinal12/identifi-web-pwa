@@ -26,6 +26,7 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
         participatingOnly: false,
       }
     },
+    skip: !(activeCompany && activeCompany.slackEnabled),
   });
 
   return (

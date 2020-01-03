@@ -1,53 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { List, Row, Col, Avatar, Typography, Button } from 'antd';
+import { Row, Col } from 'antd';
 
 import AppLayout from 'components/AppLayout';
-import { getDisplayName } from 'utils/userUtils';
-import { MembersProvider, MembersConsumer } from 'contexts/MembersContext';
-
-const { Text } = Typography;
-
-const StyledList = styled(List)`
-  .antd-list-item {
-    border: 1px solid #D9D9D9;
-  }
-`;
+import SlackIntegration from 'HOC/SlackIntegration';
+import MemberList from './components/MemberList';
+import { MembersProvider } from 'contexts/MembersContext';
 
 const Members = () => (
   <MembersProvider>
     <AppLayout>
       <Row>
         <Col>
-          <MembersConsumer>
-            {({ members }) => (
-              <StyledList>
-                {members.map((member, idx) => (
-                  <List.Item
-                    key={idx}
-                    actions={[
-                      <Link to={`/profile/${member.memberId}`}>
-                        <Button htmlType="button">
-                          View profile
-                        </Button>
-                      </Link>
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={member.avatar && <Avatar src={member.avatar} />}
-                      title={getDisplayName(member)}
-                      description={<Text className="text-muted" style={{ fontSize: 12 }}>{member.role}</Text>}
-                    />
-                  </List.Item>
-                ))}
-              </StyledList>
-            )}
-          </MembersConsumer>
+          <MemberList />
         </Col>
       </Row>
     </AppLayout>
   </MembersProvider>
-)
+);
 
-export default Members;
+export default SlackIntegration(
+  Members,
+  "Identifi uses Slack to run check-ins with your team. Click the button below to connect install our Slack bot and get started."
+);
