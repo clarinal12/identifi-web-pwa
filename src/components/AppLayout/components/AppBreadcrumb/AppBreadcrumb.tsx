@@ -7,12 +7,15 @@ import { useBreadcrumbContextValue } from 'contexts/BreadcrumbContext';
 const AppBreadcrumb = () => {
   const { breadcrumbLinks } = useBreadcrumbContextValue();
   return (
-    <Breadcrumb style={{ textTransform: 'capitalize' }}>
+    <Breadcrumb>
       {breadcrumbLinks.map(({ label, path, restorableStates, subMenu }, idx) => (
         <Breadcrumb.Item
           key={idx}
           {...(subMenu && {
             overlay: subMenu,
+          })}
+          {...(!label.includes("@") && {
+            style: { textTransform: 'capitalize' },
           })}
         >
           {path ? (

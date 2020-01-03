@@ -37,7 +37,7 @@ const StyledEmptyRow = styled(Row)`
 
 const EmptyState = ({ done = false }: { done?: boolean }) => (
   <StyledEmptyRow className="d-flex">
-    <Col sm={6} className="text-center">
+    <Col sm={6} md={24} className="text-center">
       <IconMessage />
       <Title className="mt-4" level={2}>No replies {done ? '' : 'yet'}</Title>
       {!done && <Text>Once replies start coming in they’ll appear here.</Text>}

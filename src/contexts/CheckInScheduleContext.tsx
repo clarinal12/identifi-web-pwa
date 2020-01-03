@@ -22,8 +22,7 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   const { loading, data } = useQuery(CHECKIN_SCHEDULES, {
     variables: {
       filter: {
-        companyId: activeCompany && activeCompany.id,
-        participatingOnly: false,
+        companyId: activeCompany && activeCompany.id
       }
     },
     skip: !(activeCompany && activeCompany.slackEnabled),
