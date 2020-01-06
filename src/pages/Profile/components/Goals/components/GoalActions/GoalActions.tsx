@@ -7,13 +7,12 @@ const { Text } = Typography;
 
 interface IDropdownMenu {
   setVisibility: (visibility: boolean) => void,
-  setEditCommentId: () => void,
+  setEditGoalId: () => void,
 }
 
-interface ICommentActions {
-  commentId: string,
-  responseId: string,
-  setEditCommentId: (commentId: string) => void,
+interface IGoalActions {
+  goalId: string,
+  setEditGoalId: (goalId: string) => void,
 }
 
 const MoreVertIcon = () => (
@@ -28,20 +27,23 @@ const MoreVertIcon = () => (
   </svg>
 );
 
-const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditCommentId }) => {
+const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditGoalId }) => {
   return (
     <Menu>
-      <Menu.Item key="0" onClick={setEditCommentId}>
+      <Menu.Item key="0" onClick={setEditGoalId}>
         <Text>Edit</Text>
       </Menu.Item>
-      <Menu.Item key="1" onClick={() => setVisibility(true)}>
+      <Menu.Item key="1" onClick={setEditGoalId}>
+        <Text>Update progress</Text>
+      </Menu.Item>
+      <Menu.Item key="2" onClick={() => setVisibility(true)}>
         <Text type="danger">Delete</Text>
       </Menu.Item>
     </Menu>
   );
 }
 
-const CommentActions: React.FC<ICommentActions> = ({ commentId, responseId, setEditCommentId }) => {
+const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <>
@@ -49,17 +51,16 @@ const CommentActions: React.FC<ICommentActions> = ({ commentId, responseId, setE
         placement="bottomRight"
         overlay={DropdownMenu({
           setVisibility,
-          setEditCommentId: () => setEditCommentId(commentId),
+          setEditGoalId: () => setEditGoalId(goalId),
         })}
         trigger={['click']}
       >
-        <a href="#!">
+        <a href="#!" className="d-flex">
           <MoreVertIcon />
         </a>
       </Dropdown>
       <DeleteModal
-        commentId={commentId}
-        responseId={responseId}
+        goalId={goalId}
         visibility={visibility}
         setVisibility={setVisibility}
       />
@@ -67,4 +68,4 @@ const CommentActions: React.FC<ICommentActions> = ({ commentId, responseId, setE
   );
 }
 
-export default CommentActions;
+export default GoalActions;

@@ -47,7 +47,7 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
   ) : (
     <>
       {loading ? (
-        <Spinner loading label="Loading profile..." />
+        <Spinner label="Loading profile..." />
       ) : (
         <Row>
           <Col sm={24} md={6}>
@@ -56,7 +56,9 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
             />
           </Col>
           <Col sm={24} md={18}>
-            <Goals />
+            {account && (
+              <Goals memberId={match.params.profile_id || account.memberInfo.memberId} />
+            )}
           </Col>
         </Row>
       )}

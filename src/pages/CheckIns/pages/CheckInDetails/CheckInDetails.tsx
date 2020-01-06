@@ -61,7 +61,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
   ) : (
     <>
       {loading ? (
-        <Spinner loading label="Loading check-in..." />
+        <Spinner label="Loading check-in..." />
       ) : (
         <Row className="mx-0" gutter={24}>
           <Col sm={24} md={16} className="pl-0">

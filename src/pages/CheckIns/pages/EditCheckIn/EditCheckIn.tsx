@@ -88,7 +88,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
         </Col>
       </Row>
       {loading ? (
-        <Spinner loading label="Loading check-in..." />
+        <Spinner label="Loading check-in..." />
       ) : (
         <>
           {error ? (

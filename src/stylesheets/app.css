@@ -65,3 +65,11 @@
 .text-success {
   color: #237804 !important;
 }
+
+.w-100 {
+  width: 100%;
+}
+
+.fs-16 {
+  font-size: 16px;
+}

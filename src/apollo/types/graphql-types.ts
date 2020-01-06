@@ -122,3 +122,11 @@ export interface IComment {
   createdAt: string,
   updatedAt: string,
 }
+
+export interface IGoal {
+  id: string,
+  title: string,
+  target: number,
+  current: number,
+  type: 'INTEGER',
+}

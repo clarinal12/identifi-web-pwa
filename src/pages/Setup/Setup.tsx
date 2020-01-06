@@ -104,7 +104,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
     <Row>
       <Col sm={24} md={12}>
         <StyledDiv className="d-flex">
-          {loadingState ? <Spinner loading label="Verifying slack integration" /> : (
+          {loadingState ? <Spinner label="Verifying slack integration" /> : (
             <SetupTabs setActiveTabKey={setActiveTabKey} activeTabKey={activeTabKey} />
           )}
         </StyledDiv>

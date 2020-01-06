@@ -53,7 +53,7 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
   );
 
   return loading ? (
-    <Spinner loading label="Loading check-in details..." />
+    <Spinner label="Loading check-in details..." />
   ): contentBody;
 };
 

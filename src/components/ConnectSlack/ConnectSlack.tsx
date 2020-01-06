@@ -79,7 +79,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
   }, []);
 
   return loadingState ? (
-    <Spinner loading label="Verifying slack integration" />
+    <Spinner label="Verifying slack integration" />
   ) : (
     <StyledRow className="d-flex">
       <Col sm={24} md={12} className="text-center">
