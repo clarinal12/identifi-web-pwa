@@ -11,6 +11,7 @@ interface IDropdownMenu {
 }
 
 interface IGoalActions {
+  memberId: string,
   goalId: string,
   setEditGoalId: (goalId: string) => void,
 }
@@ -43,7 +44,7 @@ const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditGoalId })
   );
 }
 
-const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId }) => {
+const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId, memberId }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <>
@@ -60,6 +61,7 @@ const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId }) => {
         </a>
       </Dropdown>
       <DeleteModal
+        memberId={memberId}
         goalId={goalId}
         visibility={visibility}
         setVisibility={setVisibility}

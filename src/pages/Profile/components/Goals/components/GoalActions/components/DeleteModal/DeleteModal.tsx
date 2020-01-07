@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { useMutation } from 'react-apollo';
 import { Modal, Typography } from 'antd';
 
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { GOALS } from 'apollo/queries/goals';
+import { DELETE_GOAL } from 'apollo/mutations/goals';
 
 const { Text} = Typography;
 
-interface IDeleteModal extends RouteComponentProps<{ profile_id: string }> {
+interface IDeleteModal {
+  memberId: string,
   goalId: string,
   visibility: boolean,
   setVisibility: (visibility: boolean) => void,
@@ -19,13 +22,23 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const DeleteModal: React.FC<IDeleteModal> = ({ goalId, visibility, setVisibility, match }) => {
+const DeleteModal: React.FC<IDeleteModal> = ({ goalId, visibility, setVisibility, memberId }) => {
   const [loadingState, setLoadingState] = useState(false);
-  const { alertError } = useMessageContextValue();
+  const [deleteGoal] = useMutation(DELETE_GOAL);
+  const { alertError, alertWarning } = useMessageContextValue();
 
   const deleteAction = async () => {
     setLoadingState(true);
     try {
+      await deleteGoal({
+        variables: { goalId },
+        refetchQueries: [{
+          query: GOALS,
+          variables: { memberId },
+        }],
+        awaitRefetchQueries: true,
+      });
+      alertWarning('Goal deleted');
     } catch(error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
@@ -53,4 +66,4 @@ const DeleteModal: React.FC<IDeleteModal> = ({ goalId, visibility, setVisibility
   );
 }
 
-export default withRouter(DeleteModal);
+export default DeleteModal;

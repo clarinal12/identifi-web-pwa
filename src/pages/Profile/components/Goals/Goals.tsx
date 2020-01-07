@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { Typography, Button, List, Row, Col, Alert, Empty } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import GoalActions from './components/GoalActions';
+import GoalFormModal from './components/GoalFormModal';
 import { GOALS } from 'apollo/queries/goals';
 import { IGoal } from 'apollo/types/graphql-types';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const StyledList = styled(List)`
   background: #FFF;
@@ -28,6 +29,7 @@ const StyledList = styled(List)`
 `;
 
 const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
+  const [visibility, setVisibility] = useState(false);
   const { data, loading, error } = useQuery(GOALS, {
     variables: { memberId },
   });
@@ -56,7 +58,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                 key={id}
                 className="px-3"
                 actions={[
-                  <GoalActions goalId={id} setEditGoalId={goalId => goalId} />
+                  <GoalActions memberId={memberId} goalId={id} setEditGoalId={goalId => goalId} />
                 ]}
               >
                 <Row className="w-100">
@@ -68,20 +70,21 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                   </Col>
                 </Row>
               </List.Item>
-            ))}}
+            ))}
           </StyledList>
-          <Button size="large" type="primary">Add new goal</Button>
+          <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
         </>
       ) : (
-        <Empty
-          description={<>
-            <Title level={4} type="secondary">No goals yet</Title>
-            <Text className="text-muted fs-16">Start adding your goals and track your progress here.</Text>
-          </>}
-        >
-          <Button size="large" type="primary">Add new goal</Button>
+        <Empty description="No goals yet">
+          <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
+          <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
         </Empty>
       )}
+      <GoalFormModal
+        memberId={memberId}
+        visibility={visibility}
+        setVisibility={setVisibility}
+      />
     </>
   );
 
