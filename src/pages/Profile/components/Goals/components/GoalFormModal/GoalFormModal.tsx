@@ -32,7 +32,11 @@ const GoalFormModal: React.FC<IGoalFormModal> = ({ setVisibility, visibility, me
   const [addGoal] = useMutation(ADD_GOAL);
   const { alertError, alertSuccess } = useMessageContextValue();
 
-  const createAction = async (values: IGoalFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const createAction = async (
+    values: IGoalFormValues,
+    setSubmitting: (isSubmitting: boolean) => void,
+    resetForm: () => void,
+  ) => {
     setLoadingState(true);
     try {
       await addGoal({
@@ -45,14 +49,15 @@ const GoalFormModal: React.FC<IGoalFormModal> = ({ setVisibility, visibility, me
       });
       alertSuccess("Goal added");
       setVisibility(false);
+      resetForm();
     } catch(error) {
       let errorMessage = "Network error";
       if (error.graphQLErrors[0]) {
         errorMessage = error.graphQLErrors[0].message;
       }
       alertError(errorMessage);
-      setSubmitting(false);
     }
+    setSubmitting(false);
     setLoadingState(false);
   }
 

@@ -7,7 +7,11 @@ import { goalFormSchema } from './validation';
 interface IExternalProps {
   data?: IGoalFormValues,
   onCancel: () => void,
-  onSubmit: (values: IGoalFormValues, setSubmitting: (isSubmitting: boolean) => void) => void,
+  onSubmit: (
+    values: IGoalFormValues,
+    setSubmitting: (isSubmitting: boolean) => void,
+    resetForm: () => void,
+  ) => void,
 }
 
 export interface IGoalFormValues {
@@ -112,6 +116,7 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
 }
 
 export default withFormik<IExternalProps, IGoalFormValues>({
+  enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     title: data ? data.title : '',
     initial: data ? data.initial : 1,
@@ -120,7 +125,7 @@ export default withFormik<IExternalProps, IGoalFormValues>({
   }),
   validationSchema: goalFormSchema,
   handleSubmit: (values, formikBag) => {
-    formikBag.props.onSubmit(values, formikBag.setSubmitting);
+    formikBag.props.onSubmit(values, formikBag.setSubmitting, formikBag.resetForm);
   },
   displayName: 'GoalForm',
 })(GoalForm);

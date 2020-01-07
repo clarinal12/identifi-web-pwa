@@ -65,7 +65,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                   <Col span={16}>
                     <Text className="fs-16">{title}</Text>
                   </Col>
-                  <Col span={8}>
+                  <Col span={8} className="text-right">
                     <Text className="fs-16">{current}/{target}</Text>
                   </Col>
                 </Row>
