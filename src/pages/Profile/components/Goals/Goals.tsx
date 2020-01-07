@@ -6,8 +6,9 @@ import { Typography, Button, List, Row, Col, Alert, Empty } from 'antd';
 import { Spinner } from 'components/PageSpinner';
 import GoalActions from './components/GoalActions';
 import GoalFormModal from './components/GoalFormModal';
+import { IGoalFormValues } from './components/GoalFormModal/components/GoalForm/GoalForm';
 import { GOALS } from 'apollo/queries/goals';
-import { IGoal } from 'apollo/types/graphql-types';
+import {IGoal } from 'apollo/types/graphql-types';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -29,6 +30,7 @@ const StyledList = styled(List)`
 `;
 
 const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
+  const [editGoalInfo, setEditGoalInfo] = useState<IGoalFormValues | undefined>(undefined);
   const [visibility, setVisibility] = useState(false);
   const { data, loading, error } = useQuery(GOALS, {
     variables: { memberId },
@@ -53,24 +55,34 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
       {data && data.goals.length > 0 ? (
         <>
           <StyledList bordered className="my-4">
-            {data.goals.map(({ id, title, target, current }: IGoal) => (
-              <List.Item
-                key={id}
-                className="px-3"
-                actions={[
-                  <GoalActions memberId={memberId} goalId={id} setEditGoalId={goalId => goalId} />
-                ]}
-              >
-                <Row className="w-100">
-                  <Col span={16}>
-                    <Text className="fs-16">{title}</Text>
-                  </Col>
-                  <Col span={8} className="text-right">
-                    <Text className="fs-16">{current}/{target}</Text>
-                  </Col>
-                </Row>
-              </List.Item>
-            ))}
+            {data.goals.map((goal: IGoal) => {
+              const { id, title, target, current } = goal;
+              return (
+                <List.Item
+                  key={id}
+                  className="px-3"
+                  actions={[
+                    <GoalActions
+                      memberId={memberId}
+                      goalId={id}
+                      editAction={() => {
+                        setEditGoalInfo(goal);
+                        setVisibility(true);
+                      }}
+                    />
+                  ]}
+                >
+                  <Row className="w-100">
+                    <Col span={16}>
+                      <Text className="fs-16">{title}</Text>
+                    </Col>
+                    <Col span={8} className="text-right">
+                      <Text className="fs-16">{current}/{target}</Text>
+                    </Col>
+                  </Row>
+                </List.Item>
+              );
+            })}
           </StyledList>
           <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
         </>
@@ -81,9 +93,13 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
         </Empty>
       )}
       <GoalFormModal
+        editGoalInfo={editGoalInfo}
         memberId={memberId}
         visibility={visibility}
-        setVisibility={setVisibility}
+        onClose={() => {
+          setEditGoalInfo(undefined);
+          setVisibility(false);
+        }}
       />
     </>
   );

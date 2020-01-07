@@ -15,15 +15,16 @@ interface IExternalProps {
 }
 
 export interface IGoalFormValues {
+  id?: string,
   title: string,
   target: number,
-  initial: number,
+  current: number,
   type: string,
 }
 
 const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
   handleSubmit, touched, errors, values, isSubmitting, handleChange, handleBlur, isValid,
-  setFieldValue, setFieldTouched, onCancel,
+  setFieldValue, setFieldTouched, onCancel, data,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -70,9 +71,9 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
       <Form.Item
         className="mb-2"
         label="Initial value"
-        {...((touched.initial && errors.initial) && {
+        {...((touched.current && errors.current) && {
           validateStatus: "error",
-          help: errors.initial,
+          help: errors.current,
         })}
       >
         <InputNumber
@@ -80,15 +81,15 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           {...((typeof values.target === 'number') && {
             max: values.target,
           })}
-          name="initial"
+          name="current"
           style={{ width: '100%' }}
           size="large"
           placeholder="Set your initial value"
           disabled={isSubmitting}
-          value={values.initial}
+          value={values.current}
           onChange={(value) => {
-            setFieldValue('initial', value);
-            setFieldTouched('initial');
+            setFieldValue('current', value);
+            setFieldTouched('current');
           }}
         />
       </Form.Item>
@@ -108,7 +109,7 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           loading={isSubmitting}
           disabled={!isValid}
         >
-          Create goal
+          {data ? 'Update' : 'Create'} goal
         </Button>
       </div>
     </Form>
@@ -119,7 +120,7 @@ export default withFormik<IExternalProps, IGoalFormValues>({
   enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     title: data ? data.title : '',
-    initial: data ? data.initial : 1,
+    current: data ? data.current : 1,
     target: data ? data.target : 5,
     type: 'INTEGER',
   }),

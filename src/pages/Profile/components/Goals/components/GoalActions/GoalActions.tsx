@@ -7,13 +7,13 @@ const { Text } = Typography;
 
 interface IDropdownMenu {
   setVisibility: (visibility: boolean) => void,
-  setEditGoalId: () => void,
+  editAction: () => void,
 }
 
 interface IGoalActions {
   memberId: string,
   goalId: string,
-  setEditGoalId: (goalId: string) => void,
+  editAction: () => void,
 }
 
 const MoreVertIcon = () => (
@@ -28,13 +28,13 @@ const MoreVertIcon = () => (
   </svg>
 );
 
-const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditGoalId }) => {
+const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, editAction }) => {
   return (
     <Menu>
-      <Menu.Item key="0" onClick={setEditGoalId}>
+      <Menu.Item key="0" onClick={editAction}>
         <Text>Edit</Text>
       </Menu.Item>
-      <Menu.Item key="1" onClick={setEditGoalId}>
+      <Menu.Item key="1">
         <Text>Update progress</Text>
       </Menu.Item>
       <Menu.Item key="2" onClick={() => setVisibility(true)}>
@@ -44,7 +44,7 @@ const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, setEditGoalId })
   );
 }
 
-const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId, memberId }) => {
+const GoalActions: React.FC<IGoalActions> = ({ goalId, editAction, memberId }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <>
@@ -52,7 +52,7 @@ const GoalActions: React.FC<IGoalActions> = ({ goalId, setEditGoalId, memberId }
         placement="bottomRight"
         overlay={DropdownMenu({
           setVisibility,
-          setEditGoalId: () => setEditGoalId(goalId),
+          editAction,
         })}
         trigger={['click']}
       >

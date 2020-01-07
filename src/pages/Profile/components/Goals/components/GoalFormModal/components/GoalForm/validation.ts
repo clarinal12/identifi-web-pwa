@@ -8,7 +8,7 @@ export const goalFormSchema = Yup.object().shape({
     .number()
     .typeError('Target value must be a number')
     .required("Target value is required"),
-  initial: Yup
+  current: Yup
     .number()
     .typeError('Initial value must be a number')
     .required("Initial value is required"),

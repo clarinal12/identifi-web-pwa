@@ -5,14 +5,15 @@ import { Modal } from 'antd';
 
 import GoalForm from './components/GoalForm';
 import { IGoalFormValues } from './components/GoalForm/GoalForm';
-import { ADD_GOAL } from 'apollo/mutations/goals';
+import { ADD_GOAL, UPDATE_GOAL } from 'apollo/mutations/goals';
 import { GOALS } from 'apollo/queries/goals';
 import { useMessageContextValue } from 'contexts/MessageContext';
 
 interface IGoalFormModal {
+  editGoalInfo?: IGoalFormValues,
   memberId: string,
   visibility: boolean,
-  setVisibility: (visibility: boolean) => void,
+  onClose: () => void,
 }
 
 const StyledModal = styled(Modal)`
@@ -27,9 +28,10 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const GoalFormModal: React.FC<IGoalFormModal> = ({ setVisibility, visibility, memberId }) => {
+const GoalFormModal: React.FC<IGoalFormModal> = ({ visibility, memberId, editGoalInfo, onClose }) => {
   const [loadingState, setLoadingState] = useState(false);
   const [addGoal] = useMutation(ADD_GOAL);
+  const [updateGoal] = useMutation(UPDATE_GOAL);
   const { alertError, alertSuccess } = useMessageContextValue();
 
   const createAction = async (
@@ -48,7 +50,41 @@ const GoalFormModal: React.FC<IGoalFormModal> = ({ setVisibility, visibility, me
         awaitRefetchQueries: true,
       });
       alertSuccess("Goal added");
-      setVisibility(false);
+      onClose();
+      resetForm();
+    } catch(error) {
+      let errorMessage = "Network error";
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+    setSubmitting(false);
+    setLoadingState(false);
+  }
+
+  const editAction = async (
+    { type, ...otherValues }: IGoalFormValues,
+    setSubmitting: (isSubmitting: boolean) => void,
+    resetForm: () => void,
+  ) => {
+    setLoadingState(true);
+    try {
+      await updateGoal({
+        variables: {
+          input: otherValues,
+          ...(editGoalInfo && {
+            goalId: editGoalInfo.id,
+          }),
+        },
+        refetchQueries: [{
+          query: GOALS,
+          variables: { memberId },
+        }],
+        awaitRefetchQueries: true,
+      });
+      alertSuccess("Goal updated");
+      onClose();
       resetForm();
     } catch(error) {
       let errorMessage = "Network error";
@@ -63,14 +99,20 @@ const GoalFormModal: React.FC<IGoalFormModal> = ({ setVisibility, visibility, me
 
   return (
     <StyledModal
-      title="New goal"
+      title={editGoalInfo ? 'Update goal' : 'New goal'}
       visible={visibility}
       confirmLoading={loadingState}
       {...(!loadingState && {
-        onCancel: () => setVisibility(false),
+        onCancel: onClose,
       })}
     >
-      <GoalForm onCancel={() => setVisibility(false)} onSubmit={createAction} />
+      <GoalForm
+        {...(editGoalInfo && {
+          data: editGoalInfo,
+        })}
+        onCancel={onClose}
+        onSubmit={editGoalInfo ? editAction : createAction}
+      />
     </StyledModal>
   );
 }
