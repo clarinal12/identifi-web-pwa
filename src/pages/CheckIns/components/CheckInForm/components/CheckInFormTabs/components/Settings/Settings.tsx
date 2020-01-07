@@ -53,7 +53,7 @@ const Settings: React.FC<IExternalProps & FormikProps<ISettingsFormValues>> = ({
   return (
     <Form colon={false} onSubmit={handleSubmit}>
       <div className="mb-4">
-        <Title style={{ fontSize: 16 }}>Send the check-in link and notifications about new replies to:</Title>
+        <Title className="fs-16">Send the check-in link and notifications about new replies to:</Title>
       </div>
       <Row gutter={48}>
         <Col sm={24} md={8}>

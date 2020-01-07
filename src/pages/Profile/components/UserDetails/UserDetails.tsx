@@ -16,7 +16,7 @@ const UserDetails: React.FC<{ memberInfo: IAccount | undefined }> = ({ memberInf
           src={memberInfo.avatar}
         />
       )}
-      <Title style={{ fontSize: 16 }}>
+      <Title className="fs-16">
         {getDisplayName(memberInfo)}
       </Title>
       <Text>{memberInfo.role}</Text>

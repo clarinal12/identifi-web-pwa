@@ -169,8 +169,8 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   return (
     <StyledTabsWrapper>
       <div className="steps-tracker">
-        <Text style={{ fontSize: 16, color: '#08979C' }} strong>{activeTabKey}</Text>
-        <Text style={{ fontSize: 16 }} strong type="secondary"> of 3</Text>
+        <Text className="fs-16" style={{ color: '#08979C' }} strong>{activeTabKey}</Text>
+        <Text className="fs-16" strong type="secondary"> of 3</Text>
       </div>
       <PageHeader
         className="px-0"

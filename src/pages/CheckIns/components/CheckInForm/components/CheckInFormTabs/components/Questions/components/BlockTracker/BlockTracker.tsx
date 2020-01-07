@@ -50,7 +50,7 @@ const BlockTracker: React.FC<IBlockTracker> = ({
       )}
     >
       <div>
-        <Text style={{ fontSize: 16 }}>
+        <Text className="fs-16">
           Ask recepients if they are blocked.
         </Text>
       </div>

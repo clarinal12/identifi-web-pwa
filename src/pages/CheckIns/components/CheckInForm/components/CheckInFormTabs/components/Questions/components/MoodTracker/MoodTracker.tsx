@@ -50,7 +50,7 @@ const MoodTracker: React.FC<IMoodTracker> = ({
       )}
     >
       <div>
-        <Text style={{ fontSize: 16 }}>
+        <Text className="fs-16">
          Ask recepients how are they feeling today.
         </Text>
       </div>

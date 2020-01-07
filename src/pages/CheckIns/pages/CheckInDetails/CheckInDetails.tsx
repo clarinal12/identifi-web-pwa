@@ -78,7 +78,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
                   title={(
                     <div className="d-flex" style={{ alignItems: 'center' }}>
                       <Icon type="calendar" className="mr-2 text-muted" />
-                      <Title className="mb-0" style={{ fontSize: 16 }}>
+                      <Title className="mb-0 fs-16">
                         Check-in history
                       </Title>
                     </div>

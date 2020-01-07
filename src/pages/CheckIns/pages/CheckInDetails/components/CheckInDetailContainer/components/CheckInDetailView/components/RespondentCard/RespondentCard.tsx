@@ -83,7 +83,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {currentGoal && (
           <div className="div-wrapper mb-3">
             <Text strong>TODAY:</Text>
-            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
               {currentGoal.goal}
             </Title>
           </div>
@@ -102,7 +102,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
                 return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
               }()}
             </Text>
-            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
               {previousGoal.goal}
             </Title>
           </div>
@@ -110,7 +110,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {blocker && (
           <div className="div-wrapper">
             <Text strong className="text-danger">BLOCKED:</Text>
-            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>
+            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
               {blocker}
             </Title>
           </div>
@@ -123,7 +123,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {answers.map(({ question, answer }, idx) => (
           <div key={idx} className="div-wrapper">
             <Text type="secondary">{question}</Text>
-            <Title className="mt-2 mb-0" style={{ fontSize: 16, fontWeight: 'normal' }}>{answer}</Title>
+            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>{answer}</Title>
           </div>
         ))}
       </div>

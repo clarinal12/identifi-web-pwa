@@ -73,7 +73,7 @@ const EmptyState = () => (
   <StyledEmptyRow className="d-flex">
     <Col className="text-center">
       <PastClockIcon />
-      <Title className="mt-4" style={{ fontSize: 16 }}>No past check-ins yet</Title>
+      <Title className="mt-4 fs-16">No past check-ins yet</Title>
       <Text type="secondary">
         Once you go through your first cycle for this check-in, all past check-ins will appear here.
       </Text>

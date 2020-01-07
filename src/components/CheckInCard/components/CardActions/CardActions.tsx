@@ -63,7 +63,7 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
       <Menu.Item key={2}>
         <Popconfirm
           title={<>
-            <Title style={{ fontSize: 16 }}>Delete Check-in?</Title>
+            <Title className="fs-16">Delete Check-in?</Title>
             <Text>Are you sure you want to delete this Check-in?</Text><br />
             <Text>This action cannot be undone.</Text>
           </>}

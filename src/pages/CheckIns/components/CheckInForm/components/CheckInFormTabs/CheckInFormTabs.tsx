@@ -44,7 +44,7 @@ export interface IFinalValues {
 
 const TAB_STEPS = [{
   key: 'schedule',
-  tab: <Title style={{ fontSize: 16 }}>Set Schedule</Title>,
+  tab: <Title className="fs-16">Set Schedule</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Schedule
       defaultValue={defaultValues.timings}
@@ -62,7 +62,7 @@ const TAB_STEPS = [{
   ),
 }, {
   key: 'respondents',
-  tab: <Title style={{ fontSize: 16 }}>Choose Respondents</Title>,
+  tab: <Title className="fs-16">Choose Respondents</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Respondents
       isUpdating={!!defaultValues.id}
@@ -80,7 +80,7 @@ const TAB_STEPS = [{
   ),
 }, {
   key: 'questions',
-  tab: <Title style={{ fontSize: 16 }}>Set Questions</Title>,
+  tab: <Title className="fs-16">Set Questions</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Questions
       defaultValue={defaultValues.questions}
@@ -118,7 +118,7 @@ const TAB_STEPS = [{
   ),
 }, {
   key: 'slack',
-  tab: <Title style={{ fontSize: 16 }}>Slack Settings</Title>,
+  tab: <Title className="fs-16">Slack Settings</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue, parentSubmitAction }: ITabComponents) => (
     <Settings
       isUpdating={!!defaultValues.id}

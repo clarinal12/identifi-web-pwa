@@ -46,7 +46,7 @@ const CheckIns: React.FC = () => {
           key="1"
           tab={(
             <Tooltip title="All check-ins I am participating in.">
-              <Title style={{ fontSize: 16 }}>My check-ins</Title>
+              <Title className="fs-16">My check-ins</Title>
             </Tooltip>
           )}
         >
@@ -56,7 +56,7 @@ const CheckIns: React.FC = () => {
           key="2"
           tab={(
             <Tooltip title="All check-ins across the company.">
-              <Title style={{ fontSize: 16 }}>All check-ins</Title>
+              <Title className="fs-16">All check-ins</Title>
             </Tooltip>
           )}
         >

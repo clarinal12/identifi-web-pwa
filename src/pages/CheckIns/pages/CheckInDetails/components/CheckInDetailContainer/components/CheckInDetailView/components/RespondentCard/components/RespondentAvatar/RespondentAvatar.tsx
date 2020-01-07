@@ -63,27 +63,27 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
-        title={<Text strong style={{ fontSize: 16 }}>{name}</Text>}
+        title={<Text strong className="fs-16">{name}</Text>}
         placement="bottom"
         content={(
           <StyledPopoverContentWrapper>
             {blocker && (
               <div>
-                <Text style={{ fontSize: 16 }} type="secondary">
+                <Text className="fs-16" type="secondary">
                   <span role="img" aria-label="blocked">🚫</span>  Is blocked
                 </Text>
               </div>
             )}
             {(previousGoal && previousGoal.completed) && (
               <div>
-                <Text className="d-flex" style={{ fontSize: 16 }} type="secondary">
+                <Text className="d-flex fs-16" type="secondary">
                   <GoalCompletedIcon /> Goals met for this check-in
                 </Text>
               </div>
             )}
             {typeof mood === 'number' && (
               <div>
-                <Text style={{ fontSize: 16 }} type="secondary">
+                <Text className="fs-16" type="secondary">
                   {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].moodLabel}
                 </Text>
               </div>

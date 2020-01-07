@@ -40,7 +40,7 @@ const Questions: React.FC<IExternalProps & FormikProps<IQuestionsFormValues>> = 
       <Col sm={24} md={12}>
         <div className="mb-4">
           <Title level={4}>Questions</Title>
-          <Text style={{ fontSize: 16 }}>Your custom questions go here.</Text>
+          <Text className="fs-16">Your custom questions go here.</Text>
         </div>
         <Form.Item
           className="mb-0"

@@ -62,7 +62,7 @@ const GoalTracker: React.FC<IGoalTracker> = ({
       )}
     >
       <div>
-        <Text style={{ fontSize: 16 }}>
+        <Text className="fs-16">
           Ask recepients if they managed to complete the goals they set the day before.
         </Text>
       </div>
@@ -74,11 +74,11 @@ const GoalTracker: React.FC<IGoalTracker> = ({
           <div className="tracking-questions mt-3">
             <div className="mb-3">
               <Text className="text-muted">Question 1</Text>
-              <Text className="d-block mt-1" style={{ fontSize: 16 }}>What did you accomplish yesterday?</Text>
+              <Text className="d-block mt-1 fs-16">What did you accomplish yesterday?</Text>
             </div>
             <div>
               <Text className="text-muted">Question 2</Text>
-              <Text className="d-block mt-1" style={{ fontSize: 16 }}>What do you plan on doing today?</Text>
+              <Text className="d-block mt-1 fs-16">What do you plan on doing today?</Text>
             </div>
           </div>
         </StyledPanel>

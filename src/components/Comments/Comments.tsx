@@ -177,7 +177,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
           'empty-comments': emptyComments,
         })}
         header={emptyComments ? undefined : (
-          <Text style={{ fontSize: 16 }}>
+          <Text className="fs-16">
             {collapseKey ? 'Hide all comments' : `View all comments (${numberOfComments})`}
           </Text>
         )}

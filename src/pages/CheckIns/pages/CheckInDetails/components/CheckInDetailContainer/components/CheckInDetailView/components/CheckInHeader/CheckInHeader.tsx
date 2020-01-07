@@ -79,7 +79,7 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
       </div>
       <Row>
         <Col xs={12}>
-          <Text style={{ fontSize: 16, color: '#E6FFFB' }}>
+          <Text className="fs-16" style={{ color: '#E6FFFB' }}>
             {moment(data.date).format('MMM DD, hh:mm a')}
           </Text>
         </Col>
