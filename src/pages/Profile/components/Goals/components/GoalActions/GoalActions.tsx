@@ -8,12 +8,14 @@ const { Text } = Typography;
 interface IDropdownMenu {
   setVisibility: (visibility: boolean) => void,
   editAction: () => void,
+  updateProgressAction: () => void,
 }
 
 interface IGoalActions {
   memberId: string,
   goalId: string,
   editAction: () => void,
+  updateProgressAction: () => void,
 }
 
 const MoreVertIcon = () => (
@@ -28,13 +30,13 @@ const MoreVertIcon = () => (
   </svg>
 );
 
-const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, editAction }) => {
+const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, editAction, updateProgressAction }) => {
   return (
     <Menu>
       <Menu.Item key="0" onClick={editAction}>
         <Text>Edit</Text>
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item key="1" onClick={updateProgressAction}>
         <Text>Update progress</Text>
       </Menu.Item>
       <Menu.Item key="2" onClick={() => setVisibility(true)}>
@@ -44,7 +46,7 @@ const DropdownMenu: React.FC<IDropdownMenu> = ({ setVisibility, editAction }) =>
   );
 }
 
-const GoalActions: React.FC<IGoalActions> = ({ goalId, editAction, memberId }) => {
+const GoalActions: React.FC<IGoalActions> = ({ goalId, editAction, memberId, updateProgressAction }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <>
@@ -53,6 +55,7 @@ const GoalActions: React.FC<IGoalActions> = ({ goalId, editAction, memberId }) =
         overlay={DropdownMenu({
           setVisibility,
           editAction,
+          updateProgressAction,
         })}
         trigger={['click']}
       >

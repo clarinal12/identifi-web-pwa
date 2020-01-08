@@ -5,6 +5,7 @@ import { Form, Input, InputNumber, Button } from 'antd';
 import { goalFormSchema } from './validation';
 
 interface IExternalProps {
+  updateProgressState: boolean,
   data?: IGoalFormValues,
   onCancel: () => void,
   onSubmit: (
@@ -24,28 +25,30 @@ export interface IGoalFormValues {
 
 const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
   handleSubmit, touched, errors, values, isSubmitting, handleChange, handleBlur, isValid,
-  setFieldValue, setFieldTouched, onCancel, data,
+  setFieldValue, setFieldTouched, onCancel, data, updateProgressState,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
-      <Form.Item
-        className="mb-2"
-        label="Describe your goal"
-        {...((touched.title && errors.title) && {
-          validateStatus: "error",
-          help: errors.title,
-        })}
-      >
-        <Input
-          size="large"
-          placeholder="What do you want to achieve?"
-          name="title"
-          value={values.title}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={isSubmitting}
-        />
-      </Form.Item>
+      {!updateProgressState && (
+        <Form.Item
+          className="mb-2"
+          label="Describe your goal"
+          {...((touched.title && errors.title) && {
+            validateStatus: "error",
+            help: errors.title,
+          })}
+        >
+          <Input
+            size="large"
+            placeholder="What do you want to achieve?"
+            name="title"
+            value={values.title}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={isSubmitting}
+          />
+        </Form.Item>
+      )}
       <Form.Item
         className="mb-2"
         label="Target value"
@@ -62,6 +65,7 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           placeholder="Set your target value"
           disabled={isSubmitting}
           value={values.target}
+          readOnly={updateProgressState}
           onChange={(value) => {
             setFieldValue('target', value);
             setFieldTouched('target');
@@ -70,7 +74,7 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
       </Form.Item>
       <Form.Item
         className="mb-2"
-        label="Initial value"
+        label={updateProgressState ? 'New value' : 'Initial value'}
         {...((touched.current && errors.current) && {
           validateStatus: "error",
           help: errors.current,
@@ -84,7 +88,7 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           name="current"
           style={{ width: '100%' }}
           size="large"
-          placeholder="Set your initial value"
+          placeholder={updateProgressState ? 'Set your new value' : 'Set your initial value'}
           disabled={isSubmitting}
           value={values.current}
           onChange={(value) => {

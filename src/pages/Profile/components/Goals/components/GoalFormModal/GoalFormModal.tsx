@@ -13,6 +13,7 @@ interface IGoalFormModal {
   editGoalInfo?: IGoalFormValues,
   memberId: string,
   visibility: boolean,
+  updateProgressState: boolean,
   onClose: () => void,
 }
 
@@ -28,7 +29,9 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const GoalFormModal: React.FC<IGoalFormModal> = ({ visibility, memberId, editGoalInfo, onClose }) => {
+const GoalFormModal: React.FC<IGoalFormModal> = ({
+  visibility, memberId, editGoalInfo, onClose, updateProgressState,
+}) => {
   const [loadingState, setLoadingState] = useState(false);
   const [addGoal] = useMutation(ADD_GOAL);
   const [updateGoal] = useMutation(UPDATE_GOAL);
@@ -111,7 +114,8 @@ const GoalFormModal: React.FC<IGoalFormModal> = ({ visibility, memberId, editGoa
           data: editGoalInfo,
         })}
         onCancel={onClose}
-        onSubmit={editGoalInfo ? editAction : createAction}
+        updateProgressState={updateProgressState}
+        onSubmit={(editGoalInfo || updateProgressState) ? editAction : createAction}
       />
     </StyledModal>
   );

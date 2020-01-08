@@ -9,6 +9,7 @@ import GoalFormModal from './components/GoalFormModal';
 import { IGoalFormValues } from './components/GoalFormModal/components/GoalForm/GoalForm';
 import { GOALS } from 'apollo/queries/goals';
 import {IGoal } from 'apollo/types/graphql-types';
+import { useUserContextValue } from 'contexts/UserContext';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -32,6 +33,9 @@ const StyledList = styled(List)`
 const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
   const [editGoalInfo, setEditGoalInfo] = useState<IGoalFormValues | undefined>(undefined);
   const [visibility, setVisibility] = useState(false);
+  const [updateProgressState, setUpdateProgressState] = useState(false);
+  const { account } = useUserContextValue();
+  const memberInfo = account && account.memberInfo;
   const { data, loading, error } = useQuery(GOALS, {
     variables: { memberId },
   });
@@ -65,6 +69,11 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                     <GoalActions
                       memberId={memberId}
                       goalId={id}
+                      updateProgressAction={() => {
+                        setEditGoalInfo(goal);
+                        setVisibility(true);
+                        setUpdateProgressState(true);
+                      }}
                       editAction={() => {
                         setEditGoalInfo(goal);
                         setVisibility(true);
@@ -88,17 +97,23 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
         </>
       ) : (
         <Empty description="No goals yet">
-          <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
-          <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
+          {memberInfo && (memberInfo.memberId === memberId) && (
+            <>
+              <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
+              <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
+            </>
+          )}
         </Empty>
       )}
       <GoalFormModal
         editGoalInfo={editGoalInfo}
         memberId={memberId}
+        updateProgressState={updateProgressState}
         visibility={visibility}
         onClose={() => {
           setEditGoalInfo(undefined);
           setVisibility(false);
+          setUpdateProgressState(false);
         }}
       />
     </>
