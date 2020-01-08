@@ -26,19 +26,6 @@ const StyledCard = styled(Card)`
     .ant-card-head-title, .ant-card-extra {
       padding-bottom: 0;
     }
-    .ant-card-extra {
-      position: relative;
-      .ant-dropdown-trigger {
-        color: #8C8C8C;
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        svg {
-          width: 25px;
-          height: 25px;
-        }
-      }
-    }
   }
   .ant-card-body {
     display: flex;
