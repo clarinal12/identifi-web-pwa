@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Popover, Typography, Badge, Avatar } from 'antd';
 
 import { TCheckInGoal } from 'apollo/types/graphql-types';
-import { MOOD_MAP } from 'utils/moodUtils';
+import { MOOD_MAP } from 'utils/emojiUtils';
 
 const { Text } = Typography;
 
@@ -84,7 +84,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
             {typeof mood === 'number' && (
               <div>
                 <Text className="fs-16" type="secondary">
-                  {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].moodLabel}
+                  {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].label}
                 </Text>
               </div>
             )}

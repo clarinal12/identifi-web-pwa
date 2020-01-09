@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import cx from 'classnames';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
 
+import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { COMMENTS } from 'apollo/queries/comments';
-import { IComment } from 'apollo/types/graphql-types';
+import { IComment, TReaction } from 'apollo/types/graphql-types';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
 
 interface IComments extends RouteComponentProps {
-  sourceId: string,
+  responseId: string,
   numberOfComments: number,
+  reactions: TReaction[],
 }
 
 const StyledCollapse = styled(Collapse)`
@@ -34,7 +36,6 @@ const StyledCollapse = styled(Collapse)`
     }
     &.empty-comments {
       .ant-collapse-header {
-        padding-top: 0 !important;
         cursor: default;
       }
     }
@@ -75,7 +76,7 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location }) => {
+const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location, reactions }) => {
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
@@ -84,21 +85,21 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
 
   const { data, loading, error } = useQuery(COMMENTS, {
     variables: {
-      checkInResponseId: sourceId,
+      checkInResponseId: responseId,
     },
     skip: !collapseKey,
-    onCompleted: () => console.log(`wtf ${sourceId}`)
+    onCompleted: () => console.log(`wtf ${responseId}`)
   });
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const responseId = queryParams.get('responseId');
+    const responseIdFromURL = queryParams.get('responseId');
     const commentId = queryParams.get('commentId');
-    const isLinkFromNotification = (responseId && commentId) && (responseId === sourceId);
+    const isLinkFromNotification = (responseIdFromURL && commentId) && (responseIdFromURL === responseId);
     if (emptyComments || isLinkFromNotification) {
       setCollapseKey('1');
     }
-  }, [emptyComments, location.search, sourceId]);
+  }, [emptyComments, location.search, responseId]);
 
   const contentBody = error ? (
     <Alert
@@ -122,7 +123,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
         return isEditing ? (
           <UserCommentForm
             key={id}
-            sourceId={sourceId}
+            responseId={responseId}
             commentId={id}
             defaultComment={comment}
             setEditCommentId={setEditCommentId}
@@ -135,7 +136,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
               actions: [
                 <CommentActions
                   commentId={id}
-                  responseId={sourceId}
+                  responseId={responseId}
                   setEditCommentId={setEditCommentId}
                 />,
               ],
@@ -156,7 +157,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
           </List.Item>
         );
       })}
-      <UserCommentForm sourceId={sourceId} />
+      <UserCommentForm responseId={responseId} />
     </StyledList>
   );
 
@@ -176,10 +177,17 @@ const Comments: React.FC<IComments> = ({ numberOfComments, sourceId, location })
         className={cx({
           'empty-comments': emptyComments,
         })}
-        header={emptyComments ? undefined : (
-          <Text className="fs-16">
-            {collapseKey ? 'Hide all comments' : `View all comments (${numberOfComments})`}
-          </Text>
+        header={(
+          <div className="d-flex" style={{ justifyContent: 'space-between' }}>
+            <Text className="fs-16">
+              {!emptyComments && (
+                <>
+                  {collapseKey ? 'Hide all comments' : `View all comments (${numberOfComments})`}
+                </>
+              )}
+            </Text>
+            <Reactions reactions={reactions} responseId={responseId} />
+          </div>
         )}
       >
         {loading ? (

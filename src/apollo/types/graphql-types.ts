@@ -15,6 +15,12 @@ export type TCheckInStats = {
   count: number,
 }
 
+export type TReaction = {
+  emoji: number,
+  count: number,
+  hasReacted: boolean,
+}
+
 export type TResponse = {
   id: string,
   respondent: IAccount,
@@ -30,6 +36,7 @@ export type TResponse = {
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
   numberOfComments: number,
+  reactions: TReaction[],
 }
 
 export type TPastCheckIns = {

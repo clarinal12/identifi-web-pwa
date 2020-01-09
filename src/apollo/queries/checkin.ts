@@ -51,6 +51,11 @@ const SINGLE_CHECKIN_FIELDS = `
       ${CHECKIN_GOAL}
     }
     numberOfComments
+    reactions {
+      emoji
+      count
+      hasReacted
+    }
   }
   checkedIn {
     ${CHECKIN_STATS}

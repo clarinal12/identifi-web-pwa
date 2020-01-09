@@ -13,16 +13,16 @@ const { TextArea } = Input;
 const { Text } = Typography;
 
 interface IUserCommentForm extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
-  sourceId: string,
+  responseId: string,
   commentId?: string,
   defaultComment?: string,
   setEditCommentId?: (commentId: string | undefined) => void,
 }
 
 const UserCommentForm: React.FC<IUserCommentForm> = ({
-  sourceId, match, defaultComment = '', commentId, setEditCommentId,
+  responseId, match, defaultComment = '', commentId, setEditCommentId,
 }) => {
-  const textAreaId = `textarea_${sourceId}_${commentId}`;
+  const textAreaId = `textarea_${responseId}_${commentId}`;
   const isUpdating = !!(defaultComment && commentId && setEditCommentId);
   const [comment, setComment] = useState(defaultComment);
   const [loadingState, setLoadingState] = useState(false);
@@ -51,7 +51,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   const refetchQueries = [{
     query: COMMENTS,
     variables: {
-      checkInResponseId: sourceId,
+      checkInResponseId: responseId,
     },
   }, {
     query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
@@ -74,7 +74,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
       await addComment({
         variables: {
           input: {
-            checkInResponseId: sourceId,
+            checkInResponseId: responseId,
             comment,
           },
         },
