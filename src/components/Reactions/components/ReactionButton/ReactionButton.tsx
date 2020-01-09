@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import cx from 'classnames';
 import { useQuery } from 'react-apollo';
 import { Tooltip, Button, Typography } from 'antd';
 
@@ -16,6 +18,14 @@ interface IReactionButton {
   addCheckInReaction: (emoji: number) => void,
   removeCheckInReaction: (emoji: number) => void,
 }
+
+const StyledButton = styled(Button)`
+  &.has-reacted {
+    background: rgba(35, 168, 168, 0.25) !important;
+    border: 1px solid rgb(35, 168, 168) !important;
+    color: #23A8A8 !important;
+  }
+`;
 
 const ReactionButton: React.FC<IReactionButton> = ({
   loadingState, addCheckInReaction, removeCheckInReaction, reaction, responseId,
@@ -55,16 +65,19 @@ const ReactionButton: React.FC<IReactionButton> = ({
       </>}
       onVisibleChange={visibility => setTooltipVisibility(visibility)}
     >
-      <Button
+      <StyledButton
         disabled={loadingState}
         size="small"
-        className="mr-1"
+        className={cx({
+          'mr-1': true,
+          'has-reacted': hasReacted,
+        })}
         onClick={() => {
           hasReacted ? removeCheckInReaction(emoji) : addCheckInReaction(emoji);
         }}
       >
         {REACTION_MAP[emoji].emoji} {count}
-      </Button>
+      </StyledButton>
     </Tooltip>
   );
 };
