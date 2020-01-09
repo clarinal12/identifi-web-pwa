@@ -180,11 +180,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
         header={(
           <div className="d-flex" style={{ justifyContent: 'space-between' }}>
             <Text className="fs-16">
-              {!emptyComments && (
-                <>
-                  {collapseKey ? 'Hide all comments' : `View all comments (${numberOfComments})`}
-                </>
-              )}
+              {!emptyComments && `Comments (${numberOfComments})`}
             </Text>
             <Reactions reactions={reactions} responseId={responseId} />
           </div>
