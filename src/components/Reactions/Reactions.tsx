@@ -4,10 +4,12 @@ import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Button, Menu, Dropdown } from 'antd';
 
+import ReactionButton from './components/ReactionButton';
 import { REACTION_MAP } from 'utils/emojiUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { TReaction } from 'apollo/types/graphql-types';
 
 interface IReactions extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
@@ -87,6 +89,20 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
   const [addCheckInResponseReaction] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
   const [removeCheckInResponseReaction] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
 
+  const refetchQueries = (emoji: number) => {
+    return [{
+      query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
+      variables: {
+        id: match.params.past_checkin_id || match.params.checkin_id,
+      },
+    }, {
+      query: CHECKIN_RESPONSE_REACTORS,
+      variables: {
+        filter: { responseId, emoji },
+      }
+    }];
+  }
+
   const addCheckInReaction = async (emoji: number) => {
     setLoadingState(true);
     try {
@@ -94,12 +110,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
         variables: {
           input: { responseId, emoji }
         },
-        refetchQueries: [{
-          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: {
-            id: match.params.past_checkin_id || match.params.checkin_id,
-          },
-        }],
+        refetchQueries: refetchQueries(emoji),
         awaitRefetchQueries: true,
       });
     } catch(error) {
@@ -117,12 +128,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
     try {
       await removeCheckInResponseReaction({
         variables: { responseId, emoji },
-        refetchQueries: [{
-          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: {
-            id: match.params.past_checkin_id || match.params.checkin_id,
-          },
-        }],
+        refetchQueries: refetchQueries(emoji),
         awaitRefetchQueries: true,
       });
     } catch(error) {
@@ -136,21 +142,17 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
   }
 
   return (
-    <div className="d-flex">
+    <div className="d-flex" onClick={e => e.stopPropagation()}>
       <StyledDiv className="d-flex">
-        {reactions.map(({ emoji, count, hasReacted }, idx) => (
-          <Button
+        {reactions.map((reaction, idx) => (
+          <ReactionButton
+            responseId={responseId}
+            reaction={reaction}
+            loadingState={loadingState}
             key={idx}
-            size="small"
-            className="mr-1"
-            onClick={e => {
-              e.stopPropagation();
-              if (loadingState) return;
-              hasReacted ? removeCheckInReaction(emoji) : addCheckInReaction(emoji);
-            }}
-          >
-            {REACTION_MAP[emoji].emoji} {count}
-          </Button>
+            addCheckInReaction={addCheckInReaction}
+            removeCheckInReaction={removeCheckInReaction}
+          />
         ))}
       </StyledDiv>
       <Dropdown
@@ -169,7 +171,6 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
           size="small"
           icon="plus"
           className="d-flex"
-          onClick={e => e.stopPropagation()}
         >
           <SmileyIcon />
         </StyledButton>

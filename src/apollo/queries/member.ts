@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 
-const MEMBER_FIELDS = `
+export const MEMBER_FIELDS = `
   id
   email
   firstname
