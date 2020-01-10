@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -143,10 +143,20 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             })}
           >
             <List.Item.Meta
-              avatar={<Avatar {...((author && author.avatar) && { src: author.avatar })} />}
+              avatar={(
+                <Link to={`/profile/${author.memberId}`}>
+                  <Avatar {...((author && author.avatar) && { src: author.avatar })} />
+                </Link>
+              )}
               description={
                 <>
-                  <Text style={{ color: '#006D75' }} strong className="mr-2">{nameString}</Text>
+                  <Link
+                    to={`/profile/${author.memberId}`}
+                    style={{ color: '#006D75', fontWeight: 500 }}
+                    className="mr-2"
+                  >
+                    {nameString}
+                  </Link>
                   <Text type="secondary">{comment}</Text>
                 </>
               }

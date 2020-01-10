@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
 import { Avatar, Input, List, Typography, Button } from 'antd';
 
@@ -111,7 +111,11 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   return (
     <List.Item>
       <List.Item.Meta
-        avatar={<Avatar {...((account && account.avatar) && { src: account.avatar })} />}
+        avatar={account && (
+          <Link to={`/profile/${account.memberInfo.memberId}`}>
+            <Avatar {...((account && account.avatar) && { src: account.avatar })} />
+          </Link>
+        )}
         description={(
           <>
             <TextArea

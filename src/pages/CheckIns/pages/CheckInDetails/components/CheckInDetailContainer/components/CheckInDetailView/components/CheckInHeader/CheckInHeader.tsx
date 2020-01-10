@@ -1,9 +1,8 @@
 import React from 'react';
 import cx from 'classnames';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import { Card, Typography, Icon, Button, Tag, Row, Col, Avatar, Tooltip } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
@@ -19,7 +18,7 @@ interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
 
 const AvatarWrapper = styled.div`
   .active-avatars, .inactive-avatars {
-    .ant-avatar {
+    .ant-avatar-link {
       cursor: pointer;
       &:not(:first-of-type) {
         margin-left: -10px;
@@ -40,11 +39,13 @@ const AvatarWrapper = styled.div`
 
 const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
   return <>
-    {source.map(({ id, email, firstname, lastname, avatar }) => {
+    {source.map(({ id, email, firstname, lastname, avatar, memberId }) => {
       const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
       return (
         <Tooltip key={id} placement="topRight" title={derivedLabel}>
-          <Avatar {...(avatar && { src : avatar })} />
+          <Link to={`/profile/${memberId}`} className="ant-avatar-link">
+            <Avatar {...(avatar && { src : avatar })} />
+          </Link>
         </Tooltip>
       );
     })}

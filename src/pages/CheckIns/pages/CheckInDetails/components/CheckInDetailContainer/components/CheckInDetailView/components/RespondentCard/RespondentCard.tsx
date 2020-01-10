@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import cx from 'classnames';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card, Typography } from 'antd';
 
@@ -51,7 +52,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
   const {
     id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments, reactions,
   } = response;
-  const { firstname, lastname, email, role, avatar } = respondent;
+  const { firstname, lastname, email, role, avatar, memberId } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard
@@ -59,13 +60,15 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       title={(
         <div className="d-flex">
           <div className="mr-3">
-            <RespondentAvatar
-              avatar={avatar}
-              mood={mood}
-              blocker={blocker}
-              previousGoal={previousGoal}
-              name={getDisplayName(respondent)}
-            />
+            <Link to={`/profile/${memberId}`}>
+              <RespondentAvatar
+                avatar={avatar}
+                mood={mood}
+                blocker={blocker}
+                previousGoal={previousGoal}
+                name={getDisplayName(respondent)}
+              />
+            </Link>
           </div>
           <div>
             <Title className="mb-0" level={4}>{deriviedName}</Title>
