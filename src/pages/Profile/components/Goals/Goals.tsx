@@ -36,6 +36,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
   const [updateProgressState, setUpdateProgressState] = useState(false);
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
+  const isGoalOwner = memberInfo && (memberInfo.memberId === memberId);
   const { data, loading, error } = useQuery(GOALS, {
     variables: { memberId },
   });
@@ -65,21 +66,23 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                 <List.Item
                   key={id}
                   className="px-3"
-                  actions={[
-                    <GoalActions
-                      memberId={memberId}
-                      goalId={id}
-                      updateProgressAction={() => {
-                        setEditGoalInfo(goal);
-                        setVisibility(true);
-                        setUpdateProgressState(true);
-                      }}
-                      editAction={() => {
-                        setEditGoalInfo(goal);
-                        setVisibility(true);
-                      }}
-                    />
-                  ]}
+                  {...(isGoalOwner && {
+                    actions: [
+                      <GoalActions
+                        memberId={memberId}
+                        goalId={id}
+                        updateProgressAction={() => {
+                          setEditGoalInfo(goal);
+                          setVisibility(true);
+                          setUpdateProgressState(true);
+                        }}
+                        editAction={() => {
+                          setEditGoalInfo(goal);
+                          setVisibility(true);
+                        }}
+                      />
+                    ]
+                  })}
                 >
                   <Row className="w-100">
                     <Col span={16}>
@@ -93,11 +96,13 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
               );
             })}
           </StyledList>
-          <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
+          {isGoalOwner && (
+            <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
+          )}
         </>
       ) : (
         <Empty description="No goals yet">
-          {memberInfo && (memberInfo.memberId === memberId) && (
+          {isGoalOwner && (
             <>
               <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
               <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
