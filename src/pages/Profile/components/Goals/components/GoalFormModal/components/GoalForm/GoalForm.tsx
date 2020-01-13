@@ -82,9 +82,6 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
       >
         <InputNumber
           min={0}
-          {...((typeof values.target === 'number') && {
-            max: values.target,
-          })}
           name="current"
           style={{ width: '100%' }}
           size="large"
