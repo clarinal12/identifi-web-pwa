@@ -73,3 +73,8 @@
 .fs-16 {
   font-size: 16px !important;
 }
+
+.breadcrumb-menu {
+  max-height: 300px;
+  overflow: auto;
+}

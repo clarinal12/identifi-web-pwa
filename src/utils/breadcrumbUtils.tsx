@@ -19,7 +19,7 @@ const CheckInSchedulesMenu: React.FC<RouteComponentProps<{ checkin_id: string }>
     {({ checkInSchedules }) => (
       <Menu
         prefixCls="ignore-class"
-        className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical"
+        className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
       >
         {checkInSchedules.map(({ id, name }) => (
           <Menu.Item
@@ -56,7 +56,7 @@ const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ m
           return (
             <Menu
               prefixCls="ignore-class"
-              className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical"
+              className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
             >
               {members.filter(({ memberId }) => memberId !== memberInfo.memberId ).map((member) => (
                 <Menu.Item
