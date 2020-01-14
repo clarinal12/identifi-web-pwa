@@ -65,7 +65,6 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           placeholder="Set your target value"
           disabled={isSubmitting}
           value={values.target}
-          readOnly={updateProgressState}
           onChange={(value) => {
             setFieldValue('target', value);
             setFieldTouched('target');

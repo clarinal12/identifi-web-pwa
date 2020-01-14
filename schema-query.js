@@ -29,7 +29,7 @@ axios.request({
     const filteredData = finalResult.data.__schema.types.filter(type => type.possibleTypes !== null);
     finalResult.data.__schema.types = filteredData;
     try {
-      await fs.writeFileSync('./src/fragmentTypes.json', JSON.stringify(finalResult.data));
+      await fs.writeFileSync('fragment-types.json', JSON.stringify(finalResult.data));
       console.log('Fragment types successfully extracted!');
     } catch(err) {
       console.error('Error writing fragmentTypes file', err);

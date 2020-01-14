@@ -2,7 +2,7 @@ import ApolloClient, {
   IntrospectionFragmentMatcher, InMemoryCache,
 } from 'apollo-boost';
 
-import introspectionQueryResultData from '../fragmentTypes.json'
+import introspectionQueryResultData from '../../fragment-types.json'
 import { getAuthToken, isLoggedIn } from 'utils/userUtils';
 import env from 'config/env';
 
