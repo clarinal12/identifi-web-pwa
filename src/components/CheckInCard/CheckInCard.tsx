@@ -52,7 +52,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
 }) => {
   const { account } = useUserContextValue();
   const [cardLoadingState, setCardLoadingState] = useState(false);
-  const { memberInfo } = account || { memberInfo: { memberId: '', isOwner: false } };
+  const memberInfo = account && account.memberInfo;
   const derivedTimezone = account ? account.timezone : timezone;
 
   return (
@@ -67,16 +67,17 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         })}
         className="d-flex"
         title={<Tag style={{ color: '#595959' }} color={COLOR_MAP[status]}>{status}</Tag>}
-        extra={(
-          <CardActions
-            id={id}
-            name={name}
-            active={status !== 'DEACTIVATED'}
-            isLastItem={isLastItem}
-            isOwner={memberInfo.isOwner}
-            setCardLoadingState={setCardLoadingState}
-          />
-        )}
+        {...((memberInfo && memberInfo.isOwner) && {
+          extra: (
+            <CardActions
+              id={id}
+              name={name}
+              active={status !== 'DEACTIVATED'}
+              isLastItem={isLastItem}
+              setCardLoadingState={setCardLoadingState}
+            />
+          ),
+        })}
       >
         <Title level={4} className="mb-2">{name}</Title>
         <div className="replies-block">

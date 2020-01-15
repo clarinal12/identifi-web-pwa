@@ -136,4 +136,5 @@ export interface IGoal {
   target: number,
   current: number,
   type: 'INTEGER',
+  unit: string,
 }

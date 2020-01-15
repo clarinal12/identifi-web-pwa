@@ -21,6 +21,7 @@ export interface IGoalFormValues {
   target: number,
   current: number,
   type: string,
+  unit: string,
 }
 
 const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
@@ -93,6 +94,20 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
           }}
         />
       </Form.Item>
+      <Form.Item
+        className="mb-2"
+        label="Unit of measure (optional)"
+      >
+        <Input
+          size="large"
+          placeholder="eg. kg, lbs, in, km"
+          name="unit"
+          value={values.unit}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={isSubmitting}
+        />
+      </Form.Item>
       <div className="d-flex pt-4" style={{ justifyContent: 'flex-end' }}>
         <Button
           size="large"
@@ -123,6 +138,7 @@ export default withFormik<IExternalProps, IGoalFormValues>({
     current: data ? data.current : 1,
     target: data ? data.target : 5,
     type: 'INTEGER',
+    unit: '',
   }),
   validationSchema: goalFormSchema,
   handleSubmit: (values, formikBag) => {

@@ -6,6 +6,7 @@ const GOAL_FIELDS = `
   target
   current
   type
+  unit
 `;
 
 export const GOALS = gql`

@@ -61,7 +61,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
         <>
           <StyledList bordered className="my-4">
             {data.goals.map((goal: IGoal) => {
-              const { id, title, target, current } = goal;
+              const { id, title, target, current, unit } = goal;
               return (
                 <List.Item
                   key={id}
@@ -89,7 +89,8 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
                       <Text className="fs-16">{title}</Text>
                     </Col>
                     <Col span={8} className="text-right">
-                      <Text className="fs-16">{current}/{target}</Text>
+                      <Text className="fs-16 mr-2">{current}/{target}</Text>
+                      <Text strong className="fs-16">{unit}</Text>
                     </Col>
                   </Row>
                 </List.Item>

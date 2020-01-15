@@ -15,7 +15,6 @@ interface IMenuOverlay {
   id: string,
   name: string,
   active: boolean,
-  isOwner: boolean,
   setVisible: (state: boolean) => void,
   deleteAction: () => void,
   toggleCheckInStatus: () => void,
@@ -25,7 +24,6 @@ interface ICardActions {
   id: string,
   name: string,
   active: boolean,
-  isOwner: boolean,
   setCardLoadingState: (state: boolean) => void,
   isLastItem: boolean,
 }
@@ -43,7 +41,7 @@ const MoreVertIcon = () => (
 );
 
 const MenuOverlay: React.FC<IMenuOverlay> = ({
-  id, name, isOwner, setVisible, deleteAction, toggleCheckInStatus, active,
+  id, name, setVisible, deleteAction, toggleCheckInStatus, active,
 }) => (
   <Menu
     onClick={({ key, domEvent }: ClickParam) => {
@@ -53,14 +51,12 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
       }
     }}
   >
-    {isOwner && (
-      <Menu.Item
-        key={0}
-        onClick={toggleCheckInStatus}
-      >
-        <a href="#!">{active ? 'Deactivate' : 'Activate'}</a>
-      </Menu.Item>
-    )}
+    <Menu.Item
+      key={0}
+      onClick={toggleCheckInStatus}
+    >
+      <a href="#!">{active ? 'Deactivate' : 'Activate'}</a>
+    </Menu.Item>
     <Menu.Item key={1}>
       <Link
         to={{
@@ -71,34 +67,32 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
         Edit
       </Link>
     </Menu.Item>
-    {isOwner && (
-      <Menu.Item key={2}>
-        <Popconfirm
-          title={<>
-            <Title className="fs-16">Delete Check-in?</Title>
-            <Text>Are you sure you want to delete this Check-in?</Text><br />
-            <Text>This action cannot be undone.</Text>
-          </>}
-          icon={<Icon type="question-circle" />}
-          okText="Delete"
-          okType="danger"
-          placement="leftBottom"
-          onCancel={() => setVisible(false)}
-          onConfirm={deleteAction}
-        >
-          <a href="#!">
-            <Text type="danger">
-              Delete
-            </Text>
-          </a>
-        </Popconfirm>
-      </Menu.Item>
-    )}
+    <Menu.Item key={2}>
+      <Popconfirm
+        title={<>
+          <Title className="fs-16">Delete Check-in?</Title>
+          <Text>Are you sure you want to delete this Check-in?</Text><br />
+          <Text>This action cannot be undone.</Text>
+        </>}
+        icon={<Icon type="question-circle" />}
+        okText="Delete"
+        okType="danger"
+        placement="leftBottom"
+        onCancel={() => setVisible(false)}
+        onConfirm={deleteAction}
+      >
+        <a href="#!">
+          <Text type="danger">
+            Delete
+          </Text>
+        </a>
+      </Popconfirm>
+    </Menu.Item>
   </Menu>
 );
 
 const CardActions: React.FC<ICardActions> = ({
-  isOwner, id, name, setCardLoadingState, isLastItem, active,
+  id, name, setCardLoadingState, isLastItem, active,
 }) => {
   const { account } = useUserContextValue();
   const [deleteCheckInSchedule] = useMutation(DELETE_CHECKIN_SCHEDULE);
@@ -188,7 +182,6 @@ const CardActions: React.FC<ICardActions> = ({
         deleteAction,
         toggleCheckInStatus,
         setVisible,
-        isOwner,
       })}
       trigger={['click']}
       onVisibleChange={visibility => setVisible(visibility)}
