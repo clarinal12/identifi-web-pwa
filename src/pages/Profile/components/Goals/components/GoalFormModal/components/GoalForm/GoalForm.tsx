@@ -138,7 +138,7 @@ export default withFormik<IExternalProps, IGoalFormValues>({
     current: data ? data.current : 1,
     target: data ? data.target : 5,
     type: 'INTEGER',
-    unit: '',
+    unit: data ? data.unit : '',
   }),
   validationSchema: goalFormSchema,
   handleSubmit: (values, formikBag) => {
