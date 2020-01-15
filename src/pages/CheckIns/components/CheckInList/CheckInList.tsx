@@ -19,6 +19,7 @@ interface ICheckInList {
 
 interface IEmptyState {
   participatingOnly: boolean,
+  isOwner?: boolean,
 }
 
 const StyledRow = styled(Row)`
@@ -26,7 +27,7 @@ const StyledRow = styled(Row)`
   align-items: center;
 `;
 
-const EmptyState: React.FC<IEmptyState> = ({ participatingOnly }) => (
+const EmptyState: React.FC<IEmptyState> = ({ participatingOnly, isOwner }) => (
   <StyledRow className="d-flex">
     <Col sm={24} md={12} className="text-center">
       <Title level={1}>
@@ -35,7 +36,7 @@ const EmptyState: React.FC<IEmptyState> = ({ participatingOnly }) => (
       <Title level={4} type="secondary" className="my-4">
         Use check-ins to get regular input from your teammates on things you care about. You could run daily standups, weekly retrospectives, or something that works for your team.
       </Title>
-      {!participatingOnly && (
+      {(!participatingOnly && isOwner) && (
         <Link to="/checkins/new">
           <Button
             size="large"
@@ -62,6 +63,7 @@ const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
   const { checkInSchedules, loading: contextLoadingState } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
+  const memberInfo = account && account.memberInfo;
 
   const { loading, data } = useQuery(CHECKIN_SCHEDULES, {
     variables: {
@@ -80,7 +82,7 @@ const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
   ) : (
     <>
       {(checkInScheduleSource || []).length === 0 ? (
-        <EmptyState participatingOnly={participatingOnly} />
+        <EmptyState participatingOnly={participatingOnly} isOwner={memberInfo && memberInfo.isOwner} />
       ): (
         <Row gutter={[24, 24]}>
           {checkInScheduleSource.map((item: ICheckinData, idx: number) => (

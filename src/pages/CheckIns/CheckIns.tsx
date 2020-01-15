@@ -29,7 +29,7 @@ const CheckIns: React.FC = () => {
           <Title level={3}>Check-ins</Title>
         </Col>
         <Col sm={12}>
-          {(checkInSchedules.length > 0) && (
+          {(checkInSchedules.length > 0) && (memberInfo && memberInfo.isOwner) && (
             <Link className="float-right" to="/checkins/new">
               <Button
                 size="large"
