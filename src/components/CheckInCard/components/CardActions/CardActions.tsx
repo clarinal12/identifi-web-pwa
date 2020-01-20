@@ -4,9 +4,8 @@ import { useMutation } from 'react-apollo';
 import { Dropdown, Menu, Popconfirm, Typography, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 
-import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
+import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
 import { DELETE_CHECKIN_SCHEDULE, TOGGLE_CHECKIN_STATUS } from 'apollo/mutations/checkin';
 
 const { Title, Text } = Typography;
@@ -94,11 +93,9 @@ const MenuOverlay: React.FC<IMenuOverlay> = ({
 const CardActions: React.FC<ICardActions> = ({
   id, name, setCardLoadingState, isLastItem, active,
 }) => {
-  const { account } = useUserContextValue();
   const [deleteCheckInSchedule] = useMutation(DELETE_CHECKIN_SCHEDULE);
   const [toggleCheckInScheduleStatus] = useMutation(TOGGLE_CHECKIN_STATUS);
   const { alertError, alertWarning, alertSuccess } = useMessageContextValue();
-  const activeCompany = account && account.activeCompany;
 
   const [visible, setVisible] = useState(false);
 
@@ -108,22 +105,10 @@ const CardActions: React.FC<ICardActions> = ({
     try {
       await deleteCheckInSchedule({
         variables: { id },
-        refetchQueries: [{
-          query: CHECKIN_SCHEDULES,
-          variables: {
-            filter: { 
-              companyId: activeCompany && activeCompany.id,
-            },
-          },
-        }, {
-          query: CHECKIN_SCHEDULES,
-          variables: {
-            filter: {
-              companyId: activeCompany && activeCompany.id,
-              participatingOnly: true,
-            }
-          },
-        }],
+        refetchQueries: [
+          { query: ALL_CHECKIN_SCHEDULES },
+          { query: MY_CHECKIN_SCHEDULES },
+        ],
         awaitRefetchQueries: true,
       });
       alertWarning("A check-in has been deleted");
@@ -149,14 +134,10 @@ const CardActions: React.FC<ICardActions> = ({
             active: !active,
           },
         },
-        refetchQueries: [{
-          query: CHECKIN_SCHEDULES,
-          variables: {
-            filter: { 
-              companyId: activeCompany && activeCompany.id,
-            },
-          },
-        }],
+        refetchQueries: [
+          { query: ALL_CHECKIN_SCHEDULES },
+          { query: MY_CHECKIN_SCHEDULES },
+        ],
         awaitRefetchQueries: true,
       });
       const alertMethod = active ? alertWarning : alertSuccess;

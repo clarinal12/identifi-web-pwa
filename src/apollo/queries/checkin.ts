@@ -103,9 +103,17 @@ const CHECKIN_FIELDS = `
   }
 `;
 
-export const CHECKIN_SCHEDULES = gql`
-  query CheckInSchedules($filter: CheckInSchedulesInputFilter!) {
-    checkInSchedules(filter: $filter) {
+export const ALL_CHECKIN_SCHEDULES = gql`
+  query AllCheckInSchedules {
+    allCheckInSchedules {
+      ${CHECKIN_FIELDS}
+    }
+  }
+`;
+
+export const MY_CHECKIN_SCHEDULES = gql`
+  query MyCheckInSchedules {
+    myCheckInSchedules {
       ${CHECKIN_FIELDS}
     }
   }

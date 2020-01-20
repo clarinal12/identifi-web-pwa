@@ -7,9 +7,8 @@ import { Row, Col, Typography, Spin, Alert } from 'antd';
 import AppLayout from 'components/AppLayout';
 import CheckInForm from '../../components/CheckInForm';
 import { IFinalValues } from '../../components/CheckInForm/components/CheckInFormTabs/CheckInFormTabs';
-import { CHECKIN_SCHEDULES, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
-import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { LoadingIcon, Spinner } from 'components/PageSpinner';
 
@@ -18,8 +17,6 @@ const { Title } = Typography;
 const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ history, match }) => {
   const [loadingState, setLoadingState] = useState(false);
   const { alertSuccess, alertError } = useMessageContextValue();
-  const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
@@ -48,22 +45,10 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
             },
           },
         },
-        refetchQueries: [{
-          query: CHECKIN_SCHEDULES,
-          variables: {
-            filter: {
-              companyId: activeCompany && activeCompany.id,
-            }
-          },
-        }, {
-          query: CHECKIN_SCHEDULES,
-          variables: {
-            filter: {
-              companyId: activeCompany && activeCompany.id,
-              participatingOnly: true,
-            }
-          },
-        }],
+        refetchQueries: [
+          { query: ALL_CHECKIN_SCHEDULES },
+          { query: MY_CHECKIN_SCHEDULES },
+        ],
         awaitRefetchQueries: true,
       });
       if (result.data.updateCheckInSchedule) {
