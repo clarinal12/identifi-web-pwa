@@ -9,6 +9,7 @@ import Comments from 'components/Comments';
 import RespondentAvatar from './components/RespondentAvatar';
 import { TResponse } from 'apollo/types/graphql-types';
 import { getDisplayName } from 'utils/userUtils';
+import { getMultipleLines } from 'utils/textUtils';
 
 const { Text, Title } = Typography;
 
@@ -88,9 +89,11 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {currentGoal && (
           <div className="div-wrapper mb-3">
             <Text strong>TODAY:</Text>
-            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-              {currentGoal.goal}
-            </Title>
+            {getMultipleLines(currentGoal.goal).map((line, idx) => (
+              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                {line}
+              </Title>
+            ))}
           </div>
         )}
         {previousGoal && (
@@ -107,17 +110,21 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
                 return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
               }()}
             </Text>
-            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-              {previousGoal.goal}
-            </Title>
+            {getMultipleLines(previousGoal.goal).map((line, idx) => (
+              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                {line}
+              </Title>
+            ))}
           </div>
         )}
         {blocker && (
           <div className="div-wrapper">
             <Text strong className="text-danger">BLOCKED:</Text>
-            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-              {blocker}
-            </Title>
+            {getMultipleLines(blocker).map((line, idx) => (
+              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                {line}
+              </Title>
+            ))}
           </div>
         )}
         {answers.length > 0 && (
@@ -128,7 +135,11 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {answers.map(({ question, answer }, idx) => (
           <div key={idx} className="div-wrapper">
             <Text type="secondary">{question}</Text>
-            <Title className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>{answer}</Title>
+            {getMultipleLines(answer).map((line, idx) => (
+              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                {line}
+              </Title>
+            ))}
           </div>
         ))}
       </div>

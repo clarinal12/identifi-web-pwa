@@ -11,6 +11,7 @@ import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
+import { getMultipleLines } from 'utils/textUtils';
 import { COMMENTS } from 'apollo/queries/comments';
 import { IComment, TReaction } from 'apollo/types/graphql-types';
 
@@ -157,7 +158,12 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                   >
                     {nameString}
                   </Link>
-                  <Text type="secondary">{comment}</Text>
+                  {getMultipleLines(comment).map((line, idx) => (
+                    <>
+                      <Text key={idx} type="secondary">{line}</Text>
+                      {(getMultipleLines(comment).length > 1) && <br/>}
+                    </>
+                  ))}
                 </>
               }
             />
