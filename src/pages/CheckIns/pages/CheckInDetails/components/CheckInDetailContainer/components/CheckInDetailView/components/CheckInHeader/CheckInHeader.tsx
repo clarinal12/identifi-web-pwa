@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Card, Typography, Icon, Button, Tag, Row, Col, Avatar, Tooltip } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
+import { useUserContextValue } from 'contexts/UserContext';
 import { IAccount, TCurrentCheckIn } from 'apollo/types/graphql-types';
 
 const { Title, Text } = Typography;
@@ -53,6 +54,8 @@ const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
 };
 
 const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInState, match }) => {
+  const { account } = useUserContextValue();
+  const memberInfo = account && account.memberInfo;
   return (
     <Card style={{ background: '#006D75' }} className="mb-3">
       <div className="d-flex mb-2" style={{ justifyContent: 'space-between' }}>
@@ -66,17 +69,19 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
             </Tag>
           </div>
         </div>
-        <Link to={`/checkins/${match.params.checkin_id}/edit`}>
-          <Button
-            type="link"
-            htmlType="button"
-            size="large"
-            className="p-0"
-            style={{ fontSize: 20, color: '#E6FFFB' }}
-          >
-            <Icon type="setting" />
-          </Button>
-        </Link>
+        {(memberInfo && memberInfo.isOwner) && (
+          <Link to={`/checkins/${match.params.checkin_id}/edit`}>
+            <Button
+              type="link"
+              htmlType="button"
+              size="large"
+              className="p-0"
+              style={{ fontSize: 20, color: '#E6FFFB' }}
+            >
+              <Icon type="setting" />
+            </Button>
+          </Link>
+        )}
       </div>
       <Row>
         <Col xs={12}>
