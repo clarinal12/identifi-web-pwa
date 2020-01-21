@@ -6,6 +6,7 @@ import { Button, Menu, Dropdown } from 'antd';
 
 import ReactionButton from './components/ReactionButton';
 import { REACTION_MAP } from 'utils/emojiUtils';
+import { SmileyIcon } from 'utils/iconUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
@@ -70,17 +71,6 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeChe
       </Menu.Item>
     ))}
   </StyledMenu>
-);
-
-const SmileyIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M9.492 1.58325C5.122 1.58325 1.58325 5.12992 1.58325 9.49992C1.58325 13.8699 5.122 17.4166 9.492 17.4166C13.8699 17.4166 17.4166 13.8699 17.4166 9.49992C17.4166 5.12992 13.8699 1.58325 9.492 1.58325ZM9.49992 15.8333C6.00075 15.8333 3.16659 12.9991 3.16659 9.49992C3.16659 6.00075 6.00075 3.16659 9.49992 3.16659C12.9991 3.16659 15.8333 6.00075 15.8333 9.49992C15.8333 12.9991 12.9991 15.8333 9.49992 15.8333ZM13.4583 7.52075C13.4583 8.17784 12.9278 8.70825 12.2708 8.70825C11.6137 8.70825 11.0833 8.17784 11.0833 7.52075C11.0833 6.86367 11.6137 6.33325 12.2708 6.33325C12.9278 6.33325 13.4583 6.86367 13.4583 7.52075ZM6.72908 8.70825C7.38617 8.70825 7.91658 8.17784 7.91658 7.52075C7.91658 6.86367 7.38617 6.33325 6.72908 6.33325C6.072 6.33325 5.54158 6.86367 5.54158 7.52075C5.54158 8.17784 6.072 8.70825 6.72908 8.70825ZM13.2603 11.677C12.5083 12.9753 11.107 13.8541 9.49992 13.8541C7.89284 13.8541 6.49159 12.9753 5.7395 11.677C5.58909 11.4158 5.787 11.0833 6.08784 11.0833H12.912C13.2208 11.0833 13.4108 11.4158 13.2603 11.677Z"
-      fill="#BFBFBF"
-    />
-  </svg>
 );
 
 const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {

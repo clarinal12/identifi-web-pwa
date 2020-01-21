@@ -21,24 +21,27 @@ const MemberList: React.FC = () => {
     <Spinner />
   ) : (
     <StyledList>
-      {members.map((member) => (
-        <List.Item
-          key={member.memberId}
-          actions={[
-            <Link to={`/profile/${member.memberId}`}>
-              <Button htmlType="button">
-                View profile
-              </Button>
-            </Link>
-          ]}
-        >
-          <List.Item.Meta
-            avatar={member.avatar && <Avatar size="large" src={member.avatar} />}
-            title={getDisplayName(member)}
-            description={<Text className="text-muted" style={{ fontSize: 12 }}>{member.role}</Text>}
-          />
-        </List.Item>
-      ))}
+      {members.map((member) => {
+        const guestIndicator = member.isGuest ? ' (Guest)' : '';
+        return (
+          <List.Item
+            key={member.memberId}
+            actions={[
+              <Link to={`/profile/${member.memberId}`}>
+                <Button htmlType="button">
+                  View profile
+                </Button>
+              </Link>
+            ]}
+          >
+            <List.Item.Meta
+              avatar={member.avatar && <Avatar size="large" src={member.avatar} />}
+              title={`${getDisplayName(member)}${guestIndicator}`}
+              description={<Text className="text-muted" style={{ fontSize: 12 }}>{member.role}</Text>}
+            />
+          </List.Item>
+        );
+      })}
     </StyledList>
   );
 }

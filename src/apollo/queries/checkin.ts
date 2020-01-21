@@ -21,6 +21,17 @@ const CHECKIN_GOAL = `
   completed
 `;
 
+const COMPANY_FIELDS = `
+  id
+  name
+  owner {
+    ${MEMBER_FIELDS}
+  }
+  slackEnabled
+  createdAt
+  updatedAt
+`;
+
 const SINGLE_CHECKIN_FIELDS = `
   id
   date
@@ -100,6 +111,9 @@ const CHECKIN_FIELDS = `
   replies {
     expected
     total
+  }
+  company {
+    ${COMPANY_FIELDS}
   }
 `;
 

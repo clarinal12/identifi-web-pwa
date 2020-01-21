@@ -10,6 +10,7 @@ export const MEMBER_FIELDS = `
   role
   memberId
   avatar
+  isGuest
 `;
 
 export const MEMBERS = gql`

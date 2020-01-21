@@ -4,6 +4,7 @@ import { useMutation } from 'react-apollo';
 import { Dropdown, Menu, Popconfirm, Typography, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 
+import { MoreVertIcon } from 'utils/iconUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
 import { DELETE_CHECKIN_SCHEDULE, TOGGLE_CHECKIN_STATUS } from 'apollo/mutations/checkin';
@@ -26,18 +27,6 @@ interface ICardActions {
   setCardLoadingState: (state: boolean) => void,
   isLastItem: boolean,
 }
-
-const MoreVertIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path 
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M6 10C4.9 10 4 10.9 4 12C4 13.1 4.9 14 6 14C7.1 14 8 13.1 8 12C8 10.9 7.1 10 6 10ZM18 10C16.9 10 16 10.9 16 12C16 13.1 16.9 14 18 14C19.1 14 20 13.1 20 12C20 10.9 19.1 10 18 10ZM10 12C10 10.9 10.9 10 12 10C13.1 10 14 10.9 14 12C14 13.1 13.1 14 12 14C10.9 14 10 13.1 10 12Z"
-      fill="black"
-      fillOpacity="0.54"
-    />
-  </svg>
-);
 
 const MenuOverlay: React.FC<IMenuOverlay> = ({
   id, name, setVisible, deleteAction, toggleCheckInStatus, active,
