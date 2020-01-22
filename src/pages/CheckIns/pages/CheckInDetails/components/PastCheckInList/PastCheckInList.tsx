@@ -19,18 +19,26 @@ interface IPastCheckInList extends RouteComponentProps<{ checkin_id: string }> {
 
 const StyledListWrapper = styled.div`
   max-height: 250px;
-  overflow: auto;
+  overflow: hidden;
+
+  &:hover {
+    overflow: auto;
+    &::-webkit-scrollbar-thumb {
+      display: block;
+    }
+  }
 
   /* total width */
   &::-webkit-scrollbar {
-    width: 0 !important;
+    width: 6px !important;
   }
 
   /* scrollbar itself */
   &::-webkit-scrollbar-thumb {
     background-color: #babac0 !important;
-    border-radius: 0 !important;
+    border-radius: 12px !important;
     border: none !important;
+    display: none;
   }
 
   /* set button(top and bottom of the scrollbar) */
@@ -39,9 +47,20 @@ const StyledListWrapper = styled.div`
   }
 
   .ant-list-item {
-    padding: 8px 0 !important;
+    padding: 8px 16px !important;
+    &.active {
+      background: #E6FFFB;
+      .list-content-wrapper {
+        .ant-typography, .anticon-right {
+          color: #08979C;
+        }
+      }
+    }
     &:hover {
       cursor: pointer;
+      &:not(.active) {
+        background: #F5F5F5;
+      }
     }
     .list-content-wrapper {
       width: 100%;
