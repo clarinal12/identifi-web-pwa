@@ -1,12 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import { withFormik, FormikProps } from 'formik';
-import { Form, Select, Button, Typography } from 'antd';
+import {
+  Form, Button,
+  // Typography, Select,
+} from 'antd';
 
 import { memberInviteFormSchema } from './validation';
 import env from 'config/env';
 
-const { Text } = Typography;
+// const { Text } = Typography;
 
 export interface IMemberInviteFormValues {
   emails: string[],
@@ -17,21 +20,21 @@ interface IExternalProps {
   onSkip: () => void,
 }
 
-const StyledFormItem = styled(Form.Item)`
-  .ant-select-selection__rendered {
-    margin: 4px 8px !important;
-    .ant-select-selection__choice {
-      background: #E6FFFB !important;
-      border: 1px solid #B5F5EC !important;
-      display: flex;
-      align-items: center
-    }
-  }
-`;
+// const StyledFormItem = styled(Form.Item)`
+//   .ant-select-selection__rendered {
+//     margin: 4px 8px !important;
+//     .ant-select-selection__choice {
+//       background: #E6FFFB !important;
+//       border: 1px solid #B5F5EC !important;
+//       display: flex;
+//       align-items: center
+//     }
+//   }
+// `;
 
 const MemberInvite: React.FC<IExternalProps & FormikProps<IMemberInviteFormValues>> = ({
-  values, isSubmitting, setFieldTouched, setFieldValue, handleSubmit, errors, touched, isValid,
-  setSubmitting, onSkip,
+  // values, errors, touched, isValid, setFieldTouched, setFieldValue,
+  isSubmitting, handleSubmit, setSubmitting, onSkip,
 }) => (
   <Form colon={false} onSubmit={handleSubmit}>
     <Form.Item>
@@ -48,7 +51,7 @@ const MemberInvite: React.FC<IExternalProps & FormikProps<IMemberInviteFormValue
         Add a Slack Team
       </Button>
     </Form.Item>
-    <div className="my-4 text-center">
+    {/* <div className="my-4 text-center">
       <Text strong>or</Text>
     </div>
     <StyledFormItem
@@ -82,7 +85,7 @@ const MemberInvite: React.FC<IExternalProps & FormikProps<IMemberInviteFormValue
       >
         Send invitations
       </Button>
-    </Form.Item>
+    </Form.Item> */}
     <Form.Item>
       <Button
         type="link"
