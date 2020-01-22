@@ -49,6 +49,7 @@ const StyledListWrapper = styled.div`
   .ant-list-item {
     padding: 8px 16px !important;
     &.active {
+      border-left: 4px solid #08979C;
       background: #E6FFFB;
       .list-content-wrapper {
         .ant-typography, .anticon-right {
@@ -77,7 +78,7 @@ const StyledEmptyRow = styled(Row)`
 `;
 
 const EmptyState = () => (
-  <StyledEmptyRow className="d-flex">
+  <StyledEmptyRow className="d-flex px-3">
     <Col className="text-center">
       <PastClockIcon />
       <Title className="mt-4 fs-16">No past check-ins yet</Title>

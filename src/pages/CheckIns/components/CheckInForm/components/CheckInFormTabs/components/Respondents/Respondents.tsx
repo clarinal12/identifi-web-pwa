@@ -1,25 +1,35 @@
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { withFormik, FormikProps } from 'formik';
-import { Form, Select, Button } from 'antd';
+import { Form, Select, Button, Switch, Typography } from 'antd';
 
 import { MEMBERS } from 'apollo/queries/member';
 import { useUserContextValue } from 'contexts/UserContext';
 import { respondentFormSchema } from './validation';
 import { IAccount } from 'apollo/types/graphql-types';
 
-interface IExternalProps {
-  defaultValue: string[],
+const { Text } = Typography;
+
+interface IRespondents {
+  isPrivate: boolean,
+  watchers: string[],
+  respondents: string[],
+}
+
+interface IExternalProps extends IRespondents {
   onNextStep: () => void,
   onBackStep: () => void,
   parentValid: boolean,
-  mergeValuesToState: (values: string[]) => void,
+  mergeRespondentsToState: (values: string[]) => void,
+  mergeWatchersToState: (values: string[]) => void,
+  mergeIsPrivateToState: (value: boolean) => void,
   isUpdating: boolean,
 }
 
-const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[] }>> = ({
+const Respondents: React.FC<IExternalProps & FormikProps<IRespondents>> = ({
   values, isSubmitting, handleSubmit, errors, touched, isValid,
-  setFieldValue, setFieldTouched, parentValid, onBackStep, mergeValuesToState,
+  setFieldValue, setFieldTouched, parentValid, onBackStep,
+  mergeRespondentsToState, mergeWatchersToState, mergeIsPrivateToState,
 }) => {
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
@@ -37,6 +47,10 @@ const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[]
         value: memberId, label: derivedLabel,
       };
     });
+
+  const watcherOptions = memberOptions.filter(({ value }) => !values.respondents.includes(value));
+
+  console.log(watcherOptions);
 
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -57,10 +71,15 @@ const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[]
           placeholder="Select members"
           optionFilterProp="label"
           optionLabelProp="label"
-          onChange={(value) => {
-            setFieldValue('respondents', value);
+          onChange={(respondents) => {
+            setFieldValue('respondents', respondents);
             setFieldTouched('respondents');
-            mergeValuesToState(value);
+            mergeRespondentsToState(respondents);
+            if (values.isPrivate && values.watchers.length > 0) {
+              const filteredWatchers = values.watchers.filter(watcher => !respondents.includes(watcher));
+              setFieldValue('watchers', filteredWatchers);
+              mergeWatchersToState(filteredWatchers);
+            }
           }}
         >
           {memberOptions.map(({ value, label }) => (
@@ -68,6 +87,51 @@ const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[]
           ))}
         </Select>
       </Form.Item>
+      <Form.Item>
+        <Switch
+          checked={values.isPrivate}
+          className="mr-2"
+          onChange={state => {
+            setFieldValue('isPrivate', state);
+            mergeIsPrivateToState(state);
+            if (!state) {
+              setFieldValue('watchers', []);
+              mergeWatchersToState([]);
+            }
+          }}
+        />
+        <Text className="fs-16">Make this check-in visible to respondents and watchers only</Text>
+      </Form.Item>
+      {values.isPrivate && (
+        <Form.Item
+          label="Watchers"
+          {...((touched.watchers && errors.watchers) && {
+            validateStatus: "error",
+            help: errors.watchers,
+          })}
+        >
+          <Select<string[]>
+            allowClear
+            mode="multiple"
+            size="large"
+            disabled={isSubmitting}
+            loading={loading}
+            value={loading ? [] : values.watchers}
+            placeholder="Select watchers"
+            optionFilterProp="label"
+            optionLabelProp="label"
+            onChange={(value) => {
+              setFieldValue('watchers', value);
+              setFieldTouched('watchers');
+              mergeWatchersToState(value);
+            }}
+          >
+            {watcherOptions.map(({ value, label }) => (
+              <Select.Option key={value} value={value} label={label}>{label}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
       <div className="float-right mt-4">
         <Button
           style={{ minWidth: 85 }}
@@ -91,11 +155,13 @@ const Respondents: React.FC<IExternalProps & FormikProps<{ respondents: string[]
   );
 }
 
-export default withFormik<IExternalProps, { respondents: string[] }>({
+export default withFormik<IExternalProps, IRespondents>({
   validationSchema: respondentFormSchema,
-  isInitialValid: ({ isUpdating, defaultValue }) => isUpdating || (defaultValue && defaultValue.length > 0),
-  mapPropsToValues: ({ defaultValue }) => ({
-    respondents: defaultValue,
+  isInitialValid: ({ isUpdating, respondents }) => isUpdating || respondents.length > 0,
+  mapPropsToValues: ({ respondents, watchers, isPrivate }) => ({
+    respondents,
+    watchers,
+    isPrivate,
   }),
   handleSubmit: (_, formikBag) => {
     const { setSubmitting, props } = formikBag;

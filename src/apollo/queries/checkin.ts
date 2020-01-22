@@ -95,6 +95,9 @@ const CHECKIN_FIELDS = `
   respondents {
     ${MEMBER_FIELDS}
   }
+  watchers {
+    ${MEMBER_FIELDS}
+  }
   questions
   slackChannel {
     id
@@ -115,6 +118,7 @@ const CHECKIN_FIELDS = `
   company {
     ${COMPANY_FIELDS}
   }
+  isPrivate
 `;
 
 export const ALL_CHECKIN_SCHEDULES = gql`

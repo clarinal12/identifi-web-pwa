@@ -118,7 +118,8 @@ export interface ICheckinData {
   moodsEnabled: boolean,
   blockersEnabled: boolean,
   respondents: IAccount[],
-  questions: string[]
+  watchers: IAccount[],
+  questions: string[],
   slackChannel: {
     id: string,
     name: string,
@@ -131,6 +132,7 @@ export interface ICheckinData {
     total: number,
   }
   company: TCompany,
+  isPrivate: boolean,
 }
 
 export interface IComment {

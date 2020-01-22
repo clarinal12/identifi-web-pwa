@@ -27,11 +27,13 @@ export interface IFinalValues {
   id?: string,
   name: string,
   respondents: string[],
+  watchers: string[],
   questions: string[],
   slackChannelId: string,
   goalsEnabled: boolean,
   moodsEnabled: boolean,
   blockersEnabled: boolean,
+  isPrivate: boolean,
   timings: {
     frequency: string,
     days: string[],
@@ -66,14 +68,28 @@ const TAB_STEPS = [{
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Respondents
       isUpdating={!!defaultValues.id}
-      defaultValue={defaultValues.respondents}
+      respondents={defaultValues.respondents}
+      watchers={defaultValues.watchers}
+      isPrivate={defaultValues.isPrivate}
       parentValid={parentValid}
       onNextStep={() => setActiveTabKey && setActiveTabKey('questions')}
       onBackStep={() => setActiveTabKey && setActiveTabKey('schedule')}
-      mergeValuesToState={(values: string[]) => {
+      mergeRespondentsToState={(respondents: string[]) => {
         setFormValue({
           ...defaultValues,
-          respondents: values,
+          respondents,
+        })
+      }}
+      mergeWatchersToState={(watchers: string[]) => {
+        setFormValue({
+          ...defaultValues,
+          watchers,
+        })
+      }}
+      mergeIsPrivateToState={(isPrivate: boolean) => {
+        setFormValue({
+          ...defaultValues,
+          isPrivate,
         })
       }}
     />
