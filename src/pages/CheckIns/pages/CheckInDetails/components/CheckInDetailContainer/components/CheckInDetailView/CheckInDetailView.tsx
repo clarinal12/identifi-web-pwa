@@ -12,6 +12,7 @@ const { Title, Text } = Typography;
 
 interface ICheckInDetailView {
   done?: boolean,
+  organizationName: string,
   checkInName: string,
   checkInStatus: string,
   data: TCurrentCheckIn,
@@ -33,7 +34,7 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, checkInStatus, done }) => {
+const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, organizationName, checkInName, checkInStatus, done }) => {
   useEffect(() => {
     console.log('done loading');
   }, []);
@@ -41,6 +42,7 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, checkInName, ch
     <>
       <CheckInHeader
         data={data}
+        organizationName={organizationName}
         checkInName={checkInName}
         checkInState={ done ? 'FINISHED' : checkInStatus}
       />

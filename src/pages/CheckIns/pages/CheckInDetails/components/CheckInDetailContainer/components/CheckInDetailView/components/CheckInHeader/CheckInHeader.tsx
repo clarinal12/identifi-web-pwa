@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Card, Typography, Icon, Button, Tag, Row, Col, Avatar, Tooltip } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
+import { BuildingIcon } from 'utils/iconUtils';
 import { useUserContextValue } from 'contexts/UserContext';
 import { IAccount, TCurrentCheckIn } from 'apollo/types/graphql-types';
 
@@ -14,6 +15,7 @@ const { Title, Text } = Typography;
 interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
   data: TCurrentCheckIn,
   checkInName: string,
+  organizationName: string,
   checkInState: string,
 }
 
@@ -38,6 +40,22 @@ const AvatarWrapper = styled.div`
   }
 `;
 
+const StyledOrgBlock = styled.div`
+  align-items: center;
+  svg {
+    margin-right: 4px;
+    width: 18px;
+    height: 18px;
+    path {
+      fill: #FFF;
+      fill-opacity: 1;
+    }
+  }
+  .ant-typography {
+    color: #FFF;
+  }
+`;
+
 const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
   return <>
     {source.map(({ id, email, firstname, lastname, avatar, memberId }) => {
@@ -53,7 +71,7 @@ const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
   </>
 };
 
-const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInState, match }) => {
+const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, checkInName, checkInState, match }) => {
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
   return (
@@ -88,6 +106,10 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
           <Text className="fs-16" style={{ color: '#E6FFFB' }}>
             {moment(data.date).format('MMM DD, hh:mm a')}
           </Text>
+          <StyledOrgBlock className="d-flex mt-2">
+            <BuildingIcon />
+            <Text>{organizationName}</Text>
+          </StyledOrgBlock>
         </Col>
         <Col xs={12}>
           <AvatarWrapper className="float-right d-flex">
