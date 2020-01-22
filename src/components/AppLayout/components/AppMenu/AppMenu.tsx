@@ -26,15 +26,17 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const APP_ROUTES: IAppRoute[] = [{
-  label: 'Timeline',
-  icon: <Icon type="hourglass" />,
-  route: '/timeline',
-}, {
-  label: 'Objectives',
-  icon: <Icon type="bulb" />,
-  route: '/objectives',
-}, {
+const APP_ROUTES: IAppRoute[] = [
+// {
+//   label: 'Timeline',
+//   icon: <Icon type="hourglass" />,
+//   route: '/timeline',
+// }, {
+//   label: 'Objectives',
+//   icon: <Icon type="bulb" />,
+//   route: '/objectives',
+// },
+{
   label: 'Check-ins',
   icon: <Icon type="flag" />,
   route: '/checkins',
