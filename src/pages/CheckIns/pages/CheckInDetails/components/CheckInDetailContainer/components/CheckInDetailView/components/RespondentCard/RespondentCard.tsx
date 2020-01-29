@@ -60,18 +60,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
       title={(
         <div className="d-flex">
           <div className="mr-3">
-            <Link to={`/profile/${memberId}`}>
-              <RespondentAvatar
-                avatar={avatar}
-                mood={mood}
-                blocker={blocker}
-                previousGoal={previousGoal}
-                name={getDisplayName(respondent)}
-              />
-            </Link>
+            <RespondentAvatar
+              avatar={avatar}
+              mood={mood}
+              blocker={blocker}
+              previousGoal={previousGoal}
+              name={getDisplayName(respondent)}
+            />
           </div>
           <div>
-            <Title className="mb-0" level={4}>{deriviedName}</Title>
+            <Link to={`/profile/${memberId}`}>
+              <Title className="mb-0" level={4}>{deriviedName}</Title>
+            </Link>
             {role && (
               <Text className="text-muted" style={{ fontSize: 12 }}>{role}</Text>
             )}

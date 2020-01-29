@@ -60,8 +60,7 @@ const StyledAvatarWrapper = styled.div`
 `;
 
 const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name }) => {
-  const hasHoverInfo = mood || blocker || previousGoal;
-
+  const hasHoverInfo = (typeof mood === 'number') || blocker || previousGoal;
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
@@ -83,7 +82,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
                 </Text>
               </div>
             )}
-            {typeof mood === 'number' && (
+            {(typeof mood === 'number') && (
               <div>
                 <Text className="fs-16" type="secondary">
                   {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].label}
