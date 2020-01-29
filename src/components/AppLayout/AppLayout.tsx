@@ -13,6 +13,7 @@ const { Sider, Header, Content } = Layout;
 const StyledLayout = styled(Layout)`
   min-height: 100vh !important;
   .main-content {
+    background: #F5F5F5;
     @media (min-width: 576px) {
       margin-left: 256px;
     }

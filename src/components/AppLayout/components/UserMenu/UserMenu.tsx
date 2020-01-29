@@ -46,7 +46,14 @@ const UserMenu: React.FC<RouteComponentProps> = ({ history }) => {
       trigger={['click']}
     >
       <a href="#!">
-        <Avatar className="mr-2" icon="user" />
+        <Avatar
+          className="mr-2"
+          {...(account && account.avatar ? {
+            src: account.avatar,
+          } : {
+            icon: 'user',
+          })}
+        />
         <Text>{nameString}</Text>
       </a>
     </Dropdown>
