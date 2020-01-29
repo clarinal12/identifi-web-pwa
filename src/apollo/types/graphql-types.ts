@@ -12,7 +12,8 @@ export type TCheckInGoal = {
 
 export type TCheckInStats = {
   percentage: number,
-  count: number,
+  colored: IAccount[],
+  faded: IAccount[],
 }
 
 export type TReaction = {

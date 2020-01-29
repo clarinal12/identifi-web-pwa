@@ -63,7 +63,11 @@
 }
 
 .text-success {
-  color: #237804 !important;
+  color: #52C41A !important;
+}
+
+.text-warning {
+  color: #FAAD14 !important;
 }
 
 .w-100 {

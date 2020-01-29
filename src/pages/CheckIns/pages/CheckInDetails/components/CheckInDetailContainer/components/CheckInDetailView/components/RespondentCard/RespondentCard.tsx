@@ -1,9 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Card, Typography } from 'antd';
+import { Card, Typography, Icon } from 'antd';
 
 import Comments from 'components/Comments';
 import RespondentAvatar from './components/RespondentAvatar';
@@ -98,16 +97,16 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         )}
         {previousGoal && (
           <div className="div-wrapper">
-            <Text 
-              strong
-              className={cx({
-                'text-success': previousGoal.completed,
-                'text-danger': !previousGoal.completed,
-              })}
-            >
+            <Text strong className="text-muted">
               {function() {
                 const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
-                return timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
+                const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
+                const iconIndicator = previousGoal.completed ? (
+                  <Icon className="text-success fs-16 mr-1" type="check-circle" theme="filled" />
+                ) : <Icon className="text-warning fs-16 mr-1" type="exclamation-circle" theme="filled" />;
+                return <>
+                  {iconIndicator} {dateString}
+                </>;
               }()}
             </Text>
             {getMultipleLines(previousGoal.goal).map((line, idx) => (
@@ -119,7 +118,9 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         )}
         {blocker && (
           <div className="div-wrapper">
-            <Text strong className="text-danger">BLOCKED:</Text>
+            <Text strong className="text-danger">
+              <Icon className="mr-1" type="stop" style={{ transform: 'rotate(90deg)' }} /> BLOCKED:
+            </Text>
             {getMultipleLines(blocker).map((line, idx) => (
               <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
                 {line}

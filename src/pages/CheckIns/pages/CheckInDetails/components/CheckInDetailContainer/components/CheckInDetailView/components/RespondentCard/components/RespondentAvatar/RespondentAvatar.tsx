@@ -4,7 +4,7 @@ import { Popover, Typography, Badge, Avatar } from 'antd';
 
 import { TCheckInGoal } from 'apollo/types/graphql-types';
 import { MOOD_MAP } from 'utils/emojiUtils';
-import { GoalCompletedIcon } from 'utils/iconUtils';
+import { GoalCompletedIcon, IconBlocked } from 'utils/iconUtils';
 
 const { Text } = Typography;
 
@@ -17,31 +17,44 @@ interface IRespondentAvatar {
 }
 
 const StyledPopoverContentWrapper = styled.div`
-  .goal-completed {
-    margin-right: 4px;
+  .ant-typography {
+    align-items: center;
+    .blocked {
+      margin-right: 8px;
+      line-height: 0 !important;
+    }
+    .goal-completed {
+      margin-right: 4px;
+      line-height: 0 !important;
+    }
   }
 `;
 
 const StyledAvatarWrapper = styled.div`
+  position: relative;
   .ant-badge {
     cursor: pointer;
-    position: relative;
-    .blocked {
-      top: 54px;
-      right: 54px;
-      font-size: 16px;
-    }
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    left: 0;
     .mood {
-      background: transparent;
+      font-size: 16px;
+      position: absolute;
       top: 10px;
       right: 10px;
-      border: none;
-      font-size: 16px;
-      box-shadow: none;
+    }
+    .blocked {
+      background: #FFF;
+      border-radius: 50%;
+      line-height: 0;
+      position: absolute;
+      bottom: 0;
     }
     .goal-completed {
-      margin-top: 54px;
-      margin-right: 10px;
+      position: absolute;
+      top: 53px;
+      right: 10px;
     }
   }
 `;
@@ -58,8 +71,8 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
           <StyledPopoverContentWrapper>
             {blocker && (
               <div>
-                <Text className="fs-16" type="secondary">
-                  <span role="img" aria-label="blocked">🚫</span>  Is blocked
+                <Text className="fs-16 d-flex" type="secondary">
+                  <IconBlocked /> Is blocked
                 </Text>
               </div>
             )}
@@ -93,29 +106,26 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
   
   return (
     <AvatarWrapper>
+      <Avatar
+        style={{ cursor: 'pointer' }}
+        size={64}
+        {...(avatar && { src : avatar })}
+      />
       <Badge
         {...((previousGoal && previousGoal.completed) && { 
           count: <GoalCompletedIcon />,
         })}
-      >
-        <Badge
-          {...((typeof mood === 'number') && {
-            count: <span className="mood" role="img" aria-label="mood">{MOOD_MAP[mood].emoji}</span>,
-          })}
-        >
-          <Badge
-            {...(blocker && {
-              count: <span className="blocked" role="img" aria-label="blocked">🚫</span>,
-            })}
-          >
-            <Avatar
-              style={{ cursor: 'pointer' }}
-              size={64}
-              {...(avatar && { src : avatar })}
-            />
-          </Badge>
-        </Badge>
-      </Badge>
+      />
+      <Badge
+        {...((typeof mood === 'number') && {
+          count: <span className="mood" role="img" aria-label="mood">{MOOD_MAP[mood].emoji}</span>,
+        })}
+      />
+      <Badge
+        {...(blocker && {
+          count: <IconBlocked />,
+        })}
+      />
     </AvatarWrapper>
   );
 }

@@ -1,10 +1,5 @@
 import { gql } from 'apollo-boost';
 
-const CHECKIN_STATS = `
-  percentage
-  count
-`;
-
 const MEMBER_FIELDS = `
   id
   email
@@ -13,6 +8,16 @@ const MEMBER_FIELDS = `
   avatar
   memberId
   role
+`;
+
+const CHECKIN_STATS = `
+  percentage
+  colored {
+    ${MEMBER_FIELDS}
+  }
+  faded {
+    ${MEMBER_FIELDS}
+  }
 `;
 
 const CHECKIN_GOAL = `

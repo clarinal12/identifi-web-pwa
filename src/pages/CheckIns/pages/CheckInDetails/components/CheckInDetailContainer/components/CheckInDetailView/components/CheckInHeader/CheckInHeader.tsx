@@ -1,14 +1,13 @@
 import React from 'react';
-import cx from 'classnames';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Card, Typography, Icon, Button, Tag, Row, Col, Avatar, Tooltip } from 'antd';
+import { Card, Typography, Icon, Button, Tag } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
 import { BuildingIcon } from 'utils/iconUtils';
 import { useUserContextValue } from 'contexts/UserContext';
-import { IAccount, TCurrentCheckIn } from 'apollo/types/graphql-types';
+import { TCurrentCheckIn } from 'apollo/types/graphql-types';
 
 const { Title, Text } = Typography;
 
@@ -18,27 +17,6 @@ interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
   organizationName: string,
   checkInState: string,
 }
-
-const AvatarWrapper = styled.div`
-  .active-avatars, .inactive-avatars {
-    .ant-avatar-link {
-      cursor: pointer;
-      &:not(:first-of-type) {
-        margin-left: -10px;
-      }
-    }
-  }
-  .active-avatars {
-    .ant-avatar {
-      border: 1.5px solid #FFFFFF;
-    }
-  }
-  .inactive-avatars {
-    .ant-avatar {
-      filter: grayscale(1);
-    }
-  }
-`;
 
 const StyledOrgBlock = styled.div`
   align-items: center;
@@ -56,21 +34,6 @@ const StyledOrgBlock = styled.div`
   }
 `;
 
-const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
-  return <>
-    {source.map(({ id, email, firstname, lastname, avatar, memberId }) => {
-      const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
-      return (
-        <Tooltip key={id} placement="topRight" title={derivedLabel}>
-          <Link to={`/profile/${memberId}`} className="ant-avatar-link">
-            <Avatar {...(avatar && { src : avatar })} />
-          </Link>
-        </Tooltip>
-      );
-    })}
-  </>
-};
-
 const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, checkInName, checkInState, match }) => {
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
@@ -81,11 +44,6 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, check
           <Title className="mb-0 mr-3" level={3} style={{ color: '#FFFFFF' }}>
             {checkInName}
           </Title>
-          <div>
-            <Tag color={COLOR_MAP[checkInState]}>
-              <Text>{checkInState}</Text>
-            </Tag>
-          </div>
         </div>
         {(memberInfo && memberInfo.isOwner) && (
           <Link to={`/checkins/${match.params.checkin_id}/edit`}>
@@ -101,32 +59,23 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, check
           </Link>
         )}
       </div>
-      <Row>
-        <Col xs={12}>
-          <Text className="fs-16" style={{ color: '#E6FFFB' }}>
-            {moment(data.date).format('MMM DD, hh:mm a')}
-          </Text>
-          <StyledOrgBlock className="d-flex mt-2">
-            <BuildingIcon />
-            <Text>{organizationName}</Text>
-          </StyledOrgBlock>
-        </Col>
-        <Col xs={12}>
-          <AvatarWrapper className="float-right d-flex">
-            <div
-              className={cx({
-                'active-avatars': true,
-                'mr-3': data.notSubmitted.length > 0,
-              })}
-            >
-              <StackedAvatars source={data.submitted} />
-            </div>
-            <div className="inactive-avatars">
-              <StackedAvatars source={data.notSubmitted} />
-            </div>
-          </AvatarWrapper>
-        </Col>
-      </Row>
+      <Text className="fs-16" style={{ color: '#E6FFFB' }}>
+        {moment(data.date).format('MMM DD, hh:mm a')}
+      </Text>
+      <div
+        className="d-flex mt-2"
+        style={{ justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <StyledOrgBlock className="d-flex">
+          <BuildingIcon />
+          <Text>{organizationName}</Text>
+        </StyledOrgBlock>
+        <div>
+          <Tag className="m-0" color={COLOR_MAP[checkInState]}>
+            <Text>{checkInState}</Text>
+          </Tag>
+        </div>
+      </div>
     </Card>
   );
 }
