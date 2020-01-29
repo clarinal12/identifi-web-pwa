@@ -47,6 +47,7 @@ export type TResponse = {
   previousGoal: TCheckInGoal,
   numberOfComments: number,
   reactions: TReaction[],
+  streak: number,
 }
 
 export type TPastCheckIns = {

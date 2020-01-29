@@ -50,7 +50,7 @@ const StyledCard = styled(Card)`
 
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
   const {
-    id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments, reactions,
+    id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments, reactions, streak,
   } = response;
   const { firstname, lastname, email, role, avatar, memberId } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
@@ -65,6 +65,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
               mood={mood}
               blocker={blocker}
               previousGoal={previousGoal}
+              streak={streak}
               name={getDisplayName(respondent)}
             />
           </div>

@@ -72,6 +72,7 @@ const SINGLE_CHECKIN_FIELDS = `
       count
       hasReacted
     }
+    streak
   }
   checkedIn {
     ${CHECKIN_STATS}

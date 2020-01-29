@@ -14,6 +14,7 @@ interface IRespondentAvatar {
   blocker: string,
   avatar: string | null,
   name: string | undefined,
+  streak: number,
 }
 
 const StyledPopoverContentWrapper = styled.div`
@@ -56,10 +57,30 @@ const StyledAvatarWrapper = styled.div`
       top: 53px;
       right: 10px;
     }
+    .streak {
+      position: absolute;
+      -webkit-transform-origin-x: unset;
+      transform-origin: unset;
+      transform: unset;
+      left: 0;
+      top: 2px;
+    }
   }
 `;
 
-const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name }) => {
+const StreakIcon = (streak: number) => {
+  let streakType = undefined;
+  if (streak >= 2 && streak <= 4) {
+    streakType = <span className="streak fs-16" role="img" aria-label="like-streak">👍</span>;
+  } else if (streak >= 5 && streak <= 14) {
+    streakType = <span className="streak fs-16" role="img" aria-label="fire-streak">🔥</span>
+  } else if (streak >= 15) {
+    streakType = <span className="streak fs-16" role="img" aria-label="spark-streak">💥</span>
+  }
+  return streakType;
+}
+
+const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name, streak }) => {
   const hasHoverInfo = (typeof mood === 'number') || blocker || previousGoal;
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
@@ -86,6 +107,13 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
               <div>
                 <Text className="fs-16" type="secondary">
                   {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].label}
+                </Text>
+              </div>
+            )}
+            {StreakIcon(streak) && (
+              <div>
+                <Text className="fs-16" type="secondary">
+                  {StreakIcon(streak)} {streak} day streak
                 </Text>
               </div>
             )}
@@ -123,6 +151,11 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
       <Badge
         {...(blocker && {
           count: <IconBlocked />,
+        })}
+      />
+      <Badge
+        {...(StreakIcon(streak) && {
+          count: StreakIcon(streak),
         })}
       />
     </AvatarWrapper>
