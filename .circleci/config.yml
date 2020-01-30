@@ -77,7 +77,7 @@ jobs:
           keys:
             - dependencies-{{ checksum "package.json" }}
       - run:
-          command: GENERATE_SOURCEMAP=false CI=false npm run build
+          command: CI=false npm run build
           no_output_timeout: 30m
       - save_cache:
           key: build-{{ checksum ".circle-sha" }}
