@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Card, Row, Col, Typography, Avatar, Tooltip } from 'antd';
 
 import { IAccount, TCheckInStats } from 'apollo/types/graphql-types';
+import { getDisplayName } from 'utils/userUtils';
 
 const { Title, Text } = Typography;
 
@@ -11,6 +12,11 @@ interface ICheckInStats {
   goals: TCheckInStats,
   blockers: TCheckInStats,
   checkins: TCheckInStats,
+}
+
+interface IStackedAvatars {
+  source: IAccount[],
+  maxDisplay?: number,
 }
 
 const StyledCard = styled(Card)`
@@ -25,6 +31,13 @@ const AvatarWrapper = styled.div`
       &:not(:first-of-type) {
         margin-left: -10px;
       }
+      .ant-avatar-string {
+        line-height: 1.25;
+        .compressed-members {
+          letter-spacing: -1px;
+          font-size: 12px;
+        }
+      }
     }
   }
   .active-avatars {
@@ -34,14 +47,17 @@ const AvatarWrapper = styled.div`
   }
   .inactive-avatars {
     .ant-avatar {
+      border: 1.5px solid #FFFFFF;
       filter: grayscale(1);
     }
   }
 `;
 
-const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
+const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) => {
+  const avatarList = [...source].splice(0, maxDisplay);
+  const tooltipList = [...source].splice(maxDisplay);
   return <>
-    {source.map(({ id, email, firstname, lastname, avatar, memberId }) => {
+    {avatarList.map(({ id, email, firstname, lastname, avatar, memberId }) => {
       const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
       return (
         <Tooltip key={id} placement="topRight" title={derivedLabel}>
@@ -51,6 +67,26 @@ const StackedAvatars: React.FC<{ source: IAccount[] }> = ({ source }) => {
         </Tooltip>
       );
     })}
+    {(tooltipList.length > 0) && (
+      <Tooltip
+        placement="topRight"
+        title={<>
+          {tooltipList.map((user, idx) => (
+            <Text className="d-block" key={idx}>
+              <Link to={`/profile/${user.memberId}`} style={{ color: '#FFF' }}>
+                {getDisplayName(user)}
+              </Link>
+            </Text>
+          ))}
+        </>}
+      >
+        <a href="#!" className="ant-avatar-link">
+          <Avatar size="small">
+            <Text className="compressed-members" type="secondary">+{tooltipList.length}</Text>
+          </Avatar>
+        </a>      
+      </Tooltip>    
+    )}
   </>
 };
 
