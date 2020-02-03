@@ -31,23 +31,23 @@ const AvatarWrapper = styled.div`
       &:not(:first-of-type) {
         margin-left: -10px;
       }
-      .ant-avatar-string {
-        line-height: 1.25;
-        .compressed-members {
-          letter-spacing: -1px;
-          font-size: 12px;
+      .ant-avatar {
+        border: 1.5px solid #FFFFFF;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        .ant-avatar-string {
+          line-height: 1.25;
+          .compressed-members {
+            letter-spacing: -1px;
+            font-size: 12px;
+          }
         }
       }
     }
   }
-  .active-avatars {
-    .ant-avatar {
-      border: 1.5px solid #FFFFFF;
-    }
-  }
   .inactive-avatars {
     .ant-avatar {
-      border: 1.5px solid #FFFFFF;
       filter: grayscale(1);
     }
   }
@@ -62,7 +62,7 @@ const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) =
       return (
         <Tooltip key={id} placement="topRight" title={derivedLabel}>
           <Link to={`/profile/${memberId}`} className="ant-avatar-link">
-            <Avatar size="small" {...(avatar && { src : avatar })} />
+            <Avatar {...(avatar && { src : avatar })} />
           </Link>
         </Tooltip>
       );
@@ -81,7 +81,7 @@ const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) =
         </>}
       >
         <a href="#!" className="ant-avatar-link">
-          <Avatar size="small">
+          <Avatar>
             <Text className="compressed-members" type="secondary">+{tooltipList.length}</Text>
           </Avatar>
         </a>      
