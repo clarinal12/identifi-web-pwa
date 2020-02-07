@@ -1,10 +1,11 @@
-import React, { createContext, useContext, PropsWithChildren } from 'react';
+import React, { createContext, useContext, PropsWithChildren, useState } from 'react';
 import { IAccount } from 'apollo/types/graphql-types';
 
 interface IUserContext {
   account: IAccount | undefined,
   token: string | undefined,
   authenticated: boolean,
+  setUserState?: (userState: IUserContext) => void,
 }
 
 const UserContext = createContext<IUserContext>({
@@ -15,8 +16,11 @@ const UserContext = createContext<IUserContext>({
 
 const UserProvider: React.FC<PropsWithChildren<{ value: any }>> = ({ value, children }) => {
   const { account, token, authenticated } = value;
+  const [userState, setUserState] = useState<IUserContext>({
+    account, token, authenticated,
+  });
   return (
-    <UserContext.Provider value={{ account, token, authenticated }}>
+    <UserContext.Provider value={{ ...userState, setUserState }}>
       {children}
     </UserContext.Provider>
   );

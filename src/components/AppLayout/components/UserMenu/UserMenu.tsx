@@ -29,7 +29,7 @@ const MenuOptions: React.FC<IMenu> = ({ redirectToLogin, goToProfile }) => (
 ); 
 
 const UserMenu: React.FC<RouteComponentProps> = ({ history }) => {
-  const { account } = useUserContextValue();
+  const { account, setUserState } = useUserContextValue();
   const nameString = getDisplayName(account);
   return (
     <Dropdown
@@ -39,6 +39,13 @@ const UserMenu: React.FC<RouteComponentProps> = ({ history }) => {
           history.push('/profile');
         },
         redirectToLogin: () => {
+          if (setUserState) {
+            setUserState({
+              account: undefined,
+              token: undefined,
+              authenticated: false,
+            });
+          }
           localStorage.clear();
           history.push('/login');
         },
