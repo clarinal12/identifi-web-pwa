@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { emojify } from 'node-emoji';
 import styled from 'styled-components';
 import cx from 'classnames';
 import { useQuery } from 'react-apollo';
 import { Tooltip, Button, Typography } from 'antd';
 
-import { REACTION_MAP } from 'utils/emojiUtils';
 import { getDisplayName } from 'utils/userUtils';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { TReaction, IAccount } from 'apollo/types/graphql-types';
@@ -15,8 +15,8 @@ interface IReactionButton {
   loadingState: boolean,
   reaction: TReaction,
   responseId: string,
-  addCheckInReaction: (emoji: number) => void,
-  removeCheckInReaction: (emoji: number) => void,
+  addCheckInReaction: (emojiId: number) => void,
+  removeCheckInReaction: (emojiId: number) => void,
 }
 
 const StyledButton = styled(Button)`
@@ -35,18 +35,18 @@ const ReactionButton: React.FC<IReactionButton> = ({
 
   const { data, loading } = useQuery(CHECKIN_RESPONSE_REACTORS, {
     variables: {
-      filter: { responseId, emoji },
+      filter: { responseId, emojiId: emoji.id },
     },
     skip: !tooltipVisibility,
   });
 
   const reactorSource = (data && !loading) ?
-    [REACTION_MAP[emoji].label]
+    [emoji.description]
       .concat(
         data.checkInResponseReactors
           .map((member: IAccount | undefined) => getDisplayName(member))
       ) :
-    [REACTION_MAP[emoji].label];
+    [emoji.description];
   if (loading) reactorSource.push('Loading...');
 
   return (
@@ -73,10 +73,10 @@ const ReactionButton: React.FC<IReactionButton> = ({
           'has-reacted': hasReacted,
         })}
         onClick={() => {
-          hasReacted ? removeCheckInReaction(emoji) : addCheckInReaction(emoji);
+          hasReacted ? removeCheckInReaction(emoji.id) : addCheckInReaction(emoji.id);
         }}
       >
-        {REACTION_MAP[emoji].emoji} {count}
+        {emojify(emoji.web)} {count}
       </StyledButton>
     </Tooltip>
   );

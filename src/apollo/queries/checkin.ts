@@ -10,6 +10,12 @@ const MEMBER_FIELDS = `
   role
 `;
 
+const EMOJI_FIELDS = `
+  id
+  web
+  description
+`;
+
 const CHECKIN_STATS = `
   percentage
   colored {
@@ -58,7 +64,9 @@ const SINGLE_CHECKIN_FIELDS = `
     }
     onTime
     goalCompleted
-    mood
+    mood {
+      ${EMOJI_FIELDS}
+    }
     blocker
     currentGoal {
       ${CHECKIN_GOAL}
@@ -68,7 +76,9 @@ const SINGLE_CHECKIN_FIELDS = `
     }
     numberOfComments
     reactions {
-      emoji
+      emoji {
+        ${EMOJI_FIELDS}
+      }
       count
       hasReacted
     }

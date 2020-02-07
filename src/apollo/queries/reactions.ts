@@ -9,3 +9,13 @@ export const CHECKIN_RESPONSE_REACTORS = gql`
     }
   }
 `;
+
+export const EMOJIS = gql`
+  query Emojis {
+    emojis {
+      id
+      web
+      description
+    }
+  }
+`;

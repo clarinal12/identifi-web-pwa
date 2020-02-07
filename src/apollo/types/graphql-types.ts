@@ -17,7 +17,7 @@ export type TCheckInStats = {
 }
 
 export type TReaction = {
-  emoji: number,
+  emoji: TEmoji,
   count: number,
   hasReacted: boolean,
 }
@@ -41,7 +41,7 @@ export type TResponse = {
   }>,
   onTime: boolean,
   goalCompleted: boolean,
-  mood: number,
+  mood: TEmoji,
   blocker: string,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
@@ -84,26 +84,6 @@ export interface IAccount {
     memberId: string,
     isOwner: boolean,
   }
-}
-
-export interface IOKR {
-  id: string,
-  title: string,
-  deadline: string,
-  progress: number,
-  description: string,
-  owner?: IAccount,
-  parentId?: string,
-  objectiveId?: string,
-  contributors?: IAccount[],
-  completed?: boolean,
-  unit?: '%' | '$' | '#',
-  initial?: number,
-  current?: number,
-  target?: number,
-  subObjectives?: IOKR[],
-  keyResults?: IOKR[],
-  __typename: string,
 }
 
 export interface ICheckinData {
@@ -152,4 +132,11 @@ export interface IGoal {
   current: number,
   type: 'INTEGER',
   unit: string,
+}
+
+export type TEmoji = {
+  id: number,
+  ios: string,
+  web: string,
+  description: string,
 }

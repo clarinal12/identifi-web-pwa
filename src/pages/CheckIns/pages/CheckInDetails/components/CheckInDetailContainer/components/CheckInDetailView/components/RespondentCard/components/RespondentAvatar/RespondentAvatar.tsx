@@ -1,16 +1,16 @@
 import React from 'react';
+import { emojify } from 'node-emoji';
 import styled from 'styled-components';
 import { Popover, Typography, Badge, Avatar } from 'antd';
 
-import { TCheckInGoal } from 'apollo/types/graphql-types';
-import { MOOD_MAP } from 'utils/emojiUtils';
+import { TCheckInGoal, TEmoji } from 'apollo/types/graphql-types';
 import { GoalCompletedIcon, IconBlocked } from 'utils/iconUtils';
 
 const { Text } = Typography;
 
 interface IRespondentAvatar {
   previousGoal: TCheckInGoal,
-  mood: number,
+  mood: TEmoji,
   blocker: string,
   avatar: string | null,
   name: string | undefined,
@@ -81,7 +81,7 @@ const StreakIcon = (streak: number) => {
 }
 
 const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name, streak }) => {
-  const hasHoverInfo = (typeof mood === 'number') || blocker || previousGoal;
+  const hasHoverInfo = mood || blocker || previousGoal;
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
@@ -103,10 +103,10 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
                 </Text>
               </div>
             )}
-            {(typeof mood === 'number') && (
+            {mood && (
               <div>
                 <Text className="fs-16" type="secondary">
-                  {MOOD_MAP[mood].emoji} {MOOD_MAP[mood].label}
+                  {emojify(mood.web)} {mood.description}
                 </Text>
               </div>
             )}
@@ -144,8 +144,8 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
         })}
       />
       <Badge
-        {...((typeof mood === 'number') && {
-          count: <span className="mood" role="img" aria-label="mood">{MOOD_MAP[mood].emoji}</span>,
+        {...(mood && {
+          count: <span className="mood" role="img" aria-label="mood">{emojify(mood.web)}</span>,
         })}
       />
       <Badge

@@ -7,7 +7,7 @@ export const ADD_CHECKIN_RESPONSE_REACTION = gql`
 `;
 
 export const REMOVE_CHECKIN_RESPONSE_REACTION = gql`
-  mutation RemoveCheckInResponseReaction($responseId: ID!, $emoji: Int!) {
-    removeCheckInResponseReaction(responseId: $responseId, emoji: $emoji)
+  mutation RemoveCheckInResponseReaction($responseId: ID!, $emojiId: Int!) {
+    removeCheckInResponseReaction(responseId: $responseId, emojiId: $emojiId)
   }
 `;
