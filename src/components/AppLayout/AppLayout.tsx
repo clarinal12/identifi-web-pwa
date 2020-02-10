@@ -47,7 +47,7 @@ const StyledSider = styled(Sider)`
 `;
 
 const StyledMainWrapper = styled.div`
-  max-width: 960px;
+  max-width: 1020px;
   margin: 0 auto;
 `;
 

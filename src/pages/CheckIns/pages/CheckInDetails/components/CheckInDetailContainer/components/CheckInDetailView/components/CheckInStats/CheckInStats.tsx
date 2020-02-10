@@ -35,12 +35,10 @@ const AvatarWrapper = styled.div`
         border: 1.5px solid #FFFFFF;
         width: 28px;
         height: 28px;
-        line-height: 28px;
         .ant-avatar-string {
-          line-height: 1.25;
+          line-height: 20px;
           .compressed-members {
-            letter-spacing: -1px;
-            font-size: 12px;
+            font-size: 10px;
           }
         }
       }
