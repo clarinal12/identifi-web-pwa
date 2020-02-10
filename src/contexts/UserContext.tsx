@@ -26,7 +26,7 @@ const UserProvider: React.FC<PropsWithChildren<{ value: any }>> = ({ value, chil
       account,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, token]);
+  }, [account]);
 
   return (
     <UserContext.Provider value={{ ...userState, setUserState }}>
