@@ -44,7 +44,7 @@ const MemberInvite: React.FC<IExternalProps & FormikProps<IMemberInviteFormValue
         block
         onClick={() => {
           const slackCallbackURL = `${window.location.origin}/setup`;
-          const slackURL = `https://slack.com/oauth/authorize?client_id=${process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`]}&scope=commands,channels:read,chat:write:bot,groups:read,bot,users:read,users:read.email,team:read,chat:write:user&redirect_uri=${slackCallbackURL}`;
+          const slackURL = `https://slack.com/oauth/v2/authorize?client_id=${process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`]}&scope=channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email&user_scope=channels:read,groups:read,team:read,users:read,users:read.email&redirect_uri=${slackCallbackURL}`;
           window.location.href = slackURL;
         }}
       >
