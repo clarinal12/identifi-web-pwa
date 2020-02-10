@@ -41,10 +41,11 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const responseIdFromURL = queryParams.get('responseId');
-    if (responseIdFromURL && document) {
+    if (responseIdFromURL && document && window) {
       const expectedElement = document.getElementById(responseIdFromURL);
-      expectedElement && expectedElement.scrollIntoView({ 
-        behavior: 'smooth' 
+      expectedElement && window.scrollBy({
+        top: expectedElement.offsetTop + 88, // 88px for nav height and content padding top
+        behavior: 'smooth',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
