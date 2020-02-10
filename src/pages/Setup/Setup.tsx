@@ -74,6 +74,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
         });
       }
       alertSuccess("Slack integration success! Email invitations has been sent.");
+      localStorage.removeItem('activetab');
       history.push("/");
     } catch(error) {
       errorHandler(error);

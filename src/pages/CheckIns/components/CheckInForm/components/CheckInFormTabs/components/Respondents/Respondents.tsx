@@ -50,8 +50,6 @@ const Respondents: React.FC<IExternalProps & FormikProps<IRespondents>> = ({
 
   const watcherOptions = memberOptions.filter(({ value }) => !values.respondents.includes(value));
 
-  console.log(watcherOptions);
-
   return (
     <Form colon={false} onSubmit={handleSubmit}>
       <Form.Item

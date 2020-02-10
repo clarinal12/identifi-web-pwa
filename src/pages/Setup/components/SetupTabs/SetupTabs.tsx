@@ -56,8 +56,6 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   const [enterCompany] = useMutation(ENTER_COMPANY);
   const [inviteEmail] = useMutation(INVITE_EMAIL);
 
-  console.log(account);
-
   const activeCompany = account ? account.activeCompany : null;
   const refetchQueries = [{
     query: ACCOUNT,
@@ -141,6 +139,7 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
         if (!skip) {
           alertSuccess("Email invitations has been sent successfully!");
         }
+        localStorage.removeItem('activetab');
         history.push("/");
       }
     } catch(error) {
