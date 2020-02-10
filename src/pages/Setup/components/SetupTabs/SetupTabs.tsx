@@ -56,6 +56,8 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   const [enterCompany] = useMutation(ENTER_COMPANY);
   const [inviteEmail] = useMutation(INVITE_EMAIL);
 
+  console.log(account);
+
   const activeCompany = account ? account.activeCompany : null;
   const refetchQueries = [{
     query: ACCOUNT,
@@ -127,7 +129,6 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   }
 
   const onboardUserAction = async (skip = true) => {
-    console.log(account);
     try {
       if (activeCompany) {
         await enterCompany({

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, PropsWithChildren, useState } from 'react';
+import React, { createContext, useContext, PropsWithChildren, useState, useEffect } from 'react';
 import { IAccount } from 'apollo/types/graphql-types';
 
 interface IUserContext {
@@ -19,6 +19,15 @@ const UserProvider: React.FC<PropsWithChildren<{ value: any }>> = ({ value, chil
   const [userState, setUserState] = useState<IUserContext>({
     account, token, authenticated,
   });
+
+  useEffect(() => {
+    setUserState({
+      ...userState,
+      account,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
+
   return (
     <UserContext.Provider value={{ ...userState, setUserState }}>
       {children}
