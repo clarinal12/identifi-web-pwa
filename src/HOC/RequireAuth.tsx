@@ -31,7 +31,6 @@ export default <P extends object>(
   const RequireAuth: React.FC<P & RouteComponentProps> = (props) => {
     let newProps = { ...props, requireAuth };
     const token = getAuthToken();
-    const skipAuth = !isLoggedIn();
 
     useEffect(() => {
       const redirectToHome = () => {
@@ -54,7 +53,7 @@ export default <P extends object>(
 
     const { data, loading, error } = useQuery<IQueryData, IQueryVariables>(ACCOUNT, {
       variables: { token },
-      skip: skipAuth,
+      skip: !isLoggedIn(),
     });
 
     if (error) {
@@ -75,11 +74,13 @@ export default <P extends object>(
     }
 
     return (
-      <UserProvider value={newProps}>
-        <PageSpinner loading={loading}>
-          {!loading && <ComposedComponent {...newProps as P} />}
-        </PageSpinner>
-      </UserProvider>
+      <PageSpinner loading={loading}>
+        {!loading && (
+          <UserProvider value={newProps}>
+            <ComposedComponent {...newProps as P} />
+          </UserProvider>
+        )}
+      </PageSpinner>
     );
   }
   return RequireAuth;

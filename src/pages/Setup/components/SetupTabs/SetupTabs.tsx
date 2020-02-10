@@ -127,6 +127,7 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   }
 
   const onboardUserAction = async (skip = true) => {
+    console.log(account);
     try {
       if (activeCompany) {
         await enterCompany({
