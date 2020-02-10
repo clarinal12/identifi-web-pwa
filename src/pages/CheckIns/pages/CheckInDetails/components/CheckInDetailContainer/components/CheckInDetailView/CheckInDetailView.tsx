@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Row, Col } from 'antd';
 
@@ -10,7 +11,7 @@ import { IconMessage } from 'utils/iconUtils';
 
 const { Title, Text } = Typography;
 
-interface ICheckInDetailView {
+interface ICheckInDetailView extends RouteComponentProps {
   done?: boolean,
   organizationName: string,
   checkInName: string,
@@ -34,9 +35,19 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, organizationName, checkInName, checkInStatus, done }) => {
+const CheckInDetailView: React.FC<ICheckInDetailView> = ({
+  data, organizationName, checkInName, checkInStatus, done, location,
+}) => {
   useEffect(() => {
-    console.log('done loading');
+    const queryParams = new URLSearchParams(location.search);
+    const responseIdFromURL = queryParams.get('responseId');
+    if (responseIdFromURL && document) {
+      const expectedElement = document.getElementById(responseIdFromURL);
+      expectedElement && expectedElement.scrollIntoView({ 
+        behavior: 'smooth' 
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return data ? (
     <>
@@ -66,4 +77,4 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({ data, organizationNam
   );
 };
 
-export default CheckInDetailView;
+export default withRouter(CheckInDetailView);
