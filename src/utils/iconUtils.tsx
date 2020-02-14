@@ -84,3 +84,9 @@ export const IconBlocked = () => (
     </svg>
   </span>
 );
+
+export const MiddledotIcon = () => (
+  <svg style={{ marginBottom: 3 }} width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle r="2" transform="matrix(-1 0 0 1 2 2)" fill="#595959"/>
+  </svg>
+);

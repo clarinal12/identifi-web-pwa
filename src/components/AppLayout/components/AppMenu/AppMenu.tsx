@@ -45,11 +45,11 @@ const APP_ROUTES: IAppRoute[] = [
   icon: <Icon type="team" />,
   route: '/members',
 },
-// {
-//   label: 'My Profile',
-//   icon: <Icon type="user" />,
-//   route: '/profile',
-// }, 
+{
+  label: 'Links Directory',
+  icon: <Icon type="link" />,
+  route: '/links',
+}, 
 {
   label: 'Settings',
   icon: <Icon type="setting" />,

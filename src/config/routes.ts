@@ -8,12 +8,11 @@ const Login = LoadableComponent({ componentPathName: 'pages/Login' });
 const InviteSetup = LoadableComponent({ componentPathName: 'pages/InviteSetup' });
 const Setup = LoadableComponent({ componentPathName: 'pages/Setup' });
 
-const Timeline = LoadableComponent({ componentPathName: 'pages/Timeline' });
-const Objectives = LoadableComponent({ componentPathName: 'pages/Objectives' });
 const CheckIns = LoadableComponent({ componentPathName: 'pages/CheckIns' });
 const Profile = LoadableComponent({ componentPathName: 'pages/Profile' });
 const Members = LoadableComponent({ componentPathName: 'pages/Members' });
 const Settings = LoadableComponent({ componentPathName: 'pages/Settings' });
+const Links = LoadableComponent({ componentPathName: 'pages/Links' });
 
 Register.preload();
 PasswordReset.preload();
@@ -22,12 +21,11 @@ Login.preload();
 InviteSetup.preload();
 Setup.preload();
 
-Timeline.preload();
-Objectives.preload();
 CheckIns.preload();
 Profile.preload();
 Members.preload();
 Settings.preload();
+Links.preload();
 
 const routes = [
   {
@@ -55,14 +53,6 @@ const routes = [
     path: '/setup',
   },
   {
-    component: RequireAuth(Timeline),
-    path: '/timeline',
-  },
-  {
-    component: RequireAuth(Objectives),
-    path: '/objectives',
-  },
-  {
     component: RequireAuth(CheckIns),
     path: '/checkins',
   },
@@ -73,6 +63,10 @@ const routes = [
   {
     component: RequireAuth(Members),
     path: '/members',
+  },
+  {
+    component: RequireAuth(Links),
+    path: '/links',
   },
   {
     component: RequireAuth(Settings),
