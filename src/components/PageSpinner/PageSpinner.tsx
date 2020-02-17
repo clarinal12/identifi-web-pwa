@@ -35,10 +35,12 @@ const StyledSpinnerWrapper = styled.div`
 export const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 export const Spinner: React.FC<IPageSpinner> = ({ loading = true, label = "Loading..." }) => (
-  <StyledSpinnerWrapper className="d-flex">
+  <StyledSpinnerWrapper className="d-flex mini-spinner">
     <Spin
       indicator={LoadingIcon}
-      tip={label}
+      {...(label && {
+        tip: label,
+      })}
       size="large"
       spinning={loading}
     />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card, Avatar, Typography } from 'antd';
 
@@ -14,9 +15,6 @@ interface ILinkCard {
 }
 
 const StyledCard = styled(Card)`
-  &:last-of-type {
-    margin-bottom: 0 !important;
-  }
   .ant-card-meta-title > a {
     color: #2F3640;
   }
@@ -34,7 +32,7 @@ const StyledCard = styled(Card)`
 const LinkCard: React.FC<ILinkCard> = ({ storedLink }) => {
   const { link, category, sharedBy } = storedLink;
   return (
-    <StyledCard className="mb-3">
+    <StyledCard className="w-100">
       <Meta
         avatar={
           <a
@@ -62,7 +60,12 @@ const LinkCard: React.FC<ILinkCard> = ({ storedLink }) => {
               <span className="mx-3">
                 <MiddledotIcon />
               </span>
-              <Text className="text-muted">Shared by {getDisplayName(sharedBy)}</Text>
+              <Link
+                to={`/profile/${sharedBy.memberId}`}
+                className="text-muted"
+              >
+                Shared by {getDisplayName(sharedBy)}
+              </Link>
             </div>
           </>
         )}

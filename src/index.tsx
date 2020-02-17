@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import App from './App';
 import client from 'config/apolloClient';
-import './stylesheets/bootstrap-utilities.css';
+import 'bootstrap-utilities/bootstrap-utilities.css';
 import './stylesheets/app.css';
 
 import momentConfig from 'config/momentConfig';
