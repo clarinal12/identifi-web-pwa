@@ -12,6 +12,7 @@ import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
+import { CollapsedDownIcon, CollapsedUpIcon } from 'utils/iconUtils';
 import { COMMENTS } from 'apollo/queries/comments';
 import { IComment, TReaction } from 'apollo/types/graphql-types';
 
@@ -51,6 +52,13 @@ const StyledList = styled(List)`
     border: none !important;
     &:last-of-type {
       padding-bottom: 0 !important;
+    }
+    .ant-list-item-meta-title {
+      font-size: 12px;
+      line-height: 20px;
+      a {
+        font-weight: 600;
+      }
     }
     .ant-list-item-action {
       margin-left: 24px;
@@ -148,27 +156,26 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                   <Avatar {...((author && author.avatar) && { src: author.avatar })} />
                 </Link>
               )}
-              description={
+              title={
                 <>
                   <Link
                     to={`/profile/${author.memberId}`}
-                    style={{ color: '#006D75', fontWeight: 500 }}
                     className="mr-2"
                   >
                     {nameString}
                   </Link>
-                  {getMultipleLines(comment).map((line, idx) => (
-                    <>
-                      <Text key={idx} type="secondary">{line}</Text>
-                      {(getMultipleLines(comment).length > 1) && <br/>}
-                    </>
-                  ))}
-                </>
+                  <Text className="font-weight-normal">
+                    {moment(createdAt).fromNow()}
+                  </Text>
+                </>                
               }
+              description={getMultipleLines(comment).map((line, idx) => (
+                <>
+                  <Text key={idx} type="secondary">{line}</Text>
+                  {(getMultipleLines(comment).length > 1) && <br/>}
+                </>
+              ))}
             />
-            <Text className="ml-2" type="secondary">
-              {moment(createdAt).fromNow()}
-            </Text>
           </List.Item>
         );
       })}
@@ -195,6 +202,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
         header={(
           <div className="d-flex" style={{ justifyContent: 'space-between' }}>
             <Text className="fs-16">
+              {collapseKey ? <CollapsedDownIcon /> : <CollapsedUpIcon />}
               {!emptyComments && `Comments (${numberOfComments})`}
             </Text>
             <Reactions reactions={reactions} responseId={responseId} />
