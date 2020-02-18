@@ -1,18 +1,16 @@
 import React from 'react';
-import { Row, Col } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import LinkList from './components/LinkList';
+import { MembersProvider } from 'contexts/MembersContext';
 
 const Links = () => {
   return (
-    <AppLayout>
-      <Row>
-        <Col>
-          <LinkList />
-        </Col>
-      </Row>
-    </AppLayout>
+    <MembersProvider>
+      <AppLayout>
+        <LinkList />
+      </AppLayout>
+    </MembersProvider>
   );
 }
 

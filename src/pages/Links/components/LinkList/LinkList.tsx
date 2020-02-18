@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { List } from 'antd';
+import { List, Row, Col } from 'antd';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { Spinner } from 'components/PageSpinner';
 import LinkCard from './components/LinkCard';
+import LinkFilters from './components/LinkFilters';
+import { TFilterState } from './components/LinkFilters/LinkFilters';
 import { STORED_LINKS } from 'apollo/queries/links';
 import { IStoredLink } from 'apollo/types/graphql-types';
 import { useUserContextValue } from 'contexts/UserContext';
@@ -48,6 +50,10 @@ const LinkList = () => {
   const { alertSuccess } = useMessageContextValue();
   const { account } = useUserContextValue();
   const companyId = account && account.activeCompany.id;
+  const [filterState, setFilterState] = useState<TFilterState>({
+    memberId: undefined,
+    categoryId: undefined,
+  });
   const [state, setState] = useState<ILinkListState>({
     dataSource: [],
     loading: true,
@@ -58,11 +64,15 @@ const LinkList = () => {
   const { data, loading, refetch } = useQuery<IPaginatedStoredLinks>(STORED_LINKS, {
     variables: {
       companyId,
+      filter: {
+        categoryId: filterState.categoryId,
+        memberId: filterState.memberId,
+      },
     },
   });
 
   useEffect(() => {
-    if (!loading && data) {
+    if (!loading && data && !state.endCursor) {
       const { storedLinks } = data;
       setState({
         dataSource: [...state.dataSource].concat(storedLinks.edges.map(({ node }) => node)),
@@ -72,23 +82,23 @@ const LinkList = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, loading]);
+  }, [data]);
 
   useEffect(() => {
     if (!state.hasMore) {
       alertSuccess('All links are loaded');
     }
   }, [state.hasMore, alertSuccess]);
-  
+
   const refetchLinks = async () => {
     setState({ ...state, loading: true });
     const { data: refetchResult } = await refetch({
       companyId,
-      ...(state.endCursor && {
-        filter: {
-          after: state.endCursor,
-        },
-      }),
+      filter: {
+        after: state.endCursor,
+        categoryId: filterState.categoryId,
+        memberId: filterState.memberId,
+      },
     });
     setState({
       ...state,
@@ -100,27 +110,46 @@ const LinkList = () => {
   }
 
   return (
-    <InfiniteScroll
-      initialLoad={false}
-      pageStart={0}
-      hasMore={!state.loading && state.hasMore}
-      loadMore={refetchLinks}
-    >
-      <List
-        dataSource={state.dataSource}
-        renderItem={storedLink => (
-          <StyledListItem className="border-bottom-0 p-0 mb-3" key={storedLink.id}>
-            <LinkCard storedLink={storedLink} />
-          </StyledListItem>
-        )}
-      >
-        {state.loading && (
-          <StyleSpinnerContainer>
-            <Spinner label="" />
-          </StyleSpinnerContainer>
-        )}
-      </List>
-    </InfiniteScroll>
+    <div>
+      <LinkFilters
+        resetState={() => {
+          setState({
+            dataSource: [],
+            loading: true,
+            hasMore: true,
+            endCursor: undefined,
+          });
+        }}
+        filterState={filterState}
+        setFilterState={setFilterState}
+        companyId={companyId}
+      />
+      <Row>
+        <Col>
+          <InfiniteScroll
+            initialLoad={false}
+            pageStart={0}
+            hasMore={!state.loading && state.hasMore}
+            loadMore={refetchLinks}
+          >
+            <List
+              dataSource={state.dataSource}
+              renderItem={storedLink => (
+                <StyledListItem className="border-bottom-0 p-0 mb-3" key={storedLink.id}>
+                  <LinkCard storedLink={storedLink} />
+                </StyledListItem>
+              )}
+            >
+              {state.loading && (
+                <StyleSpinnerContainer>
+                  <Spinner label="" />
+                </StyleSpinnerContainer>
+              )}
+            </List>
+          </InfiniteScroll>
+        </Col>
+      </Row>
+    </div>
   );
 }
 

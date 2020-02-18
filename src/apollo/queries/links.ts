@@ -40,3 +40,12 @@ export const STORED_LINKS = gql`
     }
   }
 `;
+
+export const LINK_CATEGORIES = gql`
+  query Categories($companyId: ID!) {
+    categories(companyId: $companyId) {
+      id
+      keyword
+    }
+  }
+`;
