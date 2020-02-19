@@ -74,10 +74,11 @@ const TAB_STEPS = [{
       parentValid={parentValid}
       onNextStep={() => setActiveTabKey && setActiveTabKey('questions')}
       onBackStep={() => setActiveTabKey && setActiveTabKey('schedule')}
-      mergeRespondentsToState={(respondents: string[]) => {
+      mergeRespondentsToState={(respondents: string[], watchers: string[]) => {
         setFormValue({
           ...defaultValues,
           respondents,
+          watchers,
         })
       }}
       mergeWatchersToState={(watchers: string[]) => {

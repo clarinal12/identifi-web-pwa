@@ -20,7 +20,7 @@ interface IExternalProps extends IRespondents {
   onNextStep: () => void,
   onBackStep: () => void,
   parentValid: boolean,
-  mergeRespondentsToState: (values: string[]) => void,
+  mergeRespondentsToState: (respondents: string[], watchers: string[]) => void,
   mergeWatchersToState: (values: string[]) => void,
   mergeIsPrivateToState: (value: boolean) => void,
   isUpdating: boolean,
@@ -70,14 +70,12 @@ const Respondents: React.FC<IExternalProps & FormikProps<IRespondents>> = ({
           optionFilterProp="label"
           optionLabelProp="label"
           onChange={(respondents) => {
-            setFieldValue('respondents', respondents);
+            // remove as watcher if member is set as respondent
+            const filteredWatchers = values.watchers.filter(watcher => !respondents.includes(watcher));
             setFieldTouched('respondents');
-            mergeRespondentsToState(respondents);
-            if (values.isPrivate && values.watchers.length > 0) {
-              const filteredWatchers = values.watchers.filter(watcher => !respondents.includes(watcher));
-              setFieldValue('watchers', filteredWatchers);
-              mergeWatchersToState(filteredWatchers);
-            }
+            setFieldValue('respondents', respondents);
+            setFieldValue('watchers', filteredWatchers);
+            mergeRespondentsToState(respondents, filteredWatchers);
           }}
         >
           {memberOptions.map(({ value, label }) => (
