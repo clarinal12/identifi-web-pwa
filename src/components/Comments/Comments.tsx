@@ -124,10 +124,11 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     />
   ) : (
     <StyledList>
-      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt }: IComment) => {
+      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt }: IComment) => {
         const nameString = getDisplayName(author);
         const commentOwner = memberInfo && (author.memberId === memberInfo.memberId);
         const isEditing = (editCommentId === id);
+        const isCommentEdited = createdAt !== updatedAt;
         return isEditing ? (
           <UserCommentForm
             key={id}
@@ -165,7 +166,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                     {nameString}
                   </Link>
                   <Text className="font-weight-normal">
-                    {moment(createdAt).fromNow()}
+                    {moment(createdAt).fromNow()} {isCommentEdited && '(edited)'}
                   </Text>
                 </>                
               }

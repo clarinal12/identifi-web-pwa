@@ -32,11 +32,13 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
     <Row gutter={16} className="mb-3">
       <Col lg={10}>
         <Select<string | undefined>
+          showSearch
           size="large"
           className="w-100"
           placeholder="Filter by member"
           loading={membersLoading}
           value={filterState.memberId}
+          optionFilterProp="label"
           onChange={v => {
             resetState();
             setFilterState({ ...filterState, memberId: v });
@@ -44,17 +46,19 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
           allowClear
         >
           {members.map((member) => (
-            <Option key={member.memberId} value={member.memberId}>{getDisplayName(member)}</Option>
+            <Option label={getDisplayName(member)} key={member.memberId} value={member.memberId}>{getDisplayName(member)}</Option>
           ))}
         </Select>
       </Col>
       <Col lg={10}>
         <Select<string | undefined>
+          showSearch
           size="large"
           className="w-100"
           placeholder="Filter by category"
           loading={loading}
           value={filterState.categoryId}
+          optionFilterProp="label"
           onChange={v => {
             resetState();
             setFilterState({ ...filterState, categoryId: v });
@@ -62,7 +66,7 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
           allowClear
         >
           {categorySource.map((category) => (
-            <Option key={category.id} value={category.id}>{category.keyword}</Option>
+            <Option label={category.keyword} key={category.id} value={category.id}>{category.keyword}</Option>
           ))}
         </Select>
       </Col>
