@@ -5,6 +5,7 @@ export type TActiveCompany = {
 }
 
 export type TCheckInGoal = {
+  id: string,
   createdAt: string,
   goal: string,
   completed: boolean,
@@ -42,7 +43,10 @@ export type TResponse = {
   onTime: boolean,
   goalCompleted: boolean,
   mood: TEmoji,
-  blocker: string,
+  block?: {
+    id: string,
+    blocker: string,
+  },
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
   numberOfComments: number,

@@ -11,7 +11,10 @@ const { Text } = Typography;
 interface IRespondentAvatar {
   previousGoal: TCheckInGoal,
   mood: TEmoji,
-  blocker: string,
+  block?: {
+    id: string,
+    blocker: string,
+  },
   avatar: string | null,
   name: string | undefined,
   streak: number,
@@ -80,8 +83,8 @@ const StreakIcon = (streak: number) => {
   return streakType;
 }
 
-const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blocker, avatar, name, streak }) => {
-  const hasHoverInfo = mood || blocker || previousGoal;
+const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, block, avatar, name, streak }) => {
+  const hasHoverInfo = mood || block || previousGoal;
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
@@ -89,7 +92,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
         placement="bottom"
         content={(
           <StyledPopoverContentWrapper>
-            {blocker && (
+            {block && (
               <div>
                 <Text className="fs-16 d-flex" type="secondary">
                   <IconBlocked /> Is blocked
@@ -149,7 +152,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
         })}
       />
       <Badge
-        {...(blocker && {
+        {...(block && {
           count: <IconBlocked />,
         })}
       />

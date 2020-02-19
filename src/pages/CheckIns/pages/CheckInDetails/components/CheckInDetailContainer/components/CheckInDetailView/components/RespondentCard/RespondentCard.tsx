@@ -50,7 +50,7 @@ const StyledCard = styled(Card)`
 
 const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
   const {
-    id, submitDate, respondent, answers, currentGoal, previousGoal, mood, blocker, numberOfComments, reactions, streak,
+    id, submitDate, respondent, answers, currentGoal, previousGoal, mood, block, numberOfComments, reactions, streak,
   } = response;
   const { firstname, lastname, email, role, avatar, memberId } = respondent;
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
@@ -63,7 +63,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
             <RespondentAvatar
               avatar={avatar}
               mood={mood}
-              blocker={blocker}
+              block={block}
               previousGoal={previousGoal}
               streak={streak}
               name={getDisplayName(respondent)}
@@ -117,12 +117,12 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
             ))}
           </div>
         )}
-        {blocker && (
+        {block && (
           <div className="div-wrapper">
             <Text strong className="text-danger">
               <Icon className="mr-1" type="stop" style={{ transform: 'rotate(90deg)' }} /> BLOCKED:
             </Text>
-            {getMultipleLines(blocker).map((line, idx) => (
+            {getMultipleLines(block.blocker).map((line, idx) => (
               <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
                 {line}
               </Title>

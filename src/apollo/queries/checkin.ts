@@ -27,6 +27,7 @@ const CHECKIN_STATS = `
 `;
 
 const CHECKIN_GOAL = `
+  id
   createdAt
   goal
   completed
@@ -59,6 +60,7 @@ const SINGLE_CHECKIN_FIELDS = `
     }
     submitDate
     answers {
+      id
       question
       answer
     }
@@ -67,7 +69,10 @@ const SINGLE_CHECKIN_FIELDS = `
     mood {
       ${EMOJI_FIELDS}
     }
-    blocker
+    block {
+      id
+      blocker
+    }
     currentGoal {
       ${CHECKIN_GOAL}
     }
