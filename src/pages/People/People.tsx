@@ -3,15 +3,15 @@ import { Row, Col } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import SlackIntegration from 'HOC/SlackIntegration';
-import MemberList from './components/MemberList';
+import MembersTable from './components/MembersTable';
 import { MembersProvider } from 'contexts/MembersContext';
 
-const Members = () => (
+const People = () => (
   <MembersProvider>
     <AppLayout>
       <Row>
         <Col>
-          <MemberList />
+          <MembersTable />
         </Col>
       </Row>
     </AppLayout>
@@ -19,6 +19,6 @@ const Members = () => (
 );
 
 export default SlackIntegration(
-  Members,
+  People,
   "Identifi uses Slack to run check-ins with your team. Click the button below to connect install our Slack bot and get started."
 );

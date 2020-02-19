@@ -41,9 +41,9 @@ const APP_ROUTES: IAppRoute[] = [
   icon: <Icon type="flag" />,
   route: '/checkins',
 }, {
-  label: 'Members',
+  label: 'People',
   icon: <Icon type="team" />,
-  route: '/members',
+  route: '/people',
 },
 {
   label: 'Links Directory',

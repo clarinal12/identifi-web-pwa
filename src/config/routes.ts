@@ -10,7 +10,7 @@ const Setup = LoadableComponent({ componentPathName: 'pages/Setup' });
 
 const CheckIns = LoadableComponent({ componentPathName: 'pages/CheckIns' });
 const Profile = LoadableComponent({ componentPathName: 'pages/Profile' });
-const Members = LoadableComponent({ componentPathName: 'pages/Members' });
+const People = LoadableComponent({ componentPathName: 'pages/People' });
 const Settings = LoadableComponent({ componentPathName: 'pages/Settings' });
 const Links = LoadableComponent({ componentPathName: 'pages/Links' });
 
@@ -23,7 +23,7 @@ Setup.preload();
 
 CheckIns.preload();
 Profile.preload();
-Members.preload();
+People.preload();
 Settings.preload();
 Links.preload();
 
@@ -61,8 +61,8 @@ const routes = [
     path: '/profile',
   },
   {
-    component: RequireAuth(Members),
-    path: '/members',
+    component: RequireAuth(People),
+    path: '/people',
   },
   {
     component: RequireAuth(Links),
