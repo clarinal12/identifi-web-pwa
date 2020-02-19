@@ -86,7 +86,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
           ),
         })}
       >
-        <Title level={4} className="mb-2">{name}</Title>
+        <Title ellipsis level={4} className="mb-2">{name}</Title>
         <div className="replies-block mb-1">
           {replies && (
             <Text style={{ fontSize: 12 }}>
