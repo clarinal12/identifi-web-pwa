@@ -195,8 +195,8 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     >
       <Panel
         key="1"
-        disabled={emptyComments}
         showArrow={false}
+        disabled={emptyComments}
         className={cx({
           'empty-comments': emptyComments,
         })}
@@ -204,7 +204,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
           <div className="d-flex" style={{ justifyContent: 'space-between' }}>
             <Text className="fs-16">
               {collapseKey ? <CollapsedDownIcon /> : <CollapsedUpIcon />}
-              {!emptyComments && `Comments (${numberOfComments})`}
+              Comments {!emptyComments && `(${numberOfComments})`}
             </Text>
             <Reactions reactions={reactions} responseId={responseId} />
           </div>

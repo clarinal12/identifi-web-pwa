@@ -6,7 +6,11 @@ import { Card, Typography, Icon } from 'antd';
 
 import Comments from 'components/Comments';
 import RespondentAvatar from './components/RespondentAvatar';
+import EditGoalModal from './components/EditGoalModal';
+import EditBlockerModal from './components/EditBlockerModal';
+import EditAnswerModal from './components/EditAnswerModal';
 import { TResponse } from 'apollo/types/graphql-types';
+import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 
@@ -14,6 +18,7 @@ const { Text, Title } = Typography;
 
 interface IRespondentCard {
   response: TResponse,
+  isCurrent: boolean,
 }
 
 const StyledCard = styled(Card)`
@@ -45,14 +50,22 @@ const StyledCard = styled(Card)`
         }
       }
     }
+    .ant-btn-icon-only {
+      color: #595959;
+      &:hover {
+        color: #262626;
+      }
+    }
   }
 `;
 
-const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
+const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
   const {
     id, submitDate, respondent, answers, currentGoal, previousGoal, mood, block, numberOfComments, reactions, streak,
   } = response;
+  const { account } = useUserContextValue();
   const { firstname, lastname, email, role, avatar, memberId } = respondent;
+  const isCheckInEditable = isCurrent && account && (account.memberInfo.memberId === memberId);
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard
@@ -89,11 +102,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
         {currentGoal && (
           <div className="div-wrapper mb-3">
             <Text strong>TODAY:</Text>
-            {getMultipleLines(currentGoal.goal).map((line, idx) => (
-              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-                {line}
-              </Title>
-            ))}
+            <div className="d-flex">
+              <div className="flex-grow-1">
+                {getMultipleLines(currentGoal.goal).map((line, idx) => (
+                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                    {line}
+                  </Title>
+                ))}
+              </div>
+              {isCheckInEditable && (
+                <EditGoalModal data={currentGoal} />
+              )}
+            </div>
           </div>
         )}
         {previousGoal && (
@@ -110,11 +130,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
                 </>;
               }()}
             </Text>
-            {getMultipleLines(previousGoal.goal).map((line, idx) => (
-              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-                {line}
-              </Title>
-            ))}
+            <div className="d-flex">
+              <div className="flex-grow-1">
+                {getMultipleLines(previousGoal.goal).map((line, idx) => (
+                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                    {line}
+                  </Title>
+                ))}
+              </div>
+              {isCheckInEditable && (
+                <EditGoalModal showSwitch data={previousGoal} />
+                )}
+            </div>
           </div>
         )}
         {block && (
@@ -122,11 +149,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
             <Text strong className="text-danger">
               <Icon className="mr-1" type="stop" style={{ transform: 'rotate(90deg)' }} /> BLOCKED:
             </Text>
-            {getMultipleLines(block.blocker).map((line, idx) => (
-              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-                {line}
-              </Title>
-            ))}
+            <div className="d-flex">
+              <div className="flex-grow-1">
+                {getMultipleLines(block.blocker).map((line, idx) => (
+                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                    {line}
+                  </Title>
+                ))}
+              </div>
+              {isCheckInEditable && (
+                <EditBlockerModal data={block} />
+              )}
+            </div>
           </div>
         )}
         {answers.length > 0 && (
@@ -134,14 +168,21 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response }) => {
             <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
           </div>
         )}
-        {answers.map(({ question, answer }, idx) => (
+        {answers.map(({ question, answer, id }, idx) => (
           <div key={idx} className="div-wrapper">
             <Text type="secondary">{question}</Text>
-            {getMultipleLines(answer).map((line, idx) => (
-              <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
-                {line}
-              </Title>
-            ))}
+            <div className="d-flex">
+              <div className="flex-grow-1">
+                {getMultipleLines(answer).map((line, idx) => (
+                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                    {line}
+                  </Title>
+                ))}
+              </div>
+              {isCheckInEditable && (
+                <EditAnswerModal data={{ id, question, answer }} />
+              )}
+            </div>
           </div>
         ))}
       </div>

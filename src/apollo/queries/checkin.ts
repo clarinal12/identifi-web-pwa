@@ -98,6 +98,7 @@ const SINGLE_CHECKIN_FIELDS = `
   blockers {
     ${CHECKIN_STATS}
   }
+  isCurrent
 `;
 
 const CHECKIN_FIELDS = `

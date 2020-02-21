@@ -11,6 +11,11 @@ export type TCheckInGoal = {
   completed: boolean,
 }
 
+export type TBlocker = {
+  id: string,
+  blocker: string,
+}
+
 export type TCheckInStats = {
   percentage: number,
   colored: IAccount[],
@@ -37,16 +42,14 @@ export type TResponse = {
   respondent: IAccount,
   submitDate: Date,
   answers: Array<{
+    id: string,
     question: string
     answer: string
   }>,
   onTime: boolean,
   goalCompleted: boolean,
   mood: TEmoji,
-  block?: {
-    id: string,
-    blocker: string,
-  },
+  block?: TBlocker,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
   numberOfComments: number,
@@ -68,6 +71,7 @@ export type TCurrentCheckIn = {
   checkedIn: TCheckInStats,
   completedGoals: TCheckInStats,
   blockers: TCheckInStats,
+  isCurrent: boolean,
 }
 
 export interface IAccount {

@@ -66,7 +66,7 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({
       {(data.responses.length > 0) ? (
         <div>
           {data.responses.map((response) => (
-            <RespondentCard key={`response_${response.id}`} response={response} />
+            <RespondentCard key={`response_${response.id}`} response={response} isCurrent={data.isCurrent} />
           ))}
         </div>
       ) : (

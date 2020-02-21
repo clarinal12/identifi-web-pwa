@@ -12,7 +12,7 @@ export const ACCOUNT = gql`
       avatar
       timezone
       onboarded
-      invited
+      # invited
       activeCompany {
         id
         name

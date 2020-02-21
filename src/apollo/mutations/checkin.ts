@@ -30,3 +30,41 @@ export const TOGGLE_CHECKIN_STATUS = gql`
     }
   }
 `;
+
+export const UPDATE_CHECKIN_GOAL = gql`
+  mutation UpdateCheckInGoal($goalId: ID!, $input: UpdateCheckInGoalInput!) {
+    updateCheckInGoal(goalId: $goalId, input: $input) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_CHECKIN_ANSWER = gql`
+  mutation UpdateCheckInAnswer($answerId: ID!, $input: UpdateCheckInAnswerInput!) {
+    updateCheckInAnswer(answerId: $answerId, input: $input) {
+      id
+    }
+  }
+`;
+
+export const ADD_CHECKIN_BLOCKER = gql`
+  mutation AddCheckInBlocker($responseId: ID!, $input: AddCheckInBlockerInput!) {
+    addCheckInBlocker(responseId: $responseId, input: $input) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_CHECKIN_BLOCKER = gql`
+  mutation UpdateCheckInBlocker($blockerId: ID!, $input: UpdateCheckInBlockerInput!) {
+    updateCheckInBlocker(blockerId: $blockerId, input: $input) {
+      id
+    }
+  }
+`;
+
+export const REMOVE_CHECKIN_BLOCKER = gql`
+  mutation RemoveCheckInBlocker($blockerId: ID!) {
+    removeCheckInBlocker(blockerId: $blockerId)
+  }
+`;
