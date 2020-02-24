@@ -165,7 +165,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
         )}
         {answers.length > 0 && (
           <div className="my-3">
-            <Text type="secondary" strong>ADDITIONAL QUESTIONS:</Text>
+            <Text type="secondary" strong>CUSTOM QUESTIONS:</Text>
           </div>
         )}
         {answers.map(({ question, answer, id }, idx) => (

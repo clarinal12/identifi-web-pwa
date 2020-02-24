@@ -84,7 +84,7 @@ const StreakIcon = (streak: number) => {
 }
 
 const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, block, avatar, name, streak }) => {
-  const hasHoverInfo = mood || block || previousGoal;
+  const hasHoverInfo = mood || block || previousGoal || (streak > 1);
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
       <Popover
