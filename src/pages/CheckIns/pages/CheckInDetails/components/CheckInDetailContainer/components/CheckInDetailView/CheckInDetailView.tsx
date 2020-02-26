@@ -13,7 +13,6 @@ const { Title, Text } = Typography;
 
 interface ICheckInDetailView extends RouteComponentProps {
   done?: boolean,
-  organizationName: string,
   checkInName: string,
   checkInStatus: string,
   data: TCurrentCheckIn,
@@ -36,7 +35,7 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
 );
 
 const CheckInDetailView: React.FC<ICheckInDetailView> = ({
-  data, organizationName, checkInName, checkInStatus, done, location,
+  data, checkInName, checkInStatus, done, location,
 }) => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -54,7 +53,6 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({
     <>
       <CheckInHeader
         data={data}
-        organizationName={organizationName}
         checkInName={checkInName}
         checkInState={ done ? 'FINISHED' : checkInStatus}
       />

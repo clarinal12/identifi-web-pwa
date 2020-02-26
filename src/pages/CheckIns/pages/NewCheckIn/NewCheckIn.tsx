@@ -6,7 +6,7 @@ import { Row, Col, Typography, Spin } from 'antd';
 import AppLayout from 'components/AppLayout';
 import CheckInForm from '../../components/CheckInForm';
 import { IFinalValues } from '../../components/CheckInForm/components/CheckInFormTabs/CheckInFormTabs';
-import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
+import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 import { CREATE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
@@ -37,10 +37,12 @@ const NewCheckIn: React.FC<RouteComponentProps> = ({ history }) => {
             companyId: activeCompany && activeCompany.id,
           },
         },
-        refetchQueries: [
-          { query: ALL_CHECKIN_SCHEDULES },
-          { query: MY_CHECKIN_SCHEDULES },
-        ],
+        refetchQueries: [{
+          query: CHECKIN_CARDS,
+          variables: {
+            companyId: activeCompany && activeCompany.id,
+          },
+        }],
         awaitRefetchQueries: true,
       });
       if (result.data.createCheckInSchedule) {

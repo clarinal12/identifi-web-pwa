@@ -28,15 +28,6 @@ export type TReaction = {
   hasReacted: boolean,
 }
 
-export type TCompany = {
-  id: string,
-  name: string,
-  owner: IAccount,
-  slackEnabled: boolean,
-  createdAt: string,
-  updatedAt: string,
-}
-
 export type TResponse = {
   id: string,
   respondent: IAccount,
@@ -94,7 +85,7 @@ export interface IAccount {
 }
 
 export interface ICheckinData {
-  id: string,
+  scheduleId: string,
   name: string,
   frequency: string
   days: string[]
@@ -120,7 +111,6 @@ export interface ICheckinData {
     expected: number,
     total: number,
   }
-  company: TCompany,
   isPrivate: boolean,
 }
 

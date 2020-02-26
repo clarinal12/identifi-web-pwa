@@ -1,11 +1,9 @@
 import React from 'react';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
-import styled from 'styled-components';
 import moment from 'moment';
 import { Card, Typography, Icon, Button, Tag } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
-import { BuildingIcon } from 'utils/iconUtils';
 import { useUserContextValue } from 'contexts/UserContext';
 import { TCurrentCheckIn } from 'apollo/types/graphql-types';
 
@@ -14,27 +12,10 @@ const { Title, Text } = Typography;
 interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
   data: TCurrentCheckIn,
   checkInName: string,
-  organizationName: string,
   checkInState: string,
 }
 
-const StyledOrgBlock = styled.div`
-  align-items: center;
-  svg {
-    margin-right: 4px;
-    width: 18px;
-    height: 18px;
-    path {
-      fill: #FFF;
-      fill-opacity: 1;
-    }
-  }
-  .ant-typography {
-    color: #FFF;
-  }
-`;
-
-const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, checkInName, checkInState, match }) => {
+const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInState, match }) => {
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
   return (
@@ -59,17 +40,13 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, organizationName, check
           </Link>
         )}
       </div>
-      <Text className="fs-16" style={{ color: '#E6FFFB' }}>
-        {moment(data.date).format('MMM DD, hh:mm a')}
-      </Text>
       <div
         className="d-flex mt-2"
         style={{ justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <StyledOrgBlock className="d-flex">
-          <BuildingIcon />
-          <Text>{organizationName}</Text>
-        </StyledOrgBlock>
+        <Text className="fs-16" style={{ color: '#E6FFFB' }}>
+          {moment(data.date).format('MMM DD, hh:mm a')}
+        </Text>
         <div>
           <Tag className="m-0" color={COLOR_MAP[checkInState]}>
             <Text>{checkInState}</Text>

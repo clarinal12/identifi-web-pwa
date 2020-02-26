@@ -3,15 +3,21 @@ import { useQuery } from 'react-apollo';
 
 import { useUserContextValue } from 'contexts/UserContext';
 import { ICheckinData } from 'apollo/types/graphql-types';
-import { ALL_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
+import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 
 interface ICheckInScheduleContext {
-  checkInSchedules: ICheckinData[],
+  checkInCards: {
+    myCheckIns: ICheckinData[],
+    allCheckIns: ICheckinData[],
+  },
   loading: boolean,
 }
 
 const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
-  checkInSchedules: [],
+  checkInCards: {
+    myCheckIns: [],
+    allCheckIns: [],
+  },
   loading: true,
 });
 
@@ -19,14 +25,20 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   const { account } = useUserContextValue();
   const activeCompany = account && account.activeCompany;
 
-  const { loading, data } = useQuery(ALL_CHECKIN_SCHEDULES, {
+  const { loading, data } = useQuery(CHECKIN_CARDS, {
+    variables: {
+      companyId: activeCompany && activeCompany.id,
+    },
     skip: !(activeCompany && activeCompany.slackEnabled),
   });
 
   return (
     <CheckInScheduleContext.Provider
       value={{
-        checkInSchedules: (!loading && data) ? [...data.allCheckInSchedules] : [],
+        checkInCards: (!loading && data) ? data.checkInCards : {
+          myCheckIns: [],
+          allCheckIns: [],
+        },
         loading,
       }}
     >

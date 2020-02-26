@@ -171,10 +171,10 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                 </>                
               }
               description={getMultipleLines(comment).map((line, idx) => (
-                <>
-                  <Text key={idx} type="secondary">{line}</Text>
+                <div key={idx}>
+                  <Text type="secondary">{line}</Text>
                   {(getMultipleLines(comment).length > 1) && <br/>}
-                </>
+                </div>
               ))}
             />
           </List.Item>

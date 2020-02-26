@@ -45,7 +45,6 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
     />
   ) : (
     <CheckInDetailView
-      organizationName={data.company.name}
       checkInName={data.name}
       checkInStatus={data.status}
       done={!!pastCheckInId}

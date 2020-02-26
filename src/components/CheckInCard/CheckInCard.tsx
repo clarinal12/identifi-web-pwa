@@ -9,7 +9,6 @@ import CardActions from './components/CardActions';
 import { ICheckinData } from 'apollo/types/graphql-types';
 import { useUserContextValue } from 'contexts/UserContext';
 import { COLOR_MAP } from 'utils/colorUtils';
-import { BuildingIcon } from 'utils/iconUtils';
 
 const { Title, Text } = Typography;
 
@@ -20,7 +19,6 @@ interface ICheckinCard extends RouteComponentProps {
 
 const StyledCard = styled(Card)`
   flex-direction: column;
-  min-height: 185px;
   .ant-card-head {
     padding: 0 16px;
     border-bottom: none;
@@ -54,7 +52,7 @@ const StyledCard = styled(Card)`
 `;
 
 const CheckInCard: React.FC<ICheckinCard> = ({
-  item: { id, status, name, frequency, nextCheckInDate, replies, timezone, company },
+  item: { scheduleId, status, name, frequency, nextCheckInDate, replies, timezone },
   isLastItem, history,
 }) => {
   const { account } = useUserContextValue();
@@ -67,7 +65,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
       <StyledCard
         hoverable
         onClick={() => history.push({
-          pathname: `/checkins/${id}`,
+          pathname: `/checkins/${scheduleId}`,
           state: {
             checkin_id_alias: name,
           },
@@ -77,7 +75,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         {...((memberInfo && memberInfo.isOwner) && {
           extra: (
             <CardActions
-              id={id}
+              id={scheduleId}
               name={name}
               active={status !== 'DEACTIVATED'}
               isLastItem={isLastItem}
@@ -87,18 +85,12 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         })}
       >
         <Title ellipsis level={4} className="mb-2">{name}</Title>
-        <div className="replies-block mb-1">
+        <div className="replies-block mb-3">
           {replies && (
             <Text style={{ fontSize: 12 }}>
               Replies: {replies.total} of {replies.expected}
             </Text>
           )}
-        </div>
-        <div className="organization-block d-flex mb-3">
-          <BuildingIcon />
-          <Text style={{ fontSize: 12 }}>
-            {company.name}
-          </Text>
         </div>
         <Row className="push-bottom">
           <Col xs={16}>

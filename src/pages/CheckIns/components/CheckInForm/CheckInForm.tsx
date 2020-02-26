@@ -19,7 +19,7 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
   data, parentSubmitAction,
 }) => {
   const defaultValues = {
-    id: data ? data.id : '',
+    id: data ? data.scheduleId : '',
     name: values.name,
     respondents: data ? data.respondents.map(({ id }) => id) : [],
     watchers: data ? data.watchers.map(({ id }) => id) : [],

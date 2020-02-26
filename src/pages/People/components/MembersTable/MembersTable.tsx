@@ -67,7 +67,7 @@ const MembersTable: React.FC = () => {
       <StyledTable
         showHeader={false}
         dataSource={dataSource}
-        rowKey="memberId"
+        rowKey="id"
         columns={[
           {
             key: 'name',

@@ -11,6 +11,8 @@ const AppProviders: React.FC<PropsWithChildren<any>> = ({ children }) => (
   </MessageProvider>
 );
 
+console.log(process.env);
+
 const App = () => (
   <AppProviders>
     <Switch>

@@ -35,24 +35,24 @@ const StyledListWrapper = styled.div`
 const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
   match, history, location,
 }) => {
-  const { checkInSchedules } = useCheckInScheduleContextValue();
-  const currentCheckInIndex = checkInSchedules.findIndex(({ id }) => id === match.params.checkin_id);
-  return (checkInSchedules.length > 1) ? (
+  const { checkInCards } = useCheckInScheduleContextValue();
+  const currentCheckInIndex = checkInCards.allCheckIns.findIndex(({ scheduleId }) => scheduleId === match.params.checkin_id);
+  return (checkInCards.allCheckIns.length > 1) ? (
     <>
       {(currentCheckInIndex !== 0) && (
         <StyledCard className="mb-3" title="Previous check-in">
           <StyledListWrapper>
             <List
               size="large"
-              dataSource={[checkInSchedules[currentCheckInIndex - 1]]}
-              renderItem={({ name, id }) => {
+              dataSource={[checkInCards.allCheckIns[currentCheckInIndex - 1]]}
+              renderItem={({ name, scheduleId }) => {
                 return (
                   <List.Item
-                    key={id}
+                    key={scheduleId}
                     onClick={() => {
                       scrollToTop();
                       history.push({
-                        pathname: `/checkins/${id}`,
+                        pathname: `/checkins/${scheduleId}`,
                         state: {
                           checkin_id_alias: name,
                         },
@@ -70,20 +70,20 @@ const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> =
           </StyledListWrapper>
         </StyledCard>
       )}
-      {(currentCheckInIndex !== (checkInSchedules.length - 1)) && (
+      {(currentCheckInIndex !== (checkInCards.allCheckIns.length - 1)) && (
         <StyledCard title="Next check-in">
           <StyledListWrapper>
             <List
               size="large"
-              dataSource={[checkInSchedules[currentCheckInIndex + 1]]}
-              renderItem={({ name, id }) => {
+              dataSource={[checkInCards.allCheckIns[currentCheckInIndex + 1]]}
+              renderItem={({ name, scheduleId }) => {
                 return (
                   <List.Item
-                    key={id}
+                    key={scheduleId}
                     onClick={() => {
                       scrollToTop();
                       history.push({
-                        pathname: `/checkins/${id}`,
+                        pathname: `/checkins/${scheduleId}`,
                         state: {
                           checkin_id_alias: name,
                         },

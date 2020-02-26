@@ -19,7 +19,7 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const CheckIns: React.FC = () => {
-  const { checkInSchedules } = useCheckInScheduleContextValue();
+  const { checkInCards } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
   return (
@@ -29,7 +29,7 @@ const CheckIns: React.FC = () => {
           <Title level={3}>Check-ins</Title>
         </Col>
         <Col sm={12}>
-          {(checkInSchedules.length > 0) && (memberInfo && memberInfo.isOwner) && (
+          {(checkInCards.allCheckIns.length > 0) && (memberInfo && memberInfo.isOwner) && (
             <Link className="float-right" to="/checkins/new">
               <Button
                 size="large"

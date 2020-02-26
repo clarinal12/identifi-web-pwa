@@ -6,7 +6,6 @@ const MEMBER_FIELDS = `
   firstname
   lastname
   avatar
-  memberId
   role
 `;
 
@@ -31,17 +30,6 @@ const CHECKIN_GOAL = `
   createdAt
   goal
   completed
-`;
-
-const COMPANY_FIELDS = `
-  id
-  name
-  owner {
-    ${MEMBER_FIELDS}
-  }
-  slackEnabled
-  createdAt
-  updatedAt
 `;
 
 const SINGLE_CHECKIN_FIELDS = `
@@ -133,28 +121,30 @@ const CHECKIN_FIELDS = `
     id
     date
   }
+  isPrivate
+`;
+
+const CHECKIN_CARD = `
+  scheduleId
+  name
   replies {
     expected
     total
   }
-  company {
-    ${COMPANY_FIELDS}
-  }
-  isPrivate
+  nextCheckInDate
+  frequency
+  status
 `;
 
-export const ALL_CHECKIN_SCHEDULES = gql`
-  query AllCheckInSchedules {
-    allCheckInSchedules {
-      ${CHECKIN_FIELDS}
-    }
-  }
-`;
-
-export const MY_CHECKIN_SCHEDULES = gql`
-  query MyCheckInSchedules {
-    myCheckInSchedules {
-      ${CHECKIN_FIELDS}
+export const CHECKIN_CARDS = gql`
+  query CheckInCards($companyId: ID!) {
+    checkInCards(companyId: $companyId) {
+      myCheckIns {
+        ${CHECKIN_CARD}
+      }
+      allCheckIns {
+        ${CHECKIN_CARD}
+      }
     }
   }
 `;

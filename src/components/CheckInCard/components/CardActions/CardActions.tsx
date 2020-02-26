@@ -5,8 +5,9 @@ import { Dropdown, Menu, Popconfirm, Typography, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 
 import { MoreVertIcon } from 'utils/iconUtils';
+import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
+import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 import { DELETE_CHECKIN_SCHEDULE, TOGGLE_CHECKIN_STATUS } from 'apollo/mutations/checkin';
 
 const { Title, Text } = Typography;
@@ -85,6 +86,8 @@ const CardActions: React.FC<ICardActions> = ({
   const [deleteCheckInSchedule] = useMutation(DELETE_CHECKIN_SCHEDULE);
   const [toggleCheckInScheduleStatus] = useMutation(TOGGLE_CHECKIN_STATUS);
   const { alertError, alertWarning, alertSuccess } = useMessageContextValue();
+  const { account } = useUserContextValue();
+  const activeCompany = account && account.activeCompany;
 
   const [visible, setVisible] = useState(false);
 
@@ -94,10 +97,12 @@ const CardActions: React.FC<ICardActions> = ({
     try {
       await deleteCheckInSchedule({
         variables: { id },
-        refetchQueries: [
-          { query: ALL_CHECKIN_SCHEDULES },
-          { query: MY_CHECKIN_SCHEDULES },
-        ],
+        refetchQueries: [{
+          query: CHECKIN_CARDS,
+          variables: {
+            companyId: activeCompany && activeCompany.id,
+          }
+        }],
         awaitRefetchQueries: true,
       });
       alertWarning("A check-in has been deleted");
@@ -123,10 +128,12 @@ const CardActions: React.FC<ICardActions> = ({
             active: !active,
           },
         },
-        refetchQueries: [
-          { query: ALL_CHECKIN_SCHEDULES },
-          { query: MY_CHECKIN_SCHEDULES },
-        ],
+        refetchQueries: [{
+          query: CHECKIN_CARDS,
+          variables: {
+            companyId: activeCompany && activeCompany.id,
+          }
+        }],
         awaitRefetchQueries: true,
       });
       const alertMethod = active ? alertWarning : alertSuccess;

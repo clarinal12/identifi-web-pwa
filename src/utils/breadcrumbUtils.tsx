@@ -16,23 +16,23 @@ type TSegmentWithSubmenu = {
 
 const CheckInSchedulesMenu: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, location }) => (
   <CheckInScheduleConsumer>
-    {({ checkInSchedules }) => (
+    {({ checkInCards }) => (
       <Menu
         prefixCls="ignore-class"
         className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
       >
-        {checkInSchedules.map(({ id, name }) => (
+        {checkInCards.allCheckIns.map(({ scheduleId, name }) => (
           <Menu.Item
-            id={id}
-            key={id}
+            id={scheduleId}
+            key={scheduleId}
             className={cx({
               "ant-dropdown-menu-item": true,
-              "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.checkin_id === id,
+              "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.checkin_id === scheduleId,
             })}
           >
             <Link
               to={{
-                pathname: `/checkins/${id}`,
+                pathname: `/checkins/${scheduleId}`,
                 state: location.state,
               }}
             >

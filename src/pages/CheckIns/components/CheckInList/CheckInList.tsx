@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
 import { Row, Col, Typography, Button, Icon } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import CheckInCard from 'components/CheckInCard';
 import { ICheckinData } from 'apollo/types/graphql-types';
-import { ALL_CHECKIN_SCHEDULES, MY_CHECKIN_SCHEDULES } from 'apollo/queries/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 
@@ -60,19 +58,13 @@ const EmptyState: React.FC<IEmptyState> = ({ participatingOnly, isOwner }) => (
 );
 
 const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
-  const { checkInSchedules, loading: contextLoadingState } = useCheckInScheduleContextValue();
+  const { checkInCards, loading: contextLoadingState } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
   const memberInfo = account && account.memberInfo;
-  const DERIVED_QUERY = participatingOnly ? MY_CHECKIN_SCHEDULES : ALL_CHECKIN_SCHEDULES;
-  const derivedCheckInDataKey = participatingOnly ? 'myCheckInSchedules' : 'allCheckInSchedules';
 
-  const { loading, data } = useQuery(DERIVED_QUERY, {
-    skip: !participatingOnly,
-  });
+  const checkInScheduleSource = participatingOnly ? checkInCards.myCheckIns : checkInCards.allCheckIns;
 
-  const checkInScheduleSource = (participatingOnly && !loading) ? data[derivedCheckInDataKey] : checkInSchedules;
-
-  return (loading || contextLoadingState) ? (
+  return contextLoadingState ? (
     <Spinner />
   ) : (
     <>
