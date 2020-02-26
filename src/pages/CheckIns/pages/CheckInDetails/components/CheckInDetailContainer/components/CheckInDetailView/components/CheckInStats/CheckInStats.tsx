@@ -55,11 +55,11 @@ const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) =
   const avatarList = [...source].splice(0, maxDisplay);
   const tooltipList = [...source].splice(maxDisplay);
   return <>
-    {avatarList.map(({ id, email, firstname, lastname, avatar, memberId }) => {
+    {avatarList.map(({ id, email, firstname, lastname, avatar }) => {
       const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
       return (
         <Tooltip key={id} placement="topRight" title={derivedLabel}>
-          <Link to={`/profile/${memberId}`} className="ant-avatar-link">
+          <Link to={`/profile/${id}`} className="ant-avatar-link">
             <Avatar {...(avatar && { src : avatar })} />
           </Link>
         </Tooltip>
@@ -71,7 +71,7 @@ const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) =
         title={<>
           {tooltipList.map((user, idx) => (
             <Text className="d-block" key={idx}>
-              <Link to={`/profile/${user.memberId}`} style={{ color: '#FFF' }}>
+              <Link to={`/profile/${user.id}`} style={{ color: '#FFF' }}>
                 {getDisplayName(user)}
               </Link>
             </Text>

@@ -58,18 +58,18 @@ const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ m
               prefixCls="ignore-class"
               className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
             >
-              {members.filter(({ memberId }) => memberId !== memberInfo.memberId ).map((member) => (
+              {members.filter(({ id }) => id !== memberInfo.memberId ).map((member) => (
                 <Menu.Item
-                  id={member.memberId}
-                  key={member.memberId}
+                  id={member.id}
+                  key={member.id}
                   className={cx({
                     "ant-dropdown-menu-item": true,
-                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.profile_id === member.memberId,
+                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.profile_id === member.id,
                   })}
                 >
                   <Link
                     to={{
-                      pathname: `/profile/${member.memberId}`,
+                      pathname: `/profile/${member.id}`,
                       state: location.state,
                     }}
                   >

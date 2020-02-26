@@ -41,10 +41,10 @@ const Respondents: React.FC<IExternalProps & FormikProps<IRespondents>> = ({
   });
 
   const memberOptions = loading ? [] : (data || { members: [] }).members
-    .map(({ memberId, firstname, lastname, email }) => {
+    .map(({ id, firstname, lastname, email }) => {
       const derivedLabel = (firstname && lastname) ? `${firstname} ${lastname}` : email;
       return {
-        value: memberId, label: derivedLabel,
+        value: id, label: derivedLabel,
       };
     });
 

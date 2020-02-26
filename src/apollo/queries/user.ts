@@ -18,7 +18,7 @@ export const ACCOUNT = gql`
         name
         slackEnabled
         owner {
-          memberId
+          id
           email
           firstname
           lastname

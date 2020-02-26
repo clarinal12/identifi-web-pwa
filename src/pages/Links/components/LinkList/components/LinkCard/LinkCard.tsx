@@ -61,7 +61,7 @@ const LinkCard: React.FC<ILinkCard> = ({ storedLink }) => {
                 <MiddledotIcon />
               </span>
               <Link
-                to={`/profile/${sharedBy.memberId}`}
+                to={`/profile/${sharedBy.id}`}
                 className="text-muted"
               >
                 Shared by {getDisplayName(sharedBy)}

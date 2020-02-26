@@ -5,7 +5,7 @@ export const COMMENTS = gql`
     checkInResponseComments(checkInResponseId: $checkInResponseId) {
       id
       author {
-        memberId
+        id
         firstname
         lastname
         email

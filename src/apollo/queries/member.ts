@@ -8,7 +8,6 @@ export const MEMBER_FIELDS = `
   access
   status
   role
-  memberId
   avatar
   isGuest
 `;

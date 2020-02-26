@@ -46,7 +46,7 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
           allowClear
         >
           {members.map((member) => (
-            <Option label={getDisplayName(member)} key={member.memberId} value={member.memberId}>{getDisplayName(member)}</Option>
+            <Option label={getDisplayName(member)} key={member.id} value={member.id}>{getDisplayName(member)}</Option>
           ))}
         </Select>
       </Col>

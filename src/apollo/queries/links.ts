@@ -6,7 +6,6 @@ const MEMBER_FIELDS = `
   firstname
   lastname
   avatar
-  memberId
   role
 `;
 

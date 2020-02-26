@@ -85,7 +85,6 @@ export interface IAccount {
   timezone: string,
   onboarded: boolean,
   invited: boolean,
-  memberId: string,
   isGuest: boolean,
   activeCompany: TActiveCompany
   memberInfo: {
