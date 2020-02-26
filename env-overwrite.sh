@@ -1,3 +1,6 @@
 #!/bin/sh
 
-echo "window.ENV='$NODE_ENV';" > 'assets/js/config.js'
+echo "
+  window.ENV='$NODE_ENV';
+  window.MAINTENANCE='$MAINTENANCE';
+" > 'assets/js/config.js'
