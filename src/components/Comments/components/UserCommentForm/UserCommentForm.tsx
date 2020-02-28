@@ -142,7 +142,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
       await updateComment({
         variables: {
           id: commentId,
-          input: { comment },
+          input: { comment, mentions },
         },
         ...{ refetchQueries },
         awaitRefetchQueries: true,
