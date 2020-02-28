@@ -11,6 +11,7 @@ import CheckInNavigation from './components/CheckInNavigation';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
+import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 
 const { Title } = Typography;
 
@@ -26,6 +27,7 @@ const StyledCard = styled(Card)`
 
 const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({ match, history, location }) => {
   const { pastCheckInId, setPastCheckInId } = usePastCheckInContextValue();
+  const { setMentionSource } = useMentionSourceContextValue();
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.checkin_id },
@@ -44,6 +46,13 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
       setPastCheckInId('');
     }
   }, [match.params.past_checkin_id, setPastCheckInId]);
+
+  useEffect(() => {
+    if (data) {
+      const { currentCheckIn } = data.checkInSchedule;
+      setMentionSource(currentCheckIn.mentionables);
+    }
+  }, [data, setMentionSource]);
 
   const contentBody = error ? (
     <Alert

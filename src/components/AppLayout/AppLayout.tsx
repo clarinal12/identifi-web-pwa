@@ -17,6 +17,9 @@ const StyledLayout = styled(Layout)`
     @media (min-width: 576px) {
       margin-left: 256px;
     }
+    .ant-layout-content {
+      overflow: hidden;
+    }
   }
 `;
 

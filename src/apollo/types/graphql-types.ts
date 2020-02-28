@@ -58,6 +58,7 @@ export type TCurrentCheckIn = {
   date: Date,
   submitted: IAccount[],
   notSubmitted: IAccount[],
+  mentionables: IAccount[],
   responses: TResponse[],
   checkedIn: TCheckInStats,
   completedGoals: TCheckInStats,
@@ -118,6 +119,7 @@ export interface IComment {
   id: string,
   author: IAccount,
   comment: string,
+  mentions: IAccount[],
   createdAt: string,
   updatedAt: string,
 }

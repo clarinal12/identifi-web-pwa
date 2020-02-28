@@ -41,6 +41,9 @@ const SINGLE_CHECKIN_FIELDS = `
   notSubmitted {
     ${MEMBER_FIELDS}
   }
+  mentionables {
+    ${MEMBER_FIELDS}
+  }
   responses {
     id
     respondent {

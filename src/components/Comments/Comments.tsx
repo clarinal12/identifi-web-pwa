@@ -12,6 +12,7 @@ import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
+import { transformComment } from 'utils/commentsUtils';
 import { CollapsedDownIcon, CollapsedUpIcon } from 'utils/iconUtils';
 import { COMMENTS } from 'apollo/queries/comments';
 import { IComment, TReaction } from 'apollo/types/graphql-types';
@@ -32,6 +33,9 @@ const StyledCollapse = styled(Collapse)`
       padding: 16px 24px !important;
     }
     .ant-collapse-content {
+      &.ant-collapse-content-active {
+        overflow: visible;
+      }
       .ant-collapse-content-box {
         padding: 0 24px 24px !important;
       }
@@ -124,17 +128,22 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     />
   ) : (
     <StyledList>
-      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt }: IComment) => {
+      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt, mentions }: IComment) => {
         const nameString = getDisplayName(author);
         const commentOwner = memberInfo && (author.id === memberInfo.memberId);
         const isEditing = (editCommentId === id);
         const isCommentEdited = createdAt !== updatedAt;
+
+        const transformedComment = transformComment(comment, mentions);
+        const stringComment = getMultipleLines(transformedComment).join("<br/>");
+
         return isEditing ? (
           <UserCommentForm
             key={id}
             responseId={responseId}
             commentId={id}
             defaultComment={comment}
+            defaultMentions={mentions.map(({ id }) => id)}
             setEditCommentId={setEditCommentId}
           />
         ) : (
@@ -170,12 +179,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                   </Text>
                 </>                
               }
-              description={getMultipleLines(comment).map((line, idx) => (
-                <div key={idx}>
-                  <Text type="secondary">{line}</Text>
-                  {(getMultipleLines(comment).length > 1) && <br/>}
-                </div>
-              ))}
+              description={<div dangerouslySetInnerHTML={{ __html: stringComment }} />}
             />
           </List.Item>
         );
