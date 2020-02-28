@@ -5,7 +5,6 @@ export const INTEGRATE_SLACK = gql`
     integrateSlack(input: $input) {
       id
       email
-      memberId
     }
   }
 `;
