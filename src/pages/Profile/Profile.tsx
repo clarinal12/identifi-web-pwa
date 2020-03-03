@@ -6,6 +6,7 @@ import { Row, Col, Alert } from 'antd';
 import AppLayout from 'components/AppLayout';
 import { Spinner } from 'components/PageSpinner';
 import UserDetails from './components/UserDetails';
+import DirectReports from './components/DirectReports';
 import Goals from './components/Goals';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
@@ -51,9 +52,8 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
       ) : (
         <Row>
           <Col sm={24} md={6}>
-            <UserDetails
-              memberInfo={memberInfoSource}
-            />
+            <UserDetails memberInfo={memberInfoSource} />
+            <DirectReports />
           </Col>
           <Col sm={24} md={18}>
             {account && (

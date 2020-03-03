@@ -9,17 +9,31 @@ const { Title, Text } = Typography;
 const UserDetails: React.FC<{ memberInfo: IAccount | undefined }> = ({ memberInfo }) => {
   return memberInfo ? (
     <div>
-      {memberInfo.avatar && (
-        <Avatar
-          className="mb-3"
-          style={{ height: 100, width: 100 }}
-          src={memberInfo.avatar}
-        />
-      )}
-      <Title className="fs-16">
-        {getDisplayName(memberInfo)}
-      </Title>
-      <Text>{memberInfo.role}</Text>
+      <div style={{ marginBottom: 34 }}>
+        {memberInfo.avatar && (
+          <Avatar
+            className="mb-3"
+            style={{ height: 100, width: 100 }}
+            src={memberInfo.avatar}
+          />
+        )}
+        <Title level={4} className="mb-1">
+          {getDisplayName(memberInfo)}
+        </Title>
+        <Text>{memberInfo.role}</Text>
+      </div>
+      <div className="mb-3">
+        <Text className="d-block text-muted mb-1">Department</Text>
+        <Text className="fs-16">{memberInfo.role}</Text>
+      </div>
+      <div className="mb-3">
+        <Text className="d-block text-muted mb-1">Email</Text>
+        <Text className="fs-16">{memberInfo.email}</Text>
+      </div>
+      <div className="mb-3">
+        <Text className="d-block text-muted mb-1">Manager</Text>
+        <Text className="fs-16">{memberInfo.email}</Text>
+      </div>
     </div>
   ) : null;
 }
