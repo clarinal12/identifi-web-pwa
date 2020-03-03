@@ -11,6 +11,7 @@ const StyledMentionInput = styled(MentionsInput)`
     padding: 6px 10px;
   }
   div[class$="__highlighter"] {
+    word-break: break-word;
     border: 0;
     strong {
       background: #E6FFFB;
