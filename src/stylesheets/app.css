@@ -101,3 +101,11 @@
 .direct-report-selection .ant-popover-arrow {
   display: none;
 }
+
+.direct-report-tooltip .ant-tooltip-arrow {
+  margin-left: -13px;
+}
+
+.direct-report-tooltip .ant-tooltip-inner {
+  margin-left: -13px;
+}

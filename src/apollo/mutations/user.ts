@@ -23,3 +23,25 @@ export const SETUP_INVITED_USER = gql`
     setupInvitedUser(input: $input, token: $token)
   }
 `;
+
+export const ADD_DIRECT_REPORT = gql`
+  mutation AddDirectReport($managerId: ID!, $directReportId: ID!) {
+    addDirectReport(managerId: $managerId, directReportId: $directReportId) {
+      id
+      email
+      firstname
+      lastname
+      access
+      status
+      role
+      avatar
+      isGuest
+    }
+  }
+`;
+
+export const REMOVE_DIRECT_REPORT = gql`
+  mutation RemoveDirectReport($managerId: ID!, $directReportId: ID!) {
+    removeDirectReport(managerId: $managerId, directReportId: $directReportId)
+  }
+`;

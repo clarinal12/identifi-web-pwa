@@ -24,6 +24,12 @@ export const MEMBER = gql`
   query member($memberId: ID!) {
     member(memberId: $memberId) {
       ${MEMBER_FIELDS}
+      directReports {
+        ${MEMBER_FIELDS}
+      }
+      manager {
+        ${MEMBER_FIELDS}
+      }
     }
   }
 `;

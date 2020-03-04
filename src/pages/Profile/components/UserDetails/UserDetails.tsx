@@ -6,7 +6,7 @@ import { getDisplayName } from 'utils/userUtils';
 
 const { Title, Text } = Typography;
 
-const UserDetails: React.FC<{ memberInfo: IAccount | undefined }> = ({ memberInfo }) => {
+const UserDetails: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
   return memberInfo ? (
     <div>
       <div style={{ marginBottom: 34 }}>
@@ -32,10 +32,12 @@ const UserDetails: React.FC<{ memberInfo: IAccount | undefined }> = ({ memberInf
         <Text className="d-block text-muted mb-1">Email</Text>
         <Text className="fs-16">{memberInfo.email}</Text>
       </div>
-      <div className="mb-3">
-        <Text className="d-block text-muted mb-1">Manager</Text>
-        <Text className="fs-16">{memberInfo.email}</Text>
-      </div>
+      {memberInfo.manager && (
+        <div className="mb-3">
+          <Text className="d-block text-muted mb-1">Manager</Text>
+          <Text className="fs-16">{getDisplayName(memberInfo.manager)}</Text>
+        </div>
+      )}
     </div>
   ) : null;
 }

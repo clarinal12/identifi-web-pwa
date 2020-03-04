@@ -18,9 +18,9 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
 
   const { data, loading, error } = useQuery(MEMBER, {
     variables: {
-      memberId: match.params.profile_id,
+      memberId: match.params.profile_id || account?.id,
     },
-    skip: !match.params.profile_id,
+    skip: !account,
     onCompleted: (data: { member: IAccount }) => {
       history.replace({
         state: {
@@ -30,8 +30,6 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
     }
   });
 
-  const memberInfoSource = (match.params.profile_id && data) ? data.member : account;
-  
   const contentBody = error ? (
     <Alert
       showIcon
@@ -52,8 +50,12 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
       ) : (
         <Row>
           <Col sm={24} md={6}>
-            <UserDetails memberInfo={memberInfoSource} />
-            <DirectReports />
+            {data?.member && (
+              <>
+                <UserDetails memberInfo={data?.member} />
+                <DirectReports memberInfo={data?.member} />
+              </>
+            )}
           </Col>
           <Col sm={24} md={18}>
             {account && (

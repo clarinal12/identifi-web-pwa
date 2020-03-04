@@ -80,6 +80,8 @@ export interface IAccount {
   isGuest: boolean,
   activeCompany: TActiveCompany
   isOwner: boolean,
+  manager: IAccount,
+  directReports: IAccount[],
 }
 
 export interface ICheckinData {

@@ -54,8 +54,11 @@ export const AVAILABE_DIRECT_REPORTS = gql`
       email
       firstname
       lastname
-      avatar
+      access
+      status
       role
+      avatar
+      isGuest
     }
   }
 `;

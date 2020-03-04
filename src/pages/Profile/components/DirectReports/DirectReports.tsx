@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import cx from 'classnames';
 import styled from 'styled-components';
-import { Typography, Button, Icon, Popover, Input, List, Spin } from 'antd';
+import { Typography, Button, Icon, Popover, Input, List, Spin, Avatar, Badge } from 'antd';
 
+import RemoveDirectReport from './components/RemoveDirectReport';
 import { LoadingIcon } from 'components/PageSpinner';
-import { useUserContextValue } from 'contexts/UserContext';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
+import { MEMBER } from 'apollo/queries/member';
+import { ADD_DIRECT_REPORT } from 'apollo/mutations/user';
 import { IAccount } from 'apollo/types/graphql-types';
 import { getDisplayName } from 'utils/userUtils';
+import { useMessageContextValue } from 'contexts/MessageContext';
 
 const { Text } = Typography;
 const { Search } = Input;
 
 const StyledPopover = styled(Popover)`
   &.floating {
+    border: 2px solid #E8E8E8 !important;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15) !important;
     .anticon {
       font-size: 20px;
@@ -48,22 +52,108 @@ const StyledListWrapper = styled.div`
   }
 `;
 
+const StyledAvatarWrapper = styled.div`
+  .ant-badge {
+    &:hover {
+      cursor: pointer;
+      .custom-close-btn {
+        display: flex !important;
+      }
+    }
+    .ant-avatar {
+      border: 2px solid #E8E8E8;
+      margin-right: -10px;
+    }
+    .custom-close-btn {
+      display: none !important;
+      width: 14px;
+      height: 14px;
+      background: #FFF;
+      border: 1px solid #8C8C8C;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      left: -5px;
+      top: 10px;
+      .anticon {
+        font-size: 6px;
+        color: #8C8C8C;
+      }
+    }
+  }
+`;
+
 interface IPopoverContent {
   setVisibility: (visibility: boolean) => void,
+  managerId: string,
 }
 
-const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility }) => {
+const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId }) => {
   const [searchString, setSearchString] = useState('');
-  const { account } = useUserContextValue();
+  const [addDirectReport] = useMutation(ADD_DIRECT_REPORT);
+  const { alertError } = useMessageContextValue();
   const { data, loading } = useQuery<{ availableDirectReports: IAccount[] }>(AVAILABE_DIRECT_REPORTS, {
-    variables: { managerId: account?.id },
-    skip: !account,
+    variables: { managerId },
   });
 
   const drSource = data?.availableDirectReports
     .filter(member => (getDisplayName(member) || '').toUpperCase()
     .includes(searchString.toUpperCase()))
   || [];
+
+  const addDirectReportAction = (directReport: IAccount) => {
+    try {
+      addDirectReport({
+        variables: {
+          managerId,
+          directReportId: directReport.id,
+        },
+        update: (store, { data: { addDirectReport: result } }) => {
+          const directReportsCacheData: { availableDirectReports: IAccount[] } | null = store.readQuery({
+            query: AVAILABE_DIRECT_REPORTS,
+            variables: { managerId },
+          });
+          const memberCacheData: { member: IAccount } | null = store.readQuery({
+            query: MEMBER,
+            variables: { memberId: managerId },
+          });
+          
+          if (directReportsCacheData && result) {
+            const { availableDirectReports } = directReportsCacheData;
+            store.writeQuery({
+              query: AVAILABE_DIRECT_REPORTS,
+              variables: { managerId },
+              data: { availableDirectReports: availableDirectReports.filter(dr => dr.id !== result.id) },
+            });
+          }
+
+          if (memberCacheData && result) {
+            const newMember = { ...memberCacheData.member };
+            newMember.directReports.push(result);
+            store.writeQuery({
+              query: MEMBER,
+              variables: { managerId },
+              data: { member: newMember },
+            });
+          }
+        },
+        optimisticResponse: {
+          addDirectReport: {
+            ...directReport,
+            id: `optimistic-response-${Date.now()}`,
+          },
+        },
+      });
+      setVisibility(false);
+    } catch(error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+  };
 
   return (
     <StyledListWrapper>
@@ -80,9 +170,10 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility }) => {
           <Spin className="py-4" size="small" indicator={LoadingIcon} spinning />
         </div>
       ) : (
-        <List<IAccount>dataSource={drSource}
+        <List<IAccount>
+          dataSource={drSource}
           renderItem={item => (
-            <List.Item className="px-3">
+            <List.Item className="px-3" onClick={() => addDirectReportAction(item)}>
               <Text>{getDisplayName(item)}</Text>
             </List.Item>
           )}
@@ -92,33 +183,41 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility }) => {
   );
 }
 
-const DirectReports = () => {
+const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <div className="mb-3">
       <Text className="d-block text-muted mb-3">Direct reports</Text>
-      <div className="dr-avatar-wrapper">
-      <StyledPopover
-        getPopupContainer={() => document.getElementById('popover-container') || document.body}
-        placement="rightBottom"
-        content={<PopoverContent setVisibility={setVisibility} />}
-        title={(
-          <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
-            <Text className="ant-typography mr-5">Add a direct report</Text>
-            <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
-              <Icon className="fs-16" type="plus" />
-            </Button>
-          </StyledPopoverTitleWrapper>
-        )}
-        trigger="click"
-        visible={visibility}
-        onVisibleChange={v => setVisibility(v)}
-      >
-        <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
-          <Icon className={cx({ 'closable': visibility })} type="plus" />
-        </Button>
-      </StyledPopover>
-      </div>
+      <StyledAvatarWrapper className="dr-avatar-wrapper d-flex">
+        {memberInfo.directReports.map(({ avatar, id }) => (
+          <Badge
+            key={id}
+            count={<RemoveDirectReport directReportId={id} managerId={memberInfo.id} />}
+          >
+            <Avatar size="large" {...(avatar && { src : avatar })} />
+          </Badge>
+        ))}
+        <StyledPopover
+          getPopupContainer={() => document.getElementById('popover-container') || document.body}
+          placement="rightBottom"
+          content={<PopoverContent managerId={memberInfo.id} setVisibility={setVisibility} />}
+          title={(
+            <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
+              <Text className="ant-typography mr-5">Add a direct report</Text>
+              <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
+                <Icon className="fs-16" type="plus" />
+              </Button>
+            </StyledPopoverTitleWrapper>
+          )}
+          trigger="click"
+          visible={visibility}
+          onVisibleChange={v => setVisibility(v)}
+        >
+          <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
+            <Icon className={cx({ 'closable': visibility })} type="plus" />
+          </Button>
+        </StyledPopover>
+      </StyledAvatarWrapper>
     </div>
   );
 };
