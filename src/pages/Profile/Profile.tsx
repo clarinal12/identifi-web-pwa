@@ -57,7 +57,7 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
           </Col>
           <Col sm={24} md={18}>
             {account && (
-              <Goals memberId={match.params.profile_id || account.memberInfo.memberId} />
+              <Goals memberId={match.params.profile_id || account.id} />
             )}
           </Col>
         </Row>

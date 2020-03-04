@@ -13,6 +13,7 @@ export const ACCOUNT = gql`
       timezone
       onboarded
       # invited
+      isOwner
       activeCompany {
         id
         name
@@ -35,13 +36,26 @@ export const ACCOUNT = gql`
 `;
 
 export const VERIFY_RESET_TOKEN = gql`
-  query verifyResetToken($token: String!) {
+  query VerifyResetToken($token: String!) {
     verifyResetToken(token: $token)
   }
 `;
 
 export const VERIFY_INVITE_TOKEN = gql`
-  query verifyInviteToken($token: String!) {
+  query VerifyInviteToken($token: String!) {
     verifyInviteToken(token: $token)
+  }
+`;
+
+export const AVAILABE_DIRECT_REPORTS = gql`
+  query AvailableDirectReports($managerId: ID!) {
+    availableDirectReports(managerId: $managerId) {
+      id
+      email
+      firstname
+      lastname
+      avatar
+      role
+    }
   }
 `;

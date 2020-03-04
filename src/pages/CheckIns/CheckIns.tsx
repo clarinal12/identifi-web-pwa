@@ -21,7 +21,6 @@ const StyledTabs = styled(Tabs)`
 const CheckIns: React.FC = () => {
   const { checkInCards } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
-  const memberInfo = account && account.memberInfo;
   return (
     <AppLayout>
       <Row className="mb-4">
@@ -29,7 +28,7 @@ const CheckIns: React.FC = () => {
           <Title level={3}>Check-ins</Title>
         </Col>
         <Col sm={12}>
-          {(checkInCards.allCheckIns.length > 0) && (memberInfo && memberInfo.isOwner) && (
+          {(checkInCards.allCheckIns.length > 0) && (account && account.isOwner) && (
             <Link className="float-right" to="/checkins/new">
               <Button
                 size="large"
@@ -41,7 +40,7 @@ const CheckIns: React.FC = () => {
           )}
         </Col>
       </Row>
-      <StyledTabs defaultActiveKey={(memberInfo && memberInfo.isOwner) ? '2' : '1'}>
+      <StyledTabs defaultActiveKey={(account && account.isOwner) ? '2' : '1'}>
         <TabPane
           key="1"
           tab={(

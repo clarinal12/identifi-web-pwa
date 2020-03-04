@@ -51,14 +51,13 @@ const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ m
     {({ members }) => (
       <UserConsumer>
         {({ account }) => {
-          const memberInfo = account && account.memberInfo;
-          if (!memberInfo) return null;
+          if (!account) return null;
           return (
             <Menu
               prefixCls="ignore-class"
               className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
             >
-              {members.filter(({ id }) => id !== memberInfo.memberId ).map((member) => (
+              {members.filter(({ id }) => id !== account.id ).map((member) => (
                 <Menu.Item
                   id={member.id}
                   key={member.id}

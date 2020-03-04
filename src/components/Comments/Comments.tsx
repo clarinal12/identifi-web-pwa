@@ -93,7 +93,6 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
-  const memberInfo = account && account.memberInfo;
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -130,7 +129,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     <StyledList>
       {data && data.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt, mentions }: IComment) => {
         const nameString = getDisplayName(author);
-        const commentOwner = memberInfo && (author.id === memberInfo.memberId);
+        const commentOwner = account && (author.id === account.id);
         const isEditing = (editCommentId === id);
         const isCommentEdited = createdAt !== updatedAt;
 

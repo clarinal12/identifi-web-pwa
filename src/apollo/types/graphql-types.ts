@@ -79,10 +79,7 @@ export interface IAccount {
   invited: boolean,
   isGuest: boolean,
   activeCompany: TActiveCompany
-  memberInfo: {
-    memberId: string,
-    isOwner: boolean,
-  }
+  isOwner: boolean,
 }
 
 export interface ICheckinData {

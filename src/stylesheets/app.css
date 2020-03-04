@@ -82,3 +82,22 @@
   max-height: 300px;
   overflow: auto;
 }
+
+.direct-report-selection .ant-popover-title {
+  border-bottom: none;
+}
+
+.direct-report-selection .ant-popover-inner-content {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.direct-report-selection .ant-popover-inner {
+  max-height: 350px;
+}
+
+.direct-report-selection .ant-popover-arrow {
+  display: none;
+}

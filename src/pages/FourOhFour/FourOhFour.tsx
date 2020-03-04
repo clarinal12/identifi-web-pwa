@@ -13,7 +13,7 @@ const StyledWrapper = styled.div`
 export default () => (
   <StyledWrapper>
     <Result
-      status="404"
+      status="error" // https://github.com/ant-design/ant-design/issues/21592
       title="404"
       subTitle="Sorry, the page you visited does not exist."
       extra={(

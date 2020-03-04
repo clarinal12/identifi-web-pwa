@@ -60,7 +60,6 @@ const EmptyState: React.FC<IEmptyState> = ({ participatingOnly, isOwner }) => (
 const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
   const { checkInCards, loading: contextLoadingState } = useCheckInScheduleContextValue();
   const { account } = useUserContextValue();
-  const memberInfo = account && account.memberInfo;
 
   const checkInScheduleSource = participatingOnly ? checkInCards.myCheckIns : checkInCards.allCheckIns;
 
@@ -69,7 +68,7 @@ const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
   ) : (
     <>
       {(checkInScheduleSource || []).length === 0 ? (
-        <EmptyState participatingOnly={participatingOnly} isOwner={memberInfo && memberInfo.isOwner} />
+        <EmptyState participatingOnly={participatingOnly} isOwner={account && account.isOwner} />
       ): (
         <Row gutter={[24, 24]}>
           {checkInScheduleSource.map((item: ICheckinData, idx: number) => (

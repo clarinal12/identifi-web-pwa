@@ -1,6 +1,7 @@
 // should be placed in a component that is being rendered in all parts of the app
 // so the `match` can get all updated url params
 import React, { createContext, useContext, PropsWithChildren, ReactNode } from 'react';
+import { StaticContext } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU } from 'utils/breadcrumbUtils';
@@ -20,7 +21,9 @@ const BreadcrumbContext = createContext<IBreadcrumbContext>({
   breadcrumbLinks: [],
 });
 
-const BreadcrumbProvider: React.FC<PropsWithChildren<RouteComponentProps>> = ({ children, match, location }) => {
+const BreadcrumbProvider: React.FC<
+  PropsWithChildren<RouteComponentProps<{}, StaticContext, { [key: string]: any }>>
+> = ({ children, match, location }) => {
   const pathSegments = match.path.split("/").filter(v => v);
   const urlSegments = match.url.split("/");
   let restorableStates = {};

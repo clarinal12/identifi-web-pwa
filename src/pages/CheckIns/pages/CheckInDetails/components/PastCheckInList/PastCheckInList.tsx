@@ -26,6 +26,9 @@ const StyledListWrapper = styled.div`
     &::-webkit-scrollbar-thumb {
       display: block;
     }
+    .ant-list-item {
+      width: calc(100% - 1px);
+    }
   }
 
   /* total width */

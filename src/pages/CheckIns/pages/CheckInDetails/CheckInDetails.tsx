@@ -81,7 +81,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
           </Col>
           <Col sm={24} md={7} className="pr-0">
             <Affix offsetTop={24}>
-              <>
+              <div>
                 <StyledCard
                   className="mb-3"
                   title={(
@@ -100,7 +100,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
                   />
                 </StyledCard>
                 <CheckInNavigation />
-              </>
+              </div>
             </Affix>
           </Col>
         </Row>

@@ -65,7 +65,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
   } = response;
   const { account } = useUserContextValue();
   const { firstname, lastname, email, role, avatar, id: memberId } = respondent;
-  const isCheckInEditable = isCurrent && account && (account.memberInfo.memberId === memberId);
+  const isCheckInEditable = isCurrent && account && (account.id === memberId);
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard

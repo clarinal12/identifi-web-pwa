@@ -17,7 +17,6 @@ interface ICheckInHeader extends RouteComponentProps<{ checkin_id: string }> {
 
 const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInState, match }) => {
   const { account } = useUserContextValue();
-  const memberInfo = account && account.memberInfo;
   return (
     <Card style={{ background: '#006D75' }} className="mb-3">
       <div className="d-flex mb-2" style={{ justifyContent: 'space-between' }}>
@@ -26,7 +25,7 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
             {checkInName}
           </Title>
         </div>
-        {(memberInfo && memberInfo.isOwner) && (
+        {(account && account.isOwner) && (
           <Link to={`/checkins/${match.params.checkin_id}/edit`}>
             <Button
               type="link"

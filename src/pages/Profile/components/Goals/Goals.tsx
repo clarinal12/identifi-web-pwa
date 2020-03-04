@@ -35,8 +35,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
   const [visibility, setVisibility] = useState(false);
   const [updateProgressState, setUpdateProgressState] = useState(false);
   const { account } = useUserContextValue();
-  const memberInfo = account && account.memberInfo;
-  const isGoalOwner = memberInfo && (memberInfo.memberId === memberId);
+  const isGoalOwner = account && (account.id === memberId);
   const { data, loading, error } = useQuery(GOALS, {
     variables: { memberId },
   });

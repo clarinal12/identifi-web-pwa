@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Moment } from 'moment';
 import { Card, Typography } from 'antd';
-import { useDebounce } from 'use-lodash-debounce';
 
 import Schedule from './components/Schedule';
 import { IScheduleFormValues } from './components/Schedule/Schedule';
 import Respondents from './components/Respondents';
 import Questions from './components/Questions';
 import Settings from './components/Settings';
+import { useDebounce } from 'utils/textUtils';
 
 const { Title } = Typography;
 

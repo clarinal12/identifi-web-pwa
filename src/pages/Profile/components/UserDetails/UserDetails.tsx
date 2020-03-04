@@ -22,10 +22,12 @@ const UserDetails: React.FC<{ memberInfo: IAccount | undefined }> = ({ memberInf
         </Title>
         <Text>{memberInfo.role}</Text>
       </div>
-      <div className="mb-3">
-        <Text className="d-block text-muted mb-1">Department</Text>
-        <Text className="fs-16">{memberInfo.role}</Text>
-      </div>
+      {memberInfo.role && (
+        <div className="mb-3">
+          <Text className="d-block text-muted mb-1">Department</Text>
+          <Text className="fs-16">{memberInfo.role}</Text>
+        </div>
+      )}
       <div className="mb-3">
         <Text className="d-block text-muted mb-1">Email</Text>
         <Text className="fs-16">{memberInfo.email}</Text>

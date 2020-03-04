@@ -91,7 +91,7 @@ const MembersTable: React.FC = () => {
             key: 'action',
             title: 'Action',
             render: member => (
-              <Link className="float-right" style={{ fontWeight: 600 }} to={`/profile/${member.memberId}`}>
+              <Link className="float-right" style={{ fontWeight: 600 }} to={`/profile/${member.id}`}>
                 View profile
               </Link>
             ),
