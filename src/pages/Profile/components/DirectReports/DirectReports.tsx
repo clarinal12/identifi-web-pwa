@@ -53,32 +53,34 @@ const StyledListWrapper = styled.div`
 `;
 
 const StyledAvatarWrapper = styled.div`
-  .ant-badge {
+  .avatar-wrapper {
     &:hover {
       cursor: pointer;
-      .custom-close-btn {
-        display: flex !important;
+      .ant-badge {
+        display: inline-block;
       }
     }
     .ant-avatar {
       border: 2px solid #E8E8E8;
       margin-right: -10px;
     }
-    .custom-close-btn {
-      display: none !important;
-      width: 14px;
-      height: 14px;
-      background: #FFF;
-      border: 1px solid #8C8C8C;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      left: -5px;
-      top: 10px;
-      .anticon {
-        font-size: 6px;
-        color: #8C8C8C;
+    .ant-badge {
+      left: 0;
+      cursor: pointer;
+      display: none;
+      .custom-close-btn {
+        width: 14px;
+        height: 14px;
+        background: #FFF;
+        border: 1px solid #8C8C8C;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .anticon {
+          font-size: 6px;
+          color: #8C8C8C;
+        }
       }
     }
   }
@@ -188,14 +190,17 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
   return (
     <div className="mb-3">
       <Text className="d-block text-muted mb-3">Direct reports</Text>
-      <StyledAvatarWrapper className="dr-avatar-wrapper d-flex">
+      <StyledAvatarWrapper className="d-flex">
         {memberInfo.directReports.map(({ avatar, id }) => (
-          <Badge
-            key={id}
-            count={<RemoveDirectReport directReportId={id} managerId={memberInfo.id} />}
-          >
+          <div className="avatar-wrapper position-relative" key={id}>
             <Avatar size="large" {...(avatar && { src : avatar })} />
-          </Badge>
+            <Badge
+              className="position-absolute"
+              {...(!id.includes('optimistic-response') && {
+                count: <RemoveDirectReport directReportId={id} managerId={memberInfo.id} />,
+              })}
+            />
+          </div>
         ))}
         <StyledPopover
           getPopupContainer={() => document.getElementById('popover-container') || document.body}

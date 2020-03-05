@@ -77,7 +77,7 @@ const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directRe
   };
 
   return (
-    <div className="position-absolute" style={{ top: 0 }}>
+    <div>
       <Tooltip
         placement="topLeft"
         title="Remove"
