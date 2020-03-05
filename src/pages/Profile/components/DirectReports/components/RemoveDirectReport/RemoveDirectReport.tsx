@@ -7,6 +7,7 @@ import { REMOVE_DIRECT_REPORT } from 'apollo/mutations/user';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
 import { MEMBER } from 'apollo/queries/member';
+import { IAccount } from 'apollo/types/graphql-types';
 
 const { Text } = Typography;
 
@@ -40,38 +41,60 @@ const StyledModal = styled(Modal)`
 
 interface IRemoveDirectReport {
   managerId: string,
-  directReportId: string
+  directReport: IAccount
 }
 
-const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directReportId }) => {
+const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directReport }) => {
   const { alertError } = useMessageContextValue();
-  const [removeDirectReport] = useMutation(REMOVE_DIRECT_REPORT);
-  const [loadingState, setLoadingState] = useState  (false);
+  const [removeDirectReportMutation] = useMutation(REMOVE_DIRECT_REPORT);
   const [visibility, setVisibility] = useState(false);
 
-  const addDirectReportAction = async () => {
+  const removeDirectReportAction = () => {
     try {
-      setLoadingState(true);
-      await removeDirectReport({
+      removeDirectReportMutation({
         variables: {
           managerId,
-          directReportId,
+          directReportId: directReport.id,
         },
-        refetchQueries: [{
-          query: AVAILABE_DIRECT_REPORTS,
-          variables: { managerId },
-        }, {
-          query: MEMBER,
-          variables: { memberId: managerId },
-        }],
-        awaitRefetchQueries: true,
+        update: (store, { data: { removeDirectReport } }) => {
+          const directReportsCacheData: { availableDirectReports: IAccount[] } | null = store.readQuery({
+            query: AVAILABE_DIRECT_REPORTS,
+            variables: { managerId },
+          });
+          const memberCacheData: { member: IAccount } | null = store.readQuery({
+            query: MEMBER,
+            variables: { memberId: managerId },
+          });
+          
+          if (directReportsCacheData && removeDirectReport) {
+            directReportsCacheData.availableDirectReports.push(directReport);
+            store.writeQuery({
+              query: AVAILABE_DIRECT_REPORTS,
+              variables: { managerId },
+              data: directReportsCacheData,
+            });
+          }
+
+          if (memberCacheData && removeDirectReport) {
+            const newMember = { ...memberCacheData.member };
+            newMember.directReports = memberCacheData.member.directReports.filter(dr => dr.id !== directReport.id);
+            store.writeQuery({
+              query: MEMBER,
+              variables: { managerId },
+              data: { member: newMember },
+            });
+          }
+        },
+        optimisticResponse: {
+          removeDirectReport: true,
+        },
       });
+      setVisibility(false);
     } catch(error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
         errorMessage = error.graphQLErrors[0].message;
       }
-      setLoadingState(false);
       alertError(errorMessage);
     }
   };
@@ -89,12 +112,9 @@ const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directRe
       </Tooltip>
       <StyledModal
         visible={visibility}
-        {...(!loadingState && {
-          onCancel: () => setVisibility(false),
-        })}
-        confirmLoading={loadingState}
+        onCancel={() => setVisibility(false)}
         okText="Yes"
-        onOk={addDirectReportAction}
+        onOk={removeDirectReportAction}
       >
         <div>
           <Icon type="warning" className="mr-3" />

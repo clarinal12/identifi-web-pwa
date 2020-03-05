@@ -191,17 +191,20 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
     <div className="mb-3">
       <Text className="d-block text-muted mb-3">Direct reports</Text>
       <StyledAvatarWrapper className="d-flex">
-        {memberInfo.directReports.map(({ avatar, id }) => (
-          <div className="avatar-wrapper position-relative" key={id}>
-            <Avatar size="large" {...(avatar && { src : avatar })} />
-            <Badge
-              className="position-absolute"
-              {...(!id.includes('optimistic-response') && {
-                count: <RemoveDirectReport directReportId={id} managerId={memberInfo.id} />,
-              })}
-            />
-          </div>
-        ))}
+        {memberInfo.directReports.map((directReport) => {
+          const { id, avatar } = directReport;
+          return (
+            <div className="avatar-wrapper position-relative" key={id}>
+              <Avatar size="large" {...(avatar && { src : avatar })} />
+              <Badge
+                className="position-absolute"
+                {...(!id.includes('optimistic-response') && {
+                  count: <RemoveDirectReport directReport={directReport} managerId={memberInfo.id} />,
+                })}
+              />
+            </div>
+          );
+        })}
         <StyledPopover
           getPopupContainer={() => document.getElementById('popover-container') || document.body}
           placement="rightBottom"
