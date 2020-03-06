@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const ADD_CHECKIN_RESPONSE_REACTION = gql`
   mutation AddCheckInResponseReaction($input: AddCheckInResponseReactionInput!) {

@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const CREATE_CHECKIN_SCHEDULE = gql`
   mutation CreateCheckInSchedule($input: CreateCheckInScheduleInput!) {

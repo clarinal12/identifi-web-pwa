@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const INTEGRATE_SLACK = gql`
   mutation IntegrateSlack($input: IntegrateSlackInput!) {
