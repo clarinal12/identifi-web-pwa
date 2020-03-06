@@ -23,13 +23,13 @@ const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
 
 const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const { loading, data } = useQuery(CHECKIN_CARDS, {
     variables: {
-      companyId: activeCompany && activeCompany.id,
+      companyId: activeCompany?.id,
     },
-    skip: !(activeCompany && activeCompany.slackEnabled),
+    skip: !(activeCompany?.slackEnabled),
   });
 
   return (

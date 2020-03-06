@@ -160,11 +160,13 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   return (
     <StyledListItem>
       <List.Item.Meta
-        avatar={account && (
-          <Link to={`/profile/${account.id}`}>
-            <Avatar {...((account && account.avatar) && { src: account.avatar })} />
-          </Link>
-        )}
+        {...account?.avatar && {
+          avatar: (
+            <Link to={`/profile/${account.id}`}>
+              <Avatar src={account.avatar} />
+            </Link>
+          )
+        }}
         description={(
           <>
             <MentionBox

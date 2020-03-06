@@ -47,7 +47,7 @@ const PasswordReset: React.FC<RouteComponentProps> = ({ history, location }) => 
     }
   }
 
-  const contentBody = !loading && (data && data.verifyResetToken) ? (
+  const contentBody = !loading && (data?.verifyResetToken) ? (
     <div className="p-4 p-md-5 form-content">
       <Title className="mb-5">
         Create new password

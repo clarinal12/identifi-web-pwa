@@ -10,8 +10,8 @@ export default <P extends object>(
 ) => {
   const SlackIntegration: React.FC<P> = (props) => {
     const { account } = useUserContextValue();
-    const activeCompany = account && account.activeCompany;
-    if (!(activeCompany && activeCompany.slackEnabled)) {
+    const activeCompany = account?.activeCompany;
+    if (!(activeCompany?.slackEnabled)) {
       return (
         <AppLayout>
           <ConnectSlack slackMessage={slackMessage} />

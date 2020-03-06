@@ -19,19 +19,19 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
   data, parentSubmitAction,
 }) => {
   const defaultValues = {
-    id: data ? data.scheduleId : '',
+    id: data?.scheduleId || '',
     name: values.name,
-    respondents: data ? data.respondents.map(({ id }) => id) : [],
-    watchers: data ? data.watchers.map(({ id }) => id) : [],
-    questions: data ? data.questions : [],
-    slackChannelId: data ? data.slackChannel.id : '',
-    goalsEnabled: data ? data.goalsEnabled : true,
-    moodsEnabled: data ? data.moodsEnabled : true,
-    blockersEnabled: data ? data.blockersEnabled : true,
-    isPrivate: data ? data.isPrivate : false,
+    respondents: data?.respondents.map(({ id }) => id) || [],
+    watchers: data?.watchers.map(({ id }) => id) || [],
+    questions: data?.questions || [],
+    slackChannelId: data?.slackChannel.id || '',
+    goalsEnabled: data?.goalsEnabled || true,
+    moodsEnabled: data?.moodsEnabled || true,
+    blockersEnabled: data?.blockersEnabled || true,
+    isPrivate: data?.isPrivate || false,
     timings: {
-      frequency: data ? data.frequency : 'WORKDAYS',
-      days: data ? data.days : WORKDAYS_VALUE,
+      frequency: data?.frequency || 'WORKDAYS',
+      days: data?.days || WORKDAYS_VALUE,
       time: function() {
         const momentObj = moment();
         if (data) {
@@ -43,9 +43,9 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
         }
         return momentObj;
       }(),
-      waitingTime: data ? data.waitingTime : 15,
-      remindTime: data ? data.remindTime : 7,
-      timezone: data ? data.timezone : Intl.DateTimeFormat().resolvedOptions().timeZone,
+      waitingTime: data?.waitingTime || 15,
+      remindTime: data?.remindTime || 7,
+      timezone: data?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     }
   };
   return (
@@ -86,7 +86,7 @@ export default withFormik<IExternalProps, { name: string }>({
   validationSchema: checkInFormSchema,
   isInitialValid: ({ data }) => !!data,
   mapPropsToValues: ({ data }) => ({
-    name: data ? data.name : '',
+    name: data?.name || '',
   }),
   handleSubmit: () => {},
   displayName: 'CheckInForm',

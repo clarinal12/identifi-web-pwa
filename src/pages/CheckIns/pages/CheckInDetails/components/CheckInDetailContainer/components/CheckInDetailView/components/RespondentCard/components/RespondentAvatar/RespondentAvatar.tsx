@@ -99,7 +99,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
                 </Text>
               </div>
             )}
-            {(previousGoal && previousGoal.completed) && (
+            {(previousGoal?.completed) && (
               <div>
                 <Text className="d-flex fs-16" type="secondary">
                   <GoalCompletedIcon /> Goals met for this check-in
@@ -142,7 +142,7 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
         {...(avatar && { src : avatar })}
       />
       <Badge
-        {...((previousGoal && previousGoal.completed) && { 
+        {...((previousGoal?.completed) && {
           count: <GoalCompletedIcon />,
         })}
       />

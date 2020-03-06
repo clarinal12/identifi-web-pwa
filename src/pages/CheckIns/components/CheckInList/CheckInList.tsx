@@ -68,7 +68,7 @@ const CheckInList: React.FC<ICheckInList> = ({ participatingOnly = false }) => {
   ) : (
     <>
       {(checkInScheduleSource || []).length === 0 ? (
-        <EmptyState participatingOnly={participatingOnly} isOwner={account && account.isOwner} />
+        <EmptyState participatingOnly={participatingOnly} isOwner={account?.isOwner} />
       ): (
         <Row gutter={[24, 24]}>
           {checkInScheduleSource.map((item: ICheckinData, idx: number) => (

@@ -127,9 +127,9 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     />
   ) : (
     <StyledList>
-      {data && data.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt, mentions }: IComment) => {
+      {data?.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt, mentions }: IComment) => {
         const nameString = getDisplayName(author);
-        const commentOwner = account && (author.id === account.id);
+        const commentOwner = author.id === account?.id;
         const isEditing = (editCommentId === id);
         const isCommentEdited = createdAt !== updatedAt;
 
@@ -162,7 +162,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             <List.Item.Meta
               avatar={(
                 <Link to={`/profile/${author.id}`}>
-                  <Avatar {...((author && author.avatar) && { src: author.avatar })} />
+                  <Avatar {...(author.avatar && { src: author.avatar })} />
                 </Link>
               )}
               title={

@@ -57,7 +57,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
 }) => {
   const { account } = useUserContextValue();
   const [cardLoadingState, setCardLoadingState] = useState(false);
-  const derivedTimezone = account ? account.timezone : timezone;
+  const derivedTimezone = account?.timezone || timezone;
   return (
     <Spin spinning={cardLoadingState} indicator={LoadingIcon}>
       <StyledCard
@@ -70,7 +70,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         })}
         className="d-flex"
         title={<Tag style={{ color: '#595959' }} color={COLOR_MAP[status]}>{status}</Tag>}
-        {...((account && account.isOwner) && {
+        {...(account?.isOwner && {
           extra: (
             <CardActions
               id={scheduleId}

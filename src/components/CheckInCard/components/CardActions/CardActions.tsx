@@ -87,7 +87,7 @@ const CardActions: React.FC<ICardActions> = ({
   const [toggleCheckInScheduleStatus] = useMutation(TOGGLE_CHECKIN_STATUS);
   const { alertError, alertWarning, alertSuccess } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const [visible, setVisible] = useState(false);
 
@@ -100,7 +100,7 @@ const CardActions: React.FC<ICardActions> = ({
         refetchQueries: [{
           query: CHECKIN_CARDS,
           variables: {
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
           }
         }],
         awaitRefetchQueries: true,
@@ -131,7 +131,7 @@ const CardActions: React.FC<ICardActions> = ({
         refetchQueries: [{
           query: CHECKIN_CARDS,
           variables: {
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
           }
         }],
         awaitRefetchQueries: true,

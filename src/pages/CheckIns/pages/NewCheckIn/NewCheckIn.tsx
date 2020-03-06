@@ -19,7 +19,7 @@ const NewCheckIn: React.FC<RouteComponentProps> = ({ history }) => {
   const [createCheckInSchedule] = useMutation(CREATE_CHECKIN_SCHEDULE);
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const createCheckInAction = async (values: IFinalValues) => {
     setLoadingState(true);
@@ -34,13 +34,13 @@ const NewCheckIn: React.FC<RouteComponentProps> = ({ history }) => {
               ...timings,
               time: timings.time.format('HH:mm'),
             },
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
           },
         },
         refetchQueries: [{
           query: CHECKIN_CARDS,
           variables: {
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
           },
         }],
         awaitRefetchQueries: true,

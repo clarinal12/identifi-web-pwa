@@ -30,11 +30,11 @@ const Settings: React.FC<IExternalProps & FormikProps<ISettingsFormValues>> = ({
 }) => {
   const { alertSuccess, alertWarning } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const { loading, data, refetch } = useQuery(SLACK_CHANNELS, {
     variables: {
-      filter: { companyId: activeCompany && activeCompany.id },
+      filter: { companyId: activeCompany?.id },
     },
     notifyOnNetworkStatusChange: true,
   });

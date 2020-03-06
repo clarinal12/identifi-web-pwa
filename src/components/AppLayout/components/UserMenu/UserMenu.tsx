@@ -60,7 +60,7 @@ const UserMenu: React.FC<
       <a href="#!">
         <Avatar
           className="mr-2"
-          {...(account && account.avatar ? {
+          {...(account?.avatar ? {
             src: account.avatar,
           } : {
             icon: 'user',

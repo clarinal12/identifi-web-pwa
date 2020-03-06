@@ -29,7 +29,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
   const [integrateSlack] = useMutation(INTEGRATE_SLACK);
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const [loadingState, setLoadingState] = useState(false);
 
@@ -43,7 +43,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
         variables: {
           input: {
             code,
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
             callbackURL: `${window.location.origin}${location.pathname}`,
           },
         },
@@ -51,7 +51,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
           query: ACCOUNT,
         }, {
           query: MEMBERS,
-          variables: { companyId: activeCompany && activeCompany.id },
+          variables: { companyId: activeCompany?.id },
         }],
         awaitRefetchQueries: true,
       });
@@ -67,7 +67,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
   }
 
   useEffect(() => {
-    if (code && !(activeCompany && activeCompany.slackEnabled)) {
+    if (code && !(activeCompany?.slackEnabled)) {
       setLoadingState(true);
       slackIntegration();
     }

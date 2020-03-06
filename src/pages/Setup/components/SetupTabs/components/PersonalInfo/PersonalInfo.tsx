@@ -113,19 +113,19 @@ const PersonalInfo: React.FC<FormikProps<IPersonalInfoFormValues>> = ({
 export default withFormik<IExternalProps, IPersonalInfoFormValues>({
   validationSchema: personalInfoFormSchema,
   isInitialValid: ({ account }) => {
-    const obj: any = account ? {
-      firstname: account.firstname,
-      lastname: account.lastname,
-      location: account.location,
-      role: account.role,
-    } : {};
+    const obj: { [key: string]: string } = {
+      firstname: account?.firstname || '',
+      lastname: account?.lastname  || '',
+      location: account?.location || '',
+      role: account?.role || '',
+    };
     return !Object.keys(obj).some((key) => !obj[key]);
   },
   mapPropsToValues: ({ account }) => ({
-    location: account ? account.firstname : '',
-    role: account ? account.lastname: '',
-    firstname: account ? account.firstname : '',
-    lastname: account ? account.lastname : '',
+    location: account?.firstname || '',
+    role: account?.lastname || '',
+    firstname: account?.firstname || '',
+    lastname: account?.lastname || '',
   }),
   handleSubmit: (values, formikBag) => {
     formikBag.props.onSubmit(values, formikBag.setSubmitting);

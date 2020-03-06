@@ -25,7 +25,7 @@ const CheckInHeader: React.FC<ICheckInHeader> = ({ data, checkInName, checkInSta
             {checkInName}
           </Title>
         </div>
-        {(account && account.isOwner) && (
+        {(account?.isOwner) && (
           <Link to={`/checkins/${match.params.checkin_id}/edit`}>
             <Button
               type="link"

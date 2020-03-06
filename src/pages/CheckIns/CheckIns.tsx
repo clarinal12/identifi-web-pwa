@@ -28,7 +28,7 @@ const CheckIns: React.FC = () => {
           <Title level={3}>Check-ins</Title>
         </Col>
         <Col sm={12}>
-          {(checkInCards.allCheckIns.length > 0) && (account && account.isOwner) && (
+          {(checkInCards.allCheckIns.length > 0) && (account?.isOwner) && (
             <Link className="float-right" to="/checkins/new">
               <Button
                 size="large"
@@ -40,7 +40,7 @@ const CheckIns: React.FC = () => {
           )}
         </Col>
       </Row>
-      <StyledTabs defaultActiveKey={(account && account.isOwner) ? '2' : '1'}>
+      <StyledTabs defaultActiveKey={(account?.isOwner) ? '2' : '1'}>
         <TabPane
           key="1"
           tab={(

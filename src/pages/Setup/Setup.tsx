@@ -31,7 +31,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [enterCompany] = useMutation(ENTER_COMPANY);
   const { alertError, alertSuccess } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const [loadingState, setLoadingState] = useState(false);
   const [activeTabKey, setActiveTabKey] = useActiveTabState(1);
@@ -46,7 +46,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
         variables: {
           input: {
             code,
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
             callbackURL: `${window.location.origin}${location.pathname}`,
           },
         },

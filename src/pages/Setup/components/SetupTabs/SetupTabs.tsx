@@ -56,7 +56,7 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   const [enterCompany] = useMutation(ENTER_COMPANY);
   const [inviteEmail] = useMutation(INVITE_EMAIL);
 
-  const activeCompany = account ? account.activeCompany : null;
+  const activeCompany = account?.activeCompany || null;
   const refetchQueries = [{
     query: ACCOUNT,
   }];
@@ -70,12 +70,12 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   }
 
   const companyAction = async (values: ICompanyFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
-    const companyMutation = activeCompany && activeCompany.id ? updateCompany : createCompany;
+    const companyMutation = activeCompany?.id ? updateCompany : createCompany;
     try {
-      if ((activeCompany && (activeCompany.name !== values.companyName)) || !activeCompany) {
+      if ((activeCompany?.name !== values.companyName) || !activeCompany) {
         await companyMutation({
           variables: {
-            ...((activeCompany && activeCompany.id) && {
+            ...(activeCompany?.id && {
               id: activeCompany.id,
             }),
             input: { name: values.companyName },
@@ -114,7 +114,7 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
       await inviteEmail({
         variables: {
           input: {
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
             emails: values.emails,
           },
         },
@@ -150,7 +150,7 @@ const SetupTabs: React.FC<ISetupTabs> = ({ history, setActiveTabKey, activeTabKe
   const TABS_STEPS: ITabsSteps[] = [{
     title: 'Company name',
     component: <CompanySetup
-      companyName={activeCompany ? activeCompany.name : ''}
+      companyName={activeCompany?.name || ''}
       onSubmit={companyAction}
     />
   }, {

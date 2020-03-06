@@ -58,7 +58,7 @@ const InviteSetup: React.FC<RouteComponentProps> = ({ history, location }) => {
     }
   }
   
-  const contentBody = !loading && (data && data.verifyInviteToken) ? (
+  const contentBody = !loading && (data?.verifyInviteToken) ? (
     <div className="p-4 p-md-5 form-content">
       <Title className="mb-5">
         Tell us about you

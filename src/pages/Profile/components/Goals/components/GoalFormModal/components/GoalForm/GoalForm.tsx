@@ -134,11 +134,11 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
 export default withFormik<IExternalProps, IGoalFormValues>({
   enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
-    title: data ? data.title : '',
-    current: data ? data.current : 1,
-    target: data ? data.target : 5,
+    title: data?.title || '',
+    current: data?.current || 1,
+    target: data?.target || 5,
     type: 'INTEGER',
-    unit: data ? data.unit : '',
+    unit: data?.unit || '',
   }),
   validationSchema: goalFormSchema,
   handleSubmit: (values, formikBag) => {

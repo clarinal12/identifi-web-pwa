@@ -19,7 +19,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
   const [loadingState, setLoadingState] = useState(false);
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
@@ -51,7 +51,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
         refetchQueries: [{
           query: CHECKIN_CARDS,
           variables: {
-            companyId: activeCompany && activeCompany.id,
+            companyId: activeCompany?.id,
           },
         }, {
           query: CHECKIN_SCHEDULE,

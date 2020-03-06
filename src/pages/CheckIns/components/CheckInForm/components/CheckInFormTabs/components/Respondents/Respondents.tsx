@@ -32,11 +32,11 @@ const Respondents: React.FC<IExternalProps & FormikProps<IRespondents>> = ({
   mergeRespondentsToState, mergeWatchersToState, mergeIsPrivateToState,
 }) => {
   const { account } = useUserContextValue();
-  const activeCompany = account && account.activeCompany;
+  const activeCompany = account?.activeCompany;
 
   const { loading, data } = useQuery<{ members: IAccount[] }>(MEMBERS, {
     variables: {
-      companyId: activeCompany && activeCompany.id
+      companyId: activeCompany?.id
     }
   });
 

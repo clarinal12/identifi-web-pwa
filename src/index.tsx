@@ -14,7 +14,7 @@ import momentConfig from 'config/momentConfig';
 momentConfig();
 
 const rootElement: HTMLElement | null = document.getElementById('root');
-const AppRenderer = (rootElement && rootElement.hasChildNodes()) ? hydrate : render;
+const AppRenderer = rootElement?.hasChildNodes() ? hydrate : render;
 
 AppRenderer(
   <ApolloProvider client={client}>
