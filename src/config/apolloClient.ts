@@ -10,6 +10,7 @@ import { getAuthToken, isLoggedIn } from 'utils/userUtils';
 import env from 'config/env';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({ introspectionQueryResultData });
+const cache = new InMemoryCache({ fragmentMatcher });
 
 const request = async (operation: Operation) => {
   operation.setContext({
@@ -41,7 +42,7 @@ const requestLink = new ApolloLink((operation, forward) =>
   })
 );
 
-export default new ApolloClient({
+const client = new ApolloClient({
   link: ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) console.log(graphQLErrors);
@@ -53,5 +54,7 @@ export default new ApolloClient({
       credentials: 'same-origin',
     }),
   ]),
-  cache: new InMemoryCache({ fragmentMatcher }),
+  cache,
 });
+
+export default client;
