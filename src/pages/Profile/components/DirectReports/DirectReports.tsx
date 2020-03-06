@@ -39,8 +39,38 @@ const StyledPopoverTitleWrapper = styled.div`
 `;
 
 const StyledListWrapper = styled.div`
+  max-height: 250px
+  overflow: hidden;
+
+  &:hover {
+    overflow: auto;
+    &::-webkit-scrollbar-thumb {
+      display: block;
+    }
+    .ant-list-item {
+      width: calc(100% - 1px);
+    }
+  }
+
+  /* total width */
+  &::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  /* scrollbar itself */
+  &::-webkit-scrollbar-thumb {
+    background-color: #babac0 !important;
+    border-radius: 12px !important;
+    border: none !important;
+  }
+
+  /* set button(top and bottom of the scrollbar) */
+  &::-webkit-scrollbar-button {
+    display: none !important;
+  }
+
   .ant-list-item {
-    padding: 8px 0;
+    padding: 8px 16px !important;
     border-bottom: 0 !important;
     &:hover {
       background: #F5F5F5;
@@ -158,8 +188,8 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
   };
 
   return (
-    <StyledListWrapper>
-      <div className="px-3 mb-2">
+    <div>
+      <div className="mb-2">
         <Search
           allowClear
           value={searchString}
@@ -172,16 +202,18 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
           <Spin className="py-4" size="small" indicator={LoadingIcon} spinning />
         </div>
       ) : (
-        <List<IAccount>
-          dataSource={drSource}
-          renderItem={item => (
-            <List.Item className="px-3" onClick={() => addDirectReportAction(item)}>
-              <Text>{getDisplayName(item)}</Text>
-            </List.Item>
-          )}
-        />
+        <StyledListWrapper>
+          <List<IAccount>
+            dataSource={drSource}
+            renderItem={item => (
+              <List.Item onClick={() => addDirectReportAction(item)}>
+                <Text>{getDisplayName(item)}</Text>
+              </List.Item>
+            )}
+          />
+        </StyledListWrapper>
       )}
-    </StyledListWrapper>
+    </div>
   );
 }
 
@@ -194,8 +226,10 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
         {memberInfo.directReports.map((directReport) => {
           const { id, avatar } = directReport;
           return (
-            <div className="avatar-wrapper position-relative" key={id}>
-              <Avatar size="large" {...(avatar && { src : avatar })} />
+            <div className="avatar-wrapper position-relative d-flex" key={id}>
+              <div title={getDisplayName(directReport)}>
+                <Avatar size="large" {...(avatar && { src : avatar })} />
+              </div>
               <Badge
                 className="position-absolute"
                 {...(!id.includes('optimistic-response') && {

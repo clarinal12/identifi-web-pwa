@@ -13,7 +13,7 @@ export const MEMBER_FIELDS = `
 `;
 
 export const MEMBERS = gql`
-  query members($companyId: ID!) {
+  query Members($companyId: ID!) {
     members(companyId: $companyId) {
       ${MEMBER_FIELDS}
     }
@@ -21,7 +21,7 @@ export const MEMBERS = gql`
 `;
 
 export const MEMBER = gql`
-  query member($memberId: ID!) {
+  query Member($memberId: ID!) {
     member(memberId: $memberId) {
       ${MEMBER_FIELDS}
       directReports {
@@ -30,6 +30,22 @@ export const MEMBER = gql`
       manager {
         ${MEMBER_FIELDS}
       }
+    }
+  }
+`;
+
+export const MEMBER_CHECKINS = gql`
+  query MemberCheckIns($memberId: ID!) {
+    memberCheckIns(memberId: $memberId) {
+      scheduleId
+      name
+      replies {
+        expected
+        total
+      }
+      nextCheckInDate
+      frequency
+      status
     }
   }
 `;
