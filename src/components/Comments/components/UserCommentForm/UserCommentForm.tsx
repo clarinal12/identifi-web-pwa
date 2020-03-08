@@ -6,10 +6,10 @@ import { Avatar, List, Typography, Button } from 'antd';
 
 import { useUserContextValue } from 'contexts/UserContext';
 import { ADD_COMMENT, UPDATE_COMMENT } from 'apollo/mutations/comments';
-import { COMMENTS } from 'apollo/queries/comments';
-import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import MentionBox from './components/MentionBox';
+import addCommentCacheHandler from './cache-handler/addComment';
+import updateCommentCacheHandler from './cache-handler/updateComment';
 
 const { Text } = Typography;
 
@@ -70,12 +70,11 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   const isUpdating = !!(defaultComment && commentId && setEditCommentId);
   const [mentions, setMentions] = useState(defaultMentions);
   const [comment, setComment] = useState(defaultComment);
-  const [loadingState, setLoadingState] = useState(false);
 
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
-  const [addComment] = useMutation(ADD_COMMENT);
-  const [updateComment] = useMutation(UPDATE_COMMENT);
+  const [addCommentMutation] = useMutation(ADD_COMMENT);
+  const [updateCommentMutation] = useMutation(UPDATE_COMMENT);
 
   useEffect(() => {
     const element = document.getElementById(textAreaId);
@@ -94,18 +93,6 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
     }
   }, [textAreaId, setComment, setMentions, setEditCommentId, isUpdating]);
 
-  const refetchQueries = [{
-    query: COMMENTS,
-    variables: {
-      checkInResponseId: responseId,
-    },
-  }, {
-    query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-    variables: {
-      id: match.params.past_checkin_id || match.params.checkin_id,
-    },
-  }];
-
   const errorHandler = (error: any) => {
     let errorMessage = null;
     if (error.graphQLErrors[0]) {
@@ -114,10 +101,9 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
     alertError(errorMessage);
   }
 
-  const addCommentAction = async () => {
-    setLoadingState(true);
+  const addCommentAction = () => {
     try {
-      await addComment({
+      addCommentMutation({
         variables: {
           input: {
             checkInResponseId: responseId,
@@ -125,27 +111,32 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
             mentions,
           },
         },
-        ...{ refetchQueries },
-        awaitRefetchQueries: true,
+        ...addCommentCacheHandler({
+          isPastCheckIn: !!match.params.past_checkin_id,
+          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInResponseId: responseId,
+          values: { comment, mentions, author: account }
+        }),
       });
       setComment('');
       setMentions([]);
     } catch(error) {
       errorHandler(error);
     }
-    setLoadingState(false);
   }
 
-  const updateCommentAction = async () => {
-    setLoadingState(true);
+  const updateCommentAction = () => {
     try {
-      await updateComment({
+      updateCommentMutation({
         variables: {
           id: commentId,
           input: { comment, mentions },
         },
-        ...{ refetchQueries },
-        awaitRefetchQueries: true,
+        ...updateCommentCacheHandler({
+          commentId,
+          checkInResponseId: responseId,
+          values: { comment, mentions, author: account },
+        }),
       });
       setComment('');
       setMentions([]);
@@ -173,7 +164,6 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
               id={textAreaId}
               comment={comment}
               isUpdating={isUpdating}
-              loadingState={loadingState}
               setComment={setComment}
               setMentions={setMentions}
               commentAction={isUpdating ? updateCommentAction : addCommentAction}

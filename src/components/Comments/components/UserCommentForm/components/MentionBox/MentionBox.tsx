@@ -37,14 +37,13 @@ interface IMentionBox {
   id: string,
   comment: string,
   isUpdating: boolean,
-  loadingState: boolean,
   setComment: (comment: string) => void,
   setMentions: (mentions: string[]) => void,
   commentAction: () => void,
 }
 
 const MentionBox: React.FC<IMentionBox> = ({
-  comment, isUpdating, loadingState, setComment, commentAction, id, setMentions,
+  comment, isUpdating, setComment, commentAction, id, setMentions,
 }) => {
   const { mentionSource } = useMentionSourceContextValue();
   const mentionableUsers = mentionSource.map((user) => ({
@@ -65,7 +64,6 @@ const MentionBox: React.FC<IMentionBox> = ({
         setMentions(mentions.map((mention) => mention.id));
       }}
       value={comment}
-      disabled={loadingState}
       autoFocus={isUpdating}
       {...(isUpdating && {
         onFocus: (e) => {

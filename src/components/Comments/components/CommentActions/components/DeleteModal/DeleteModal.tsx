@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
 import { Modal, Typography } from 'antd';
 
 import { DELETE_COMMENT } from 'apollo/mutations/comments';
-import { COMMENTS } from 'apollo/queries/comments';
-import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import deleteCommentCacheHandler from './cache-handler/deleteComment';
 
 const { Text} = Typography;
 
@@ -25,27 +24,19 @@ const StyledModal = styled(Modal)`
 `;
 
 const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId }) => {
-  const [deleteComment] = useMutation(DELETE_COMMENT);
-  const [loadingState, setLoadingState] = useState(false);
+  const [deleteCommentMutation] = useMutation(DELETE_COMMENT);
   const { alertError } = useMessageContextValue();
 
-  const deleteAction = async () => {
-    setLoadingState(true);
+  const deleteCommentAction = () => {
     try {
-      await deleteComment({
+      deleteCommentMutation({
         variables: { id: commentId },
-        refetchQueries: [{
-          query: COMMENTS,
-          variables: {
-            checkInResponseId: responseId,
-          },
-        }, {
-          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: {
-            id: match.params.past_checkin_id || match.params.checkin_id,
-          },
-        }],
-        awaitRefetchQueries: true,
+        ...deleteCommentCacheHandler({
+          commentId,
+          isPastCheckIn: !!match.params.past_checkin_id,
+          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInResponseId: responseId,
+        }),
       });
     } catch(error) {
       let errorMessage = null;
@@ -53,7 +44,6 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         errorMessage = error.graphQLErrors[0].message;
       }
       alertError(errorMessage);
-      setLoadingState(false);
       setVisibility(false);
     }
   }
@@ -63,11 +53,8 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
       title="Delete"
       visible={visibility}
       okText="Delete"
-      onOk={deleteAction}
-      confirmLoading={loadingState}
-      {...(!loadingState && {
-        onCancel: () => setVisibility(false),
-      })}
+      onOk={deleteCommentAction}
+      onCancel={() => setVisibility(false)}
     >
       <Text type="secondary">Are you sure you want to delete this comment?</Text>
     </StyledModal>
