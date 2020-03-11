@@ -23,6 +23,7 @@ export type TReaction = {
   emoji: TEmoji,
   count: number,
   hasReacted: boolean,
+  __typename: string,
 }
 
 export type TResponse = {

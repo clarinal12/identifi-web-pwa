@@ -18,7 +18,8 @@ interface ICacheHandler {
 export default ({
   isPastCheckIn, checkInId, responseId, values,
 }: ICacheHandler) => ({
-  update: (store: DataProxy, { data: { addCheckInResponseReaction } }: any) => {
+  update: (store: DataProxy, { data: { removeCheckInResponseReaction } }: any) => {
+    if (!removeCheckInResponseReaction) return;
     try {
       const checkInCacheData: any | null = store.readQuery({
         query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
@@ -31,15 +32,11 @@ export default ({
           return reactionGroup.emoji.id === values.emoji.id;
         });
         if (reactionIndex >= 0) {
-          checkInResponse.reactions[reactionIndex].count += 1;
-          checkInResponse.reactions[reactionIndex].hasReacted = true;
-        } else {
-          checkInResponse.reactions.push({
-            emoji: addCheckInResponseReaction,
-            count: 1,
-            hasReacted: true,
-            __typename: "CheckInResponseReactionGroup",
-          });
+          checkInResponse.reactions[reactionIndex].count -= 1;
+          checkInResponse.reactions[reactionIndex].hasReacted = false;
+          if (checkInResponse.reactions[reactionIndex].count === 0) {
+            checkInResponse.reactions = checkInResponse.reactions.filter((_, idx) => idx !== reactionIndex);
+          }
         }
         store.writeQuery({
           query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
@@ -56,29 +53,21 @@ export default ({
           filter: { responseId, emojiId: values.emoji.id },
         },
       });
-      reactorsCacheData.checkInResponseReactors.push({
-        id: values.reactor?.id,
-        email: values.reactor?.email,
-        firstname: values.reactor?.firstname,
-        lastname: values.reactor?.lastname,
-        role: values.reactor?.role,
-        avatar: values.reactor?.avatar,
-        isGuest: values.reactor?.isGuest,
-        __typename: 'Member',
-      });
       store.writeQuery({
         query: CHECKIN_RESPONSE_REACTORS,
         variables: {
           filter: { responseId, emojiId: values.emoji.id },
         },
-        data: reactorsCacheData,
+        data: {
+          checkInResponseReactors: reactorsCacheData.checkInResponseReactors
+            .filter((reactor: IAccount) => {
+              return reactor.id !== values.reactor?.id;
+            }),
+        },
       });
     } catch (_) {}
   },
   optimisticResponse: {
-    addCheckInResponseReaction: {
-      ...values.emoji,
-      id: `optimistic-${values.emoji.id}`,
-    }
+    removeCheckInResponseReaction: true
   },
 });
