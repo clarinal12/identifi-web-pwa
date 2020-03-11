@@ -2,7 +2,11 @@ import gql from 'graphql-tag';
 
 export const ADD_CHECKIN_RESPONSE_REACTION = gql`
   mutation AddCheckInResponseReaction($input: AddCheckInResponseReactionInput!) {
-    addCheckInResponseReaction(input: $input)
+    addCheckInResponseReaction(input: $input) {
+      id
+      web
+      description
+    }
   }
 `;
 
