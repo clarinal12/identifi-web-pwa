@@ -7,7 +7,7 @@ import EditBlockerForm from './components/EditBlockerForm';
 import { IExternalProps } from './components/EditBlockerForm/EditBlockerForm';
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_BLOCKER, REMOVE_CHECKIN_BLOCKER } from 'apollo/mutations/checkin';
-import { TBlocker } from 'apollo/types/graphql-types';
+import { TBlocker } from 'apollo/types/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
 
 interface IEditBlockerModal extends Partial<IExternalProps>, RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {}

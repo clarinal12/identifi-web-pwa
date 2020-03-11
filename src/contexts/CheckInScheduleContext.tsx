@@ -2,7 +2,7 @@ import React, { createContext, useContext, PropsWithChildren } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { useUserContextValue } from 'contexts/UserContext';
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 
 interface ICheckInScheduleContext {

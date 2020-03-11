@@ -11,7 +11,7 @@ import { useMessageContextValue } from 'contexts/MessageContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS, EMOJIS } from 'apollo/queries/reactions';
-import { TReaction, TEmoji } from 'apollo/types/graphql-types';
+import { TReaction, TEmoji } from 'apollo/types/checkin';
 
 interface IReactions extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
   responseId: string,

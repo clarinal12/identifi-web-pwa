@@ -6,7 +6,7 @@ import { Card, Icon, Tag, Typography, Row, Col, Spin } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import CardActions from './components/CardActions';
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { COLOR_MAP } from 'utils/colorUtils';
 

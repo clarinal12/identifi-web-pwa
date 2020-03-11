@@ -11,7 +11,7 @@ import Goals from './components/Goals';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { MEMBER } from 'apollo/queries/member';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history }) => {
   const { account } = useUserContextValue();

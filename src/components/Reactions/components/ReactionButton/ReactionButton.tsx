@@ -7,7 +7,8 @@ import { Tooltip, Button, Typography } from 'antd';
 
 import { getDisplayName } from 'utils/userUtils';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
-import { TReaction, IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
+import { TReaction } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 

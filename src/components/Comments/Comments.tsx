@@ -15,7 +15,7 @@ import { getMultipleLines } from 'utils/textUtils';
 import { transformComment } from 'utils/commentsUtils';
 import { CollapsedDownIcon, CollapsedUpIcon } from 'utils/iconUtils';
 import { COMMENTS } from 'apollo/queries/comments';
-import { IComment, TReaction } from 'apollo/types/graphql-types';
+import { IComment, TReaction } from 'apollo/types/checkin';
 
 const { Panel } = Collapse;
 const { Text } = Typography;

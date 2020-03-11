@@ -1,8 +1,4 @@
-export type TActiveCompany = {
-  id: string,
-  name: string,
-  slackEnabled: boolean,
-}
+import { IAccount } from './user';
 
 export type TCheckInGoal = {
   id: string,
@@ -11,15 +7,16 @@ export type TCheckInGoal = {
   completed: boolean,
 }
 
+export type TEmoji = {
+  id: number,
+  ios: string,
+  web: string,
+  description: string,
+}
+
 export type TBlocker = {
   id: string,
   blocker: string,
-}
-
-export type TCheckInStats = {
-  percentage: number,
-  colored: IAccount[],
-  faded: IAccount[],
 }
 
 export type TReaction = {
@@ -48,11 +45,6 @@ export type TResponse = {
   streak: number,
 }
 
-export type TPastCheckIns = {
-  id: string,
-  date: string,
-}
-
 export type TCurrentCheckIn = {
   id: string
   date: Date,
@@ -66,22 +58,15 @@ export type TCurrentCheckIn = {
   isCurrent: boolean,
 }
 
-export interface IAccount {
+export type TCheckInStats = {
+  percentage: number,
+  colored: IAccount[],
+  faded: IAccount[],
+}
+
+export type TPastCheckIns = {
   id: string,
-  email: string,
-  firstname: string,
-  lastname: string,
-  role: string | null,
-  location: string | null,
-  avatar: string | null
-  timezone: string,
-  onboarded: boolean,
-  invited: boolean,
-  isGuest: boolean,
-  activeCompany: TActiveCompany
-  isOwner: boolean,
-  manager: IAccount,
-  directReports: IAccount[],
+  date: string,
 }
 
 export interface ICheckinData {
@@ -121,39 +106,4 @@ export interface IComment {
   mentions: IAccount[],
   createdAt: string,
   updatedAt: string,
-}
-
-export interface IGoal {
-  id: string,
-  title: string,
-  target: number,
-  current: number,
-  type: 'INTEGER',
-  unit: string,
-}
-
-export type TEmoji = {
-  id: number,
-  ios: string,
-  web: string,
-  description: string,
-}
-
-export type TLink = {
-  url: string,
-  title: string,
-  image: string,
-  description: string,
-}
-
-export type TLinkCategory = {
-  id: string,
-  keyword: string,
-}
-
-export interface IStoredLink {
-  id: string,
-  link: TLink,
-  category: TLinkCategory,
-  sharedBy: IAccount,
 }

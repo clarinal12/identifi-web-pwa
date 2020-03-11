@@ -1,4 +1,4 @@
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 export const setAuthToken = (token: string): void => localStorage.setItem('auth_token', token);
 

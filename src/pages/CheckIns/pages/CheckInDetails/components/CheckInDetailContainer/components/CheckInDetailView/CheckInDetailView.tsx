@@ -6,7 +6,7 @@ import { Typography, Row, Col } from 'antd';
 import CheckInHeader from './components/CheckInHeader';
 import CheckInStats from './components/CheckInStats';
 import RespondentCard from './components/RespondentCard';
-import { TCurrentCheckIn } from 'apollo/types/graphql-types';
+import { TCurrentCheckIn } from 'apollo/types/checkin';
 import { IconMessage } from 'utils/iconUtils';
 
 const { Title, Text } = Typography;

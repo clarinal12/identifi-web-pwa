@@ -9,7 +9,7 @@ import LinkCard from './components/LinkCard';
 import LinkFilters from './components/LinkFilters';
 import { TFilterState } from './components/LinkFilters/LinkFilters';
 import { STORED_LINKS } from 'apollo/queries/links';
-import { IStoredLink } from 'apollo/types/graphql-types';
+import { IStoredLink } from 'apollo/types/link';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
 
