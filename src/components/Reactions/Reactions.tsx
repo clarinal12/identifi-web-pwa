@@ -12,6 +12,7 @@ import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS, EMOJIS } from 'apollo/queries/reactions';
 import { TReaction, TEmoji } from 'apollo/types/graphql-types';
+// import addCheckInResponseReactionCacheHandler from './cache-handler/addCheckInResponseReaction';
 
 interface IReactions extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
   responseId: string,
@@ -19,7 +20,7 @@ interface IReactions extends RouteComponentProps<{ checkin_id: string, past_chec
 }
 
 interface IReactionsMenu {
-  addCheckInReaction: (emoji: number) => void,
+  addCheckInResponseReactionAction: (emoji: number) => void,
   removeCheckInReaction: (emoji: number) => void,
   reactedEmojis: number[],
 }
@@ -56,7 +57,7 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeCheckInReaction, reactedEmojis }) => {
+const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAction, removeCheckInReaction, reactedEmojis }) => {
   const { data, loading } = useQuery<{ emojis: TEmoji[] }>(EMOJIS);
   return (
     <StyledMenu className="d-flex p-1">
@@ -74,7 +75,7 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeChe
               domEvent.stopPropagation();
               reactedEmojis.includes(+key) ?
                 removeCheckInReaction(+key) :
-                addCheckInReaction(+key);
+                addCheckInResponseReactionAction(+key);
             }}
           >
             {emojify(web)}
@@ -88,8 +89,8 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeChe
 const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
   const { alertError } = useMessageContextValue();
   const [loadingState, setLoadingState] = useState(false);
-  const [addCheckInResponseReaction] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
-  const [removeCheckInResponseReaction] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
+  const [addCheckInResponseReactionMutation] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
+  const [removeCheckInResponseReactionMutation] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
 
   const refetchQueries = (emojiId: number) => {
     return [{
@@ -105,13 +106,19 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
     }];
   }
 
-  const addCheckInReaction = async (emojiId: number) => {
+  const addCheckInResponseReactionAction = async (emojiId: number) => {
     setLoadingState(true);
     try {
-      await addCheckInResponseReaction({
+      await addCheckInResponseReactionMutation({
         variables: {
           input: { responseId, emojiId }
         },
+        // ...addCheckInResponseReactionCacheHandler({
+        //   isPastCheckIn: !!match.params.past_checkin_id,
+        //   checkInId: match.params.past_checkin_id || match.params.checkin_id,
+        //   responseId: responseId,
+        //   emojiId,
+        // }),
         refetchQueries: refetchQueries(emojiId),
         awaitRefetchQueries: true,
       });
@@ -128,7 +135,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
   const removeCheckInReaction = async (emojiId: number) => {
     setLoadingState(true);
     try {
-      await removeCheckInResponseReaction({
+      await removeCheckInResponseReactionMutation({
         variables: { responseId, emojiId },
         refetchQueries: refetchQueries(emojiId),
         awaitRefetchQueries: true,
@@ -152,7 +159,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
             reaction={reaction}
             loadingState={loadingState}
             key={idx}
-            addCheckInReaction={addCheckInReaction}
+            addCheckInReaction={addCheckInResponseReactionAction}
             removeCheckInReaction={removeCheckInReaction}
           />
         ))}
@@ -160,7 +167,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
       <Dropdown
         disabled={loadingState}
         overlay={ReactionsMenu({
-          addCheckInReaction,
+          addCheckInResponseReactionAction,
           removeCheckInReaction,
           reactedEmojis: reactions
             .filter(({ hasReacted }) => hasReacted)
