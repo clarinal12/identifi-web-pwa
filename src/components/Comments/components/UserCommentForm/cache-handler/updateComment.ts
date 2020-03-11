@@ -1,7 +1,8 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
 import { COMMENTS } from 'apollo/queries/comments';
-import { IComment, IAccount } from 'apollo/types/graphql-types';
+import { IComment } from 'apollo/types/checkin';
+import { IAccount } from 'apollo/types/user';
 
 interface ICacheHandler {
   commentId: string | undefined,
@@ -22,8 +23,12 @@ export default ({ values, checkInResponseId, commentId }: ICacheHandler) => ({
       });
       const newSetOfComments = checkInResponseCacheData?.checkInResponseComments.map((comment) => {
         return comment.id === commentId
-          ? { ...comment, comment: values.comment, mentions: values.mentions }
-          : comment
+          ? {
+            ...comment,
+            id: updateCheckInResponseComment.id,
+            comment: updateCheckInResponseComment.comment,
+            mentions: updateCheckInResponseComment.mentions,
+          } : comment
       });
       store.writeQuery({
         query: COMMENTS,

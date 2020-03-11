@@ -2,7 +2,8 @@ import { DataProxy } from 'apollo-cache/lib/types';
 
 import { COMMENTS } from 'apollo/queries/comments';
 import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
-import { IAccount, IComment, TCurrentCheckIn } from 'apollo/types/graphql-types';
+import { IComment, TCurrentCheckIn } from 'apollo/types/checkin';
+import { IAccount } from 'apollo/types/user';
 
 interface ICacheHandler {
   isPastCheckIn: boolean,
