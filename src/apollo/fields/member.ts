@@ -5,4 +5,5 @@ export default `
   lastname
   role
   avatar
+  isGuest
 `;

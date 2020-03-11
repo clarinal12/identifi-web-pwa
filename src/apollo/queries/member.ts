@@ -6,7 +6,6 @@ export const MEMBERS = gql`
   query Members($companyId: ID!) {
     members(companyId: $companyId) {
       ${MEMBER_FIELDS}
-      isGuest
     }
   }
 `;
