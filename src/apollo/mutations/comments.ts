@@ -1,24 +1,13 @@
 import gql from 'graphql-tag';
 
-const MEMBER_FIELDS = `
-  id
-  email
-  firstname
-  lastname
-  avatar
-  role
-`;
+import MEMBER_FIELDS from '../fields/member';
 
 export const ADD_COMMENT = gql`
   mutation AddCheckInResponseComment($input: AddCheckInResponseCommentInput!) {
     addCheckInResponseComment(input: $input) {
       id
       author {
-        id
-        firstname
-        lastname
-        email
-        avatar
+        ${MEMBER_FIELDS}
       }
       mentions {
         ${MEMBER_FIELDS}
@@ -35,11 +24,7 @@ export const UPDATE_COMMENT = gql`
     updateCheckInResponseComment(id: $id, input: $input) {
       id
       author {
-        id
-        firstname
-        lastname
-        email
-        avatar
+        ${MEMBER_FIELDS}
       }
       mentions {
         ${MEMBER_FIELDS}

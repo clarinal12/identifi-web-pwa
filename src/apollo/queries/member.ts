@@ -1,21 +1,12 @@
 import gql from 'graphql-tag';
 
-export const MEMBER_FIELDS = `
-  id
-  email
-  firstname
-  lastname
-  access
-  status
-  role
-  avatar
-  isGuest
-`;
+import MEMBER_FIELDS from '../fields/member';
 
 export const MEMBERS = gql`
   query Members($companyId: ID!) {
     members(companyId: $companyId) {
       ${MEMBER_FIELDS}
+      isGuest
     }
   }
 `;

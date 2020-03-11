@@ -16,7 +16,6 @@ interface ICacheHandler {
 
 export default ({ values, checkInResponseId, commentId }: ICacheHandler) => ({
   update: (store: DataProxy, { data: { updateCheckInResponseComment } }: any) => {
-    console.log(values);
     try {
       const checkInResponseCacheData: { checkInResponseComments: IComment[] } | null = store.readQuery({
         query: COMMENTS,
@@ -47,6 +46,7 @@ export default ({ values, checkInResponseId, commentId }: ICacheHandler) => ({
         lastname: values.author?.lastname,
         email: values.author?.email,
         avatar: values.author?.avatar,
+        role: values.author?.role,
         __typename: "Member"
       },
       mentions: values.mentions,

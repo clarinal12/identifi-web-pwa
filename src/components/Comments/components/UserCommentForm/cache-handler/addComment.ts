@@ -58,6 +58,7 @@ export default ({
         lastname: values.author?.lastname,
         email: values.author?.email,
         avatar: values.author?.avatar,
+        role: values.author?.role,
         __typename: "Member"
       },
       mentions: values.mentions,
