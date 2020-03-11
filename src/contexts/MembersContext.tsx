@@ -2,7 +2,7 @@ import React, { createContext, useContext, PropsWithChildren } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { useUserContextValue } from 'contexts/UserContext';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { MEMBERS } from 'apollo/queries/member';
 
 interface IMembersContext {

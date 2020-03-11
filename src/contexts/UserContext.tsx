@@ -1,5 +1,5 @@
 import React, { createContext, useContext, PropsWithChildren, useState, useEffect } from 'react';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 interface IUserContext {
   account: IAccount | undefined,

@@ -2,7 +2,7 @@ import { DataProxy } from 'apollo-cache/lib/types';
 
 import { MEMBER } from 'apollo/queries/member';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 
 interface ICacheHandler {

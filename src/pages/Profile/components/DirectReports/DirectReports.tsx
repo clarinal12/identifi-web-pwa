@@ -9,7 +9,7 @@ import { LoadingIcon } from 'components/PageSpinner';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
 import { MEMBER } from 'apollo/queries/member';
 import { ADD_DIRECT_REPORT } from 'apollo/mutations/user';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 

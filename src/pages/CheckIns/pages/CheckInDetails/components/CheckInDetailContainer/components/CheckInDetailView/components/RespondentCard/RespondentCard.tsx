@@ -9,7 +9,7 @@ import RespondentAvatar from './components/RespondentAvatar';
 import EditGoalModal from './components/EditGoalModal';
 import EditBlockerModal from './components/EditBlockerModal';
 import EditAnswerModal from './components/EditAnswerModal';
-import { TResponse } from 'apollo/types/graphql-types';
+import { TResponse } from 'apollo/types/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';

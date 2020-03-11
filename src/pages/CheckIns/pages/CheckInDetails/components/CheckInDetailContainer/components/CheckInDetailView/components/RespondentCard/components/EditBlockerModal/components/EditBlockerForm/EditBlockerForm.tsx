@@ -4,7 +4,7 @@ import { Modal, Form, Input, Typography, Switch, Icon } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
 import { editBlockerFormSchema } from './validation';
-import { TBlocker } from 'apollo/types/graphql-types';
+import { TBlocker } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 const { TextArea } = Input;

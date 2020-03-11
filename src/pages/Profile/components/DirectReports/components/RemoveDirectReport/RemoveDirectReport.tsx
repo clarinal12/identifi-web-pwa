@@ -5,8 +5,8 @@ import { Modal, Tooltip, Icon, Typography } from 'antd';
 
 import { REMOVE_DIRECT_REPORT } from 'apollo/mutations/user';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { IAccount } from 'apollo/types/graphql-types';
-import cacheHandler from './cacheHandler';
+import { IAccount } from 'apollo/types/user';
+import removeDirectReport from './cache-handler/removeDirectReport';
 
 const { Text } = Typography;
 
@@ -55,7 +55,7 @@ const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directRe
           managerId,
           directReportId: directReport.id,
         },
-        ...cacheHandler({ managerId, directReport }),
+        ...removeDirectReport({ managerId, directReport }),
       });
       setVisibility(false);
     } catch(error) {

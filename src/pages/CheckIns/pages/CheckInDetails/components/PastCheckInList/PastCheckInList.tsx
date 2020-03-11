@@ -5,7 +5,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { Icon, Typography, Row, Col, List } from 'antd';
 
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { scrollToTop } from 'utils/scrollUtils';
 import { PastClockIcon } from 'utils/iconUtils';
 

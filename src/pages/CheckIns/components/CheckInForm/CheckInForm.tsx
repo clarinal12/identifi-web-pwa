@@ -3,7 +3,7 @@ import moment from 'moment';
 import { withFormik, FormikProps } from 'formik';
 import { Form, Input, Row, Col } from 'antd';
 
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { checkInFormSchema } from './validation';
 import CheckInFormTabs from './components/CheckInFormTabs';
 import { IFinalValues } from './components/CheckInFormTabs/CheckInFormTabs';

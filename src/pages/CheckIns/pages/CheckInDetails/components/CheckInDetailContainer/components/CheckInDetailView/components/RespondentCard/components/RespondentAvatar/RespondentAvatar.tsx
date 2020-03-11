@@ -3,7 +3,7 @@ import { emojify } from 'node-emoji';
 import styled from 'styled-components';
 import { Popover, Typography, Badge, Avatar } from 'antd';
 
-import { TCheckInGoal, TEmoji } from 'apollo/types/graphql-types';
+import { TCheckInGoal, TEmoji } from 'apollo/types/checkin';
 import { GoalCompletedIcon, IconBlocked } from 'utils/iconUtils';
 
 const { Text } = Typography;

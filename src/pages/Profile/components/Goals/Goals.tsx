@@ -8,7 +8,7 @@ import GoalActions from './components/GoalActions';
 import GoalFormModal from './components/GoalFormModal';
 import { IGoalFormValues } from './components/GoalFormModal/components/GoalForm/GoalForm';
 import { GOALS } from 'apollo/queries/goals';
-import {IGoal } from 'apollo/types/graphql-types';
+import {IGoal } from 'apollo/types/user';
 import { useUserContextValue } from 'contexts/UserContext';
 
 const { Title, Text, Paragraph } = Typography;

@@ -27,10 +27,6 @@ export const ACCOUNT = gql`
           status
         }
       }
-      memberInfo {
-        memberId
-        isOwner
-      }
     }
   }
 `;

@@ -7,7 +7,7 @@ import { useQuery } from 'react-apollo';
 import CheckInDetailView from './components/CheckInDetailView';
 import { Spinner } from 'components/PageSpinner';
 import { CHECKIN } from 'apollo/queries/checkin';
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 
 interface ICheckInDetailContainer extends RouteComponentProps {

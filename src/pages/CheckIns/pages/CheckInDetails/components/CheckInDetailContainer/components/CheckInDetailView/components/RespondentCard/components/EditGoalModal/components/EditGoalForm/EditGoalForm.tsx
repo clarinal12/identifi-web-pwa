@@ -5,7 +5,7 @@ import { Modal, Form, Input, Typography, Switch, Icon } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
 import { editGoalFormSchema } from './validation';
-import { TCheckInGoal } from 'apollo/types/graphql-types';
+import { TCheckInGoal } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 const { TextArea } = Input;

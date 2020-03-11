@@ -3,7 +3,7 @@ import { withFormik, FormikProps } from 'formik';
 import { Form, Input, Button, Row, Col } from 'antd';
 
 import { personalInfoFormSchema } from './validation';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 export interface IPersonalInfoFormValues {
   firstname: string,
