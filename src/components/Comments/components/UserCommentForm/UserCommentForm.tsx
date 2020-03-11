@@ -10,6 +10,7 @@ import { useMessageContextValue } from 'contexts/MessageContext';
 import MentionBox from './components/MentionBox';
 import addCommentCacheHandler from './cache-handler/addComment';
 import updateCommentCacheHandler from './cache-handler/updateComment';
+import { IAccount } from 'apollo/types/user';
 
 const { Text } = Typography;
 
@@ -17,7 +18,7 @@ interface IUserCommentForm extends RouteComponentProps<{ checkin_id: string, pas
   responseId: string,
   commentId?: string,
   defaultComment?: string,
-  defaultMentions?: string[],
+  defaultMentions?: IAccount[],
   setEditCommentId?: (commentId: string | undefined) => void,
 }
 
@@ -107,8 +108,8 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
         variables: {
           input: {
             checkInResponseId: responseId,
+            mentions: mentions.map(user => user.id),
             comment,
-            mentions,
           },
         },
         ...addCommentCacheHandler({
@@ -130,7 +131,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
       updateCommentMutation({
         variables: {
           id: commentId,
-          input: { comment, mentions },
+          input: { comment, mentions: mentions.map(user => user.id) },
         },
         ...updateCommentCacheHandler({
           commentId,

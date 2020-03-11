@@ -9,13 +9,14 @@ interface ICacheHandler {
   checkInResponseId: string,
   values: {
     comment: string,
-    mentions: string[],
+    mentions: IAccount[],
     author: IAccount | undefined,
   },
 }
 
 export default ({ values, checkInResponseId, commentId }: ICacheHandler) => ({
   update: (store: DataProxy, { data: { updateCheckInResponseComment } }: any) => {
+    console.log(values);
     try {
       const checkInResponseCacheData: { checkInResponseComments: IComment[] } | null = store.readQuery({
         query: COMMENTS,

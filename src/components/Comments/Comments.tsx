@@ -99,7 +99,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     variables: {
       checkInResponseId: responseId,
     },
-    skip: !collapseKey,
+    skip: !collapseKey || !!(collapseKey && emptyComments),
   });
 
   useEffect(() => {
@@ -143,7 +143,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             responseId={responseId}
             commentId={id}
             defaultComment={comment}
-            defaultMentions={mentions.map(({ id }) => id)}
+            defaultMentions={mentions}
             setEditCommentId={setEditCommentId}
           />
         ) : (

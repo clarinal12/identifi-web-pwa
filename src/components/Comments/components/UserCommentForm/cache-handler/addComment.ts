@@ -11,7 +11,7 @@ interface ICacheHandler {
   checkInResponseId: string,
   values: {
     comment: string,
-    mentions: string[],
+    mentions: IAccount[],
     author: IAccount | undefined,
   },
 }
