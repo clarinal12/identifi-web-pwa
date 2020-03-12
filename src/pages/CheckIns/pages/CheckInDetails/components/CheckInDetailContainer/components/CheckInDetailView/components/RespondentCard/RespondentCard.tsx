@@ -121,7 +121,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
         )}
         {previousGoal && (
           <div className="div-wrapper">
-            <Text strong>
+            <Text strong className="text-muted">
               {function() {
                 const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
                 const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
