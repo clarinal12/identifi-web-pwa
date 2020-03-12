@@ -14,7 +14,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 interface IRespondentCard {
   response: TResponse,
@@ -48,6 +48,9 @@ const StyledCard = styled(Card)`
           border: none;
           margin-bottom: 0 !important;  
         }
+      }
+      .grey-border-left {
+        border-left: 4px solid #e8e8e8;
       }
     }
     .ant-btn-icon-only {
@@ -102,12 +105,12 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
         {currentGoal && (
           <div className="div-wrapper mb-3">
             <Text strong>TODAY:</Text>
-            <div className="d-flex">
+            <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
                 {getMultipleLines(currentGoal.goal).map((line, idx) => (
-                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
                     {line}
-                  </Title>
+                  </Paragraph>
                 ))}
               </div>
               {isCheckInEditable && (
@@ -118,7 +121,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
         )}
         {previousGoal && (
           <div className="div-wrapper">
-            <Text strong className="text-muted">
+            <Text strong>
               {function() {
                 const timeAgo = moment(previousGoal.createdAt).calendar().toUpperCase().split(' AT');
                 const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
@@ -130,12 +133,12 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
                 </>;
               }()}
             </Text>
-            <div className="d-flex">
+            <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
                 {getMultipleLines(previousGoal.goal).map((line, idx) => (
-                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
                     {line}
-                  </Title>
+                  </Paragraph>
                 ))}
               </div>
               {isCheckInEditable && (
@@ -149,12 +152,12 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
             <Text strong className="text-danger">
               <Icon className="mr-1" type="stop" style={{ transform: 'rotate(90deg)' }} /> BLOCKED:
             </Text>
-            <div className="d-flex">
+            <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
                 {getMultipleLines(block.blocker).map((line, idx) => (
-                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
                     {line}
-                  </Title>
+                  </Paragraph>
                 ))}
               </div>
               {isCheckInEditable && (
@@ -165,18 +168,18 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
         )}
         {answers.length > 0 && (
           <div className="my-3">
-            <Text type="secondary" strong>CUSTOM QUESTIONS:</Text>
+            <Text strong>CUSTOM QUESTIONS:</Text>
           </div>
         )}
         {answers.map(({ question, answer, id }, idx) => (
           <div key={idx} className="div-wrapper">
-            <Text type="secondary">{question}</Text>
-            <div className="d-flex">
+            <Text strong>{question}</Text>
+            <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
                 {getMultipleLines(answer).map((line, idx) => (
-                  <Title key={idx} className="mt-2 mb-0 fs-16" style={{ fontWeight: 'normal' }}>
+                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
                     {line}
-                  </Title>
+                  </Paragraph>
                 ))}
               </div>
               {isCheckInEditable && (

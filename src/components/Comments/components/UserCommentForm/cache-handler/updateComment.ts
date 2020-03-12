@@ -47,6 +47,7 @@ export default ({ values, checkInResponseId, commentId }: ICacheHandler) => ({
         email: values.author?.email,
         avatar: values.author?.avatar,
         role: values.author?.role,
+        isGuest: values.author?.isGuest,
         __typename: "Member"
       },
       mentions: values.mentions,
