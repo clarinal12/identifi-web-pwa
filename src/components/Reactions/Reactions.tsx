@@ -1,7 +1,7 @@
 import React from 'react';
 import { emojify } from 'node-emoji';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation, useQuery } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Button, Menu, Dropdown, Icon } from 'antd';
 
@@ -9,8 +9,8 @@ import ReactionButton from './components/ReactionButton';
 import { SmileyIcon } from 'utils/iconUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useUserContextValue } from 'contexts/UserContext';
+import { useReactionContextValue } from 'contexts/ReactionContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
-import { EMOJIS } from 'apollo/queries/reactions';
 import { TReaction, TEmoji } from 'apollo/types/checkin';
 import addCheckInResponseReactionCacheHandler from './cache-handler/addCheckInResponseReaction';
 import removeCheckInResponseReaction from './cache-handler/removeCheckInResponseReaction';
@@ -59,15 +59,15 @@ const StyledMenu = styled(Menu)`
 `;
 
 const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAction, removeCheckInReaction, reactedEmojis }) => {
-  const { data, loading } = useQuery<{ emojis: TEmoji[] }>(EMOJIS);
+  const { loading, reactionEmojis } = useReactionContextValue();
   return (
     <StyledMenu className="d-flex p-1">
-      {(loading || !data) ? (
+      {(loading) ? (
         <Menu.Item className="loading-item">
           <Icon type="loading" spin />
         </Menu.Item>
       ) : (
-        data.emojis.map((emoji) => (
+        reactionEmojis.map((emoji) => (
           <Menu.Item
             className="text-center"
             key={emoji.id}
