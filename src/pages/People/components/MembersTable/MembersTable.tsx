@@ -24,6 +24,11 @@ const StyledTable = styled(Table)`
       }
       td {
         border-bottom: none;
+        .user-details > .ant-list-item-meta-content {
+          .ant-list-item-meta-title {
+            margin-bottom: 0;
+          }
+        }
       }
     }
   }
@@ -74,6 +79,7 @@ const MembersTable: React.FC = () => {
             title: 'Name',
             render: member => (
               <List.Item.Meta
+                className="d-flex align-items-center user-details"
                 avatar={member.avatar && <Avatar size="large" src={member.avatar} />}
                 title={getDisplayName(member)}
                 description={<Text className="text-muted" style={{ fontSize: 12 }}>{member.role}</Text>}

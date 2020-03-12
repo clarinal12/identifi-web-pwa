@@ -13,6 +13,7 @@ const Profile = LoadableComponent({ componentPathName: 'pages/Profile' });
 const People = LoadableComponent({ componentPathName: 'pages/People' });
 const Settings = LoadableComponent({ componentPathName: 'pages/Settings' });
 const Links = LoadableComponent({ componentPathName: 'pages/Links' });
+const OneOnOne = LoadableComponent({ componentPathName: 'pages/OneOnOne' });
 
 Register.preload();
 PasswordReset.preload();
@@ -26,6 +27,7 @@ Profile.preload();
 People.preload();
 Settings.preload();
 Links.preload();
+OneOnOne.preload();
 
 const routes = [
   {
@@ -67,6 +69,10 @@ const routes = [
   {
     component: RequireAuth(Links),
     path: '/links',
+  },
+  {
+    component: RequireAuth(OneOnOne),
+    path: '/1-on-1s',
   },
   {
     component: RequireAuth(Settings),
