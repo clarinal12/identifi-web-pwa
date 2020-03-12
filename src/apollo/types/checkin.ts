@@ -75,6 +75,7 @@ export interface ICheckinData {
   name: string,
   frequency: string
   days: string[]
+  currentCheckInDate?: Date,
   nextCheckInDate: Date,
   time: string,
   waitingTime: number,
