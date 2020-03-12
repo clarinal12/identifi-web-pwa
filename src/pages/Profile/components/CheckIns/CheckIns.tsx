@@ -88,7 +88,7 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
   );
 
   return loading ? (
-    <Spinner label="Loading user goals..." />
+    <Spinner label="Loading user check-ins..." />
   ) : <div style={{ marginBottom: 32 }}>
     {contentBody}
   </div>;
