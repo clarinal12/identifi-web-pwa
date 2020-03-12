@@ -27,6 +27,7 @@ interface IComments extends RouteComponentProps {
 }
 
 const StyledCollapse = styled(Collapse)`
+  background: transparent !important;
   .ant-collapse-item {
     border: none !important;
     .ant-collapse-header {
