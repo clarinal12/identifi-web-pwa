@@ -5,10 +5,8 @@ import { Modal, Tooltip, Icon, Typography } from 'antd';
 
 import { REMOVE_DIRECT_REPORT } from 'apollo/mutations/user';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
-import { MEMBER } from 'apollo/queries/member';
 import { IAccount } from 'apollo/types/user';
-import { getDisplayName } from 'utils/userUtils';
+import removeDirectReport from './cache-handler/removeDirectReport';
 
 const { Text } = Typography;
 
@@ -57,48 +55,7 @@ const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directRe
           managerId,
           directReportId: directReport.id,
         },
-        update: (store, { data: { removeDirectReport } }) => {
-          try {
-            const directReportsCacheData: { availableDirectReports: IAccount[] } | null = store.readQuery({
-              query: AVAILABE_DIRECT_REPORTS,
-              variables: { managerId },
-            });
-            if (directReportsCacheData && removeDirectReport) {
-              directReportsCacheData.availableDirectReports.push(directReport);
-              directReportsCacheData.availableDirectReports.sort((a, b) => {
-                const aDisplayName = getDisplayName(a);
-                const bDisplayName = getDisplayName(b);
-                return (aDisplayName && bDisplayName) ?
-                  aDisplayName.localeCompare(bDisplayName) :
-                  0;
-              })
-              store.writeQuery({
-                query: AVAILABE_DIRECT_REPORTS,
-                variables: { managerId },
-                data: directReportsCacheData,
-              });
-            }
-          } catch (_) {}
-
-          try {
-            const memberCacheData: { member: IAccount } | null = store.readQuery({
-              query: MEMBER,
-              variables: { memberId: managerId },
-            });
-            if (memberCacheData && removeDirectReport) {
-              const newMember = { ...memberCacheData.member };
-              newMember.directReports = memberCacheData.member.directReports.filter(dr => dr.id !== directReport.id);
-              store.writeQuery({
-                query: MEMBER,
-                variables: { managerId },
-                data: { member: newMember },
-              });
-            }
-          } catch (_) {}
-        },
-        optimisticResponse: {
-          removeDirectReport: true,
-        },
+        ...removeDirectReport({ managerId, directReport }),
       });
       setVisibility(false);
     } catch(error) {

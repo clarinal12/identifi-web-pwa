@@ -1,13 +1,6 @@
 import gql from 'graphql-tag';
 
-const MEMBER_FIELDS = `
-  id
-  email
-  firstname
-  lastname
-  avatar
-  role
-`;
+import MEMBER_FIELDS from '../fields/member';
 
 export const STORED_LINKS = gql`
   query StoredLinks($companyId: ID!, $filter: StoredLinksFilterInput) {

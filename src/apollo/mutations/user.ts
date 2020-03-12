@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import MEMBER_FIELDS from '../fields/member';
+
 export const SIGN_UP = gql`
   mutation signUp($input: SignUpInput!) {
     signUp(input: $input)
@@ -27,15 +29,7 @@ export const SETUP_INVITED_USER = gql`
 export const ADD_DIRECT_REPORT = gql`
   mutation AddDirectReport($managerId: ID!, $directReportId: ID!) {
     addDirectReport(managerId: $managerId, directReportId: $directReportId) {
-      id
-      email
-      firstname
-      lastname
-      access
-      status
-      role
-      avatar
-      isGuest
+      ${MEMBER_FIELDS}
     }
   }
 `;

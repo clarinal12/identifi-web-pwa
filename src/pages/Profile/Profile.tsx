@@ -7,6 +7,7 @@ import AppLayout from 'components/AppLayout';
 import { Spinner } from 'components/PageSpinner';
 import UserDetails from './components/UserDetails';
 import DirectReports from './components/DirectReports';
+import CheckIns from './components/CheckIns';
 import Goals from './components/Goals';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
@@ -61,7 +62,10 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
           </Col>
           <Col sm={24} md={18}>
             {account && (
-              <Goals memberId={match.params.profile_id || account.id} />
+              <>
+                <CheckIns memberId={match.params.profile_id || account.id}  />
+                <Goals memberId={match.params.profile_id || account.id} />
+              </>
             )}
           </Col>
         </Row>

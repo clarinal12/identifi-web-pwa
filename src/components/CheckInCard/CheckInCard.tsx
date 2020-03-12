@@ -52,12 +52,12 @@ const StyledCard = styled(Card)`
 `;
 
 const CheckInCard: React.FC<ICheckinCard> = ({
-  item: { scheduleId, status, name, frequency, nextCheckInDate, replies, timezone },
+  item: { scheduleId, status, name, frequency, nextCheckInDate, replies },
   isLastItem, history,
 }) => {
   const { account } = useUserContextValue();
   const [cardLoadingState, setCardLoadingState] = useState(false);
-  const derivedTimezone = account?.timezone || timezone;
+  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   return (
     <Spin spinning={cardLoadingState} indicator={LoadingIcon}>
       <StyledCard

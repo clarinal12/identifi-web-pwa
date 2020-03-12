@@ -27,6 +27,7 @@ interface IComments extends RouteComponentProps {
 }
 
 const StyledCollapse = styled(Collapse)`
+  background: transparent !important;
   .ant-collapse-item {
     border: none !important;
     .ant-collapse-header {
@@ -99,7 +100,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     variables: {
       checkInResponseId: responseId,
     },
-    skip: !collapseKey,
+    skip: !collapseKey || !!(collapseKey && emptyComments),
   });
 
   useEffect(() => {
@@ -135,6 +136,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
 
         const transformedComment = transformComment(comment, mentions);
         const stringComment = getMultipleLines(transformedComment).join("<br/>");
+        const isOptimisticResponse = id.includes('optimistic');
 
         return isEditing ? (
           <UserCommentForm
@@ -142,14 +144,14 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             responseId={responseId}
             commentId={id}
             defaultComment={comment}
-            defaultMentions={mentions.map(({ id }) => id)}
+            defaultMentions={mentions}
             setEditCommentId={setEditCommentId}
           />
         ) : (
           <List.Item
             key={id}
             id={id}
-            {...(commentOwner && {
+            {...(commentOwner && !isOptimisticResponse && {
               actions: [
                 <CommentActions
                   commentId={id}
@@ -173,12 +175,19 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
                   >
                     {nameString}
                   </Link>
-                  <Text className="font-weight-normal">
-                    {moment(createdAt).fromNow()} {isCommentEdited && '(edited)'}
-                  </Text>
+                  {!isOptimisticResponse && (
+                    <Text className="font-weight-normal">
+                      {moment(createdAt).fromNow()} {isCommentEdited && '(edited)'}
+                    </Text>
+                  )}
                 </>                
               }
-              description={<div dangerouslySetInnerHTML={{ __html: stringComment }} />}
+              description={(
+                <div
+                  dangerouslySetInnerHTML={{ __html: stringComment }}
+                  className={cx({ 'text-muted': isOptimisticResponse })}
+                />
+              )}
             />
           </List.Item>
         );

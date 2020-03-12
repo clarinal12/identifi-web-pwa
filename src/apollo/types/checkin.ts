@@ -23,6 +23,7 @@ export type TReaction = {
   emoji: TEmoji,
   count: number,
   hasReacted: boolean,
+  __typename: string,
 }
 
 export type TResponse = {
@@ -74,6 +75,7 @@ export interface ICheckinData {
   name: string,
   frequency: string
   days: string[]
+  currentCheckInDate?: Date,
   nextCheckInDate: Date,
   time: string,
   waitingTime: number,
