@@ -71,6 +71,7 @@ const MembersTable: React.FC = () => {
       </Row>
       <StyledTable
         showHeader={false}
+        pagination={{ hideOnSinglePage: true }}
         dataSource={dataSource}
         rowKey="id"
         columns={[

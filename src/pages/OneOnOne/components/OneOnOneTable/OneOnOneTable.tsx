@@ -47,6 +47,7 @@ const OneOnOneList = () => {
     <Card>
       <StyledTable
         showHeader={false}
+        pagination={{ hideOnSinglePage: true }}
         dataSource={data.oneOnOnes}
         rowKey="id"
         columns={[
