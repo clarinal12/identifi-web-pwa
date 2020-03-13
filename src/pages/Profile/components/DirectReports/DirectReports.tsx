@@ -222,7 +222,7 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
   return (
     <div className="mb-3">
       <Text className="d-block text-muted mb-3">Direct reports</Text>
-      <StyledAvatarWrapper className="d-flex">
+      <StyledAvatarWrapper className="d-flex flex-wrap">
         {memberInfo.directReports.map((directReport) => {
           const { id, avatar } = directReport;
           return (

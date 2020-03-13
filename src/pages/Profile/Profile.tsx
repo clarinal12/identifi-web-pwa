@@ -49,7 +49,7 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
       {loading ? (
         <Spinner label="Loading profile..." />
       ) : (
-        <Row>
+        <Row gutter={24}>
           <Col sm={24} md={6}>
             {data?.member && (
               <>
