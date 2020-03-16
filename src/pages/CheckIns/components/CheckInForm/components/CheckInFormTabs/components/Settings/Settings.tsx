@@ -136,7 +136,7 @@ const Settings: React.FC<IExternalProps & FormikProps<ISettingsFormValues>> = ({
 
 export default withFormik<IExternalProps, ISettingsFormValues>({
   validationSchema: settingsFormSchema,
-  isInitialValid: ({ isUpdating, defaultValue }) => isUpdating || !!defaultValue,
+  isInitialValid: ({ isUpdating, defaultValue }) => isUpdating || Boolean(defaultValue),
   mapPropsToValues: ({ defaultValue }) => ({
     slackChannelId: defaultValue,
   }),

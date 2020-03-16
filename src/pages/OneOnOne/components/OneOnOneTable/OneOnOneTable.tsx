@@ -1,16 +1,15 @@
 import React from 'react';
 import moment from 'moment-timezone';
-import { Link } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import { useQuery } from 'react-apollo';
-import { Card, Table, List, Avatar, Typography, Icon } from 'antd';
+import { Card, Table, List, Avatar, Typography, Icon, Button } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import ScheduleOneOnOne from '../ScheduleOneOnOne';
 import { getDisplayName } from 'utils/userUtils';
-import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { IOneOnOnes } from 'apollo/types/oneOnOnes';
 import { useUserContextValue } from 'contexts/UserContext';
+import { useOneOnOnesContextValue } from 'contexts/OneOnOnesContext';
 
 const { Text } = Typography;
 
@@ -37,10 +36,10 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const OneOnOneList = () => {
+const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
   const { account } = useUserContextValue();
+  const { oneOnOnes, loading } = useOneOnOnesContextValue();
   const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const { data, loading } = useQuery(ONE_ON_ONES);
 
   return loading ? (
     <Spinner />
@@ -49,7 +48,7 @@ const OneOnOneList = () => {
       <StyledTable
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
-        dataSource={data.oneOnOnes}
+        dataSource={oneOnOnes}
         rowKey={({ teammate }: any) => teammate.id}
         columns={[
           {
@@ -95,9 +94,19 @@ const OneOnOneList = () => {
                       Processing...
                     </Text>
                   ) : (
-                    <Link className="float-right fs-16" style={{ fontWeight: 500 }} to={`/1-on-1s/${info.scheduleId}`}>
+                    <Button
+                      type="link"
+                      className="float-right fs-16"
+                      style={{ fontWeight: 500 }}
+                      onClick={() => history.push({
+                        pathname: `/1-on-1s/${teammate.id}`,
+                        state: {
+                          direct_report_id_alias: getDisplayName(teammate),
+                        },
+                      })}
+                    >
                       View agenda
-                    </Link>                  
+                    </Button>                  
                   )}
                 </div>
               ) : (
@@ -120,4 +129,4 @@ const OneOnOneList = () => {
   );
 }
 
-export default OneOnOneList;
+export default withRouter(OneOnOneList);

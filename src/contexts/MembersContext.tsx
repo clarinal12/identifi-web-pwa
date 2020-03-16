@@ -19,7 +19,7 @@ const MembersProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   const { account } = useUserContextValue();
   const activeCompany = account?.activeCompany;
 
-  const { loading, data } = useQuery(MEMBERS, {
+  const { loading, data } = useQuery<IMembersContext>(MEMBERS, {
     variables: {
       companyId: activeCompany?.id,
     },
@@ -29,7 +29,7 @@ const MembersProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   return (
     <MembersContext.Provider
       value={{
-        members: (!loading && data) ? [...data.members] : [],
+        members: data?.members || [],
         loading,
       }}
     >

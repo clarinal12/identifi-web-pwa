@@ -100,7 +100,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     variables: {
       checkInResponseId: responseId,
     },
-    skip: !collapseKey || !!(collapseKey && emptyComments),
+    skip: !collapseKey || Boolean(collapseKey && emptyComments),
   });
 
   useEffect(() => {

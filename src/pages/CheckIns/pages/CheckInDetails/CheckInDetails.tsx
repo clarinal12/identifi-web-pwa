@@ -31,7 +31,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.checkin_id },
-    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'cache-and-network',
     onCompleted: data => {
       history.replace({
         state: { checkin_id_alias: data.checkInSchedule.name },

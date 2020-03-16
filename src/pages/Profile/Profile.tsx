@@ -9,12 +9,14 @@ import UserDetails from './components/UserDetails';
 import DirectReports from './components/DirectReports';
 import CheckIns from './components/CheckIns';
 import Goals from './components/Goals';
+import { MembersProvider } from 'contexts/MembersContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { MEMBER } from 'apollo/queries/member';
 import { IAccount } from 'apollo/types/user';
 
 const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history }) => {
+  const ApplicationWrapper = match.params.profile_id ? MembersProvider : ({ children }: any) => <>{children}</>;
   const { account } = useUserContextValue();
 
   const { data, loading, error } = useQuery(MEMBER, {
@@ -74,9 +76,11 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
   );
 
   return (
-    <AppLayout>
-      {contentBody}
-    </AppLayout>
+    <ApplicationWrapper>
+      <AppLayout>
+        {contentBody}
+      </AppLayout>
+    </ApplicationWrapper>
   );
 }
 

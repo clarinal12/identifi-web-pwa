@@ -5,6 +5,7 @@ import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
 import { IAccount } from 'apollo/types/user';
 import { IOneOnOnes } from 'apollo/types/oneOnOnes';
+import { getDisplayName } from 'utils/userUtils';
 
 interface ICacheHandler {
   managerId: string,
@@ -36,6 +37,13 @@ export default ({ managerId, directReport }: ICacheHandler) => ({
       if (memberCacheData && addDirectReport) {
         const newMember = { ...memberCacheData.member };
         newMember.directReports.push(addDirectReport);
+        newMember.directReports.sort((a, b) => {
+          const aDisplayName = getDisplayName(a);
+          const bDisplayName = getDisplayName(b);
+          return (aDisplayName && bDisplayName) ?
+            aDisplayName.localeCompare(bDisplayName) :
+            0;
+        });
         store.writeQuery({
           query: MEMBER,
           variables: { managerId },
@@ -54,7 +62,14 @@ export default ({ managerId, directReport }: ICacheHandler) => ({
           teammate: directReport,
           info: null,
           __typename: "OneOnOneCard",
-        })
+        });
+        oneOnOnesCacheData.oneOnOnes.sort((a, b) => {
+          const aDisplayName = getDisplayName(a.teammate);
+          const bDisplayName = getDisplayName(b.teammate);
+          return (aDisplayName && bDisplayName) ?
+            aDisplayName.localeCompare(bDisplayName) :
+            0;
+        });
         store.writeQuery({
           query: ONE_ON_ONES,
           data: oneOnOnesCacheData,
