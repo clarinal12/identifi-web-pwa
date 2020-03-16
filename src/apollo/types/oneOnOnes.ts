@@ -10,5 +10,6 @@ export type TOneOnOneInfo = {
 export interface IOneOnOnes {
   isManager: boolean,
   teammate: IAccount,
-  info: TOneOnOneInfo,
+  info: TOneOnOneInfo | null,
+  __typename: string,
 }

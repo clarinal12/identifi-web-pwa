@@ -7,11 +7,11 @@ import { Typography, Button, Icon, Popover, Input, List, Spin, Avatar, Badge } f
 import RemoveDirectReport from './components/RemoveDirectReport';
 import { LoadingIcon } from 'components/PageSpinner';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
-import { MEMBER } from 'apollo/queries/member';
 import { ADD_DIRECT_REPORT } from 'apollo/mutations/user';
 import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import addDirectReportCacheHandler from './cache-handler/addDirectReport';
 
 const { Text } = Typography;
 const { Search } = Input;
@@ -141,41 +141,10 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
           managerId,
           directReportId: directReport.id,
         },
-        update: (store, { data: { addDirectReport: result } }) => {
-          const directReportsCacheData: { availableDirectReports: IAccount[] } | null = store.readQuery({
-            query: AVAILABE_DIRECT_REPORTS,
-            variables: { managerId },
-          });
-          const memberCacheData: { member: IAccount } | null = store.readQuery({
-            query: MEMBER,
-            variables: { memberId: managerId },
-          });
-          
-          if (directReportsCacheData && result) {
-            const { availableDirectReports } = directReportsCacheData;
-            store.writeQuery({
-              query: AVAILABE_DIRECT_REPORTS,
-              variables: { managerId },
-              data: { availableDirectReports: availableDirectReports.filter(dr => dr.id !== result.id) },
-            });
-          }
-
-          if (memberCacheData && result) {
-            const newMember = { ...memberCacheData.member };
-            newMember.directReports.push(result);
-            store.writeQuery({
-              query: MEMBER,
-              variables: { managerId },
-              data: { member: newMember },
-            });
-          }
-        },
-        optimisticResponse: {
-          addDirectReport: {
-            ...directReport,
-            id: `optimistic-response-${Date.now()}`,
-          },
-        },
+        ...addDirectReportCacheHandler({
+          managerId,
+          directReport,
+        }),
       });
       setVisibility(false);
     } catch(error) {

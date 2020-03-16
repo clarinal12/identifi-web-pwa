@@ -86,16 +86,31 @@ const OneOnOneList = () => {
           {
             key: 'action',
             title: 'Action',
-            render: ({ teammate, info }: IOneOnOnes) => {
+            render: ({ teammate, info, isManager }: IOneOnOnes) => {
               return info ? (
-                <Link className="float-right fs-16" style={{ fontWeight: 500 }} to={`/1-on-1s/${info.scheduleId}`}>
-                  View agenda
-                </Link>
+                <div>
+                  {info.scheduleId.includes('optimistic') ? (
+                    <Text className="float-right" type="secondary">
+                      <Icon type="loading" className="mr-2" />
+                      Processing...
+                    </Text>
+                  ) : (
+                    <Link className="float-right fs-16" style={{ fontWeight: 500 }} to={`/1-on-1s/${info.scheduleId}`}>
+                      View agenda
+                    </Link>                  
+                  )}
+                </div>
               ) : (
-                <ScheduleOneOnOne
-                  directReportId={teammate.id}
-                  title={`Schedule 1-1 with ${getDisplayName(teammate)}`}
-                />
+                <div>
+                  {isManager ? (
+                    <ScheduleOneOnOne
+                      directReportId={teammate.id}
+                      title={`Schedule 1-1 with ${getDisplayName(teammate)}`}
+                    />
+                    ) : (
+                    <Text className="text-muted fs-16 float-right">No details yet</Text>
+                  )}
+                </div>
               );
             },
           }
