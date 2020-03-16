@@ -10,7 +10,7 @@ const GOAL_FIELDS = `
 `;
 
 export const GOALS = gql`
-  query goals($memberId: ID!) {
+  query Goals($memberId: ID!) {
     goals(memberId: $memberId) {
       ${GOAL_FIELDS}
     }

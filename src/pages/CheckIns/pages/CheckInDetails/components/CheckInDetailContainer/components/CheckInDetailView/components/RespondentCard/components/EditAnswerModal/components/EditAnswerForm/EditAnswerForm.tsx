@@ -26,9 +26,6 @@ export interface IExternalProps {
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
-    .ant-modal-close {
-      display: none;
-    }
     .ant-modal-footer {
       border: none;
       padding: 0 24px 24px;
@@ -43,6 +40,7 @@ const EditAnswerForm: React.FC<IExternalProps & FormikProps<{ answer: string }>>
   isSubmitting, isValid, resetForm,
 }) => (
   <StyledModal
+    closable={false}
     visible={modalState}
     okText="Save changes"
     okButtonProps={{
@@ -55,12 +53,11 @@ const EditAnswerForm: React.FC<IExternalProps & FormikProps<{ answer: string }>>
       size: "large"
     }}
     onOk={() => handleSubmit()}
-    {...(!isSubmitting && {
-      onCancel: () => {
-        resetForm();
-        setModalState(!modalState);
-      },
-    })}
+    onCancel={() => {
+      resetForm();
+      setModalState(!modalState);
+    }}
+    maskClosable={false}
   >
     <Form.Item className="mb-0">
       <Text strong className="text-muted">{data.question}</Text>

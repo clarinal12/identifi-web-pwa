@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const CREATE_COMPANY = gql`
-  mutation createCompany($input: CreateCompanyInput!) {
+  mutation CreateCompany($input: CreateCompanyInput!) {
     createCompany(input: $input) {
       id
     }
@@ -9,7 +9,7 @@ export const CREATE_COMPANY = gql`
 `;
 
 export const UPDATE_COMPANY = gql`
-  mutation updateCompany($id: ID!, $input: UpdateCompanyInput!) {
+  mutation UpdateCompany($id: ID!, $input: UpdateCompanyInput!) {
     updateCompany(id: $id, input: $input) {
       name
     }
@@ -17,7 +17,7 @@ export const UPDATE_COMPANY = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation updateUser($input: UpdateUserInput!) {
+  mutation UpdateUser($input: UpdateUserInput!) {
     updateUser(input: $input) {
       email
       firstname

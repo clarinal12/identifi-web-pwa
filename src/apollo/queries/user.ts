@@ -3,7 +3,7 @@ import { gql } from 'apollo-boost';
 import MEMBER_FIELDS from '../fields/member';
 
 export const ACCOUNT = gql`
-  query me {
+  query Me {
     me {
       ${MEMBER_FIELDS}
       location

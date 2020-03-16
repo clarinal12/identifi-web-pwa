@@ -3,9 +3,10 @@ import moment from 'moment-timezone';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
-import { Card, Table, List, Avatar, Typography, Icon, Button } from 'antd';
+import { Card, Table, List, Avatar, Typography, Icon } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
+import ScheduleOneOnOne from '../ScheduleOneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { IOneOnOnes } from 'apollo/types/oneOnOnes';
@@ -49,7 +50,7 @@ const OneOnOneList = () => {
         showHeader={false}
         pagination={{ hideOnSinglePage: true }}
         dataSource={data.oneOnOnes}
-        rowKey="id"
+        rowKey={({ teammate }: any) => teammate.id}
         columns={[
           {
             key: 'name',
@@ -77,8 +78,8 @@ const OneOnOneList = () => {
             key: 'frequency',
             title: 'Frequency',
             render: ({ info }: IOneOnOnes) => info?.frequency && (
-              <Text className="text-muted">
-                {info.frequency.toLowerCase()}
+              <Text className="text-muted text-capitalize">
+                {info.frequency.toLowerCase().replace('_', '-')}
               </Text>
             ),
           },
@@ -87,11 +88,14 @@ const OneOnOneList = () => {
             title: 'Action',
             render: ({ teammate, info }: IOneOnOnes) => {
               return info ? (
-                <Link className="float-right fs-16" style={{ fontWeight: 500 }} to={`/profile/${teammate.id}`}>
+                <Link className="float-right fs-16" style={{ fontWeight: 500 }} to={`/1-on-1s/${info.scheduleId}`}>
                   View agenda
                 </Link>
               ) : (
-                <Button className="float-right" type="primary">Schedule 1-1</Button>
+                <ScheduleOneOnOne
+                  directReportId={teammate.id}
+                  title={`Schedule 1-1 with ${getDisplayName(teammate)}`}
+                />
               );
             },
           }
