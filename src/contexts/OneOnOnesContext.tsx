@@ -1,7 +1,7 @@
 import React, { createContext, useContext, PropsWithChildren } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { IOneOnOnes } from 'apollo/types/oneOnOnes';
+import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 
 interface IOneOnOnesContext {

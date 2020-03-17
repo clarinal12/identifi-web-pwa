@@ -52,3 +52,28 @@ export const ONE_ON_ONE_SESSIONS = gql`
     }
   }
 `;
+
+export const ONE_ON_ONE_SESSION = gql`
+  query OneOnOneSession($sessionId: ID!) {
+    oneOnOneSession(sessionId: $sessionId) {
+      id
+      time
+      completed
+      feedback {
+        id
+        content
+        author {
+          ${MEMBER_FIELDS}
+        }
+      }
+      agenda {
+        id
+        topic
+        content
+        author {
+          ${MEMBER_FIELDS}
+        }
+      }
+    }
+  }
+`;

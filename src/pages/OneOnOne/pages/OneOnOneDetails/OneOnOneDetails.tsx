@@ -5,12 +5,13 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Alert, Row, Col, Affix, Card, Icon, Typography } from 'antd';
 
 import AppLayout from 'components/AppLayout';
-import { Spinner } from 'components/PageSpinner';
+import OneOnOneHeader from './components/OneOnOneHeader';
+import OneOnOneSession from './components/OneOnOneSession';
 import OneOnOneHistory from './components/OneOnOneHistory';
 import { ONE_ON_ONE_SCHEDULE } from 'apollo/queries/oneOnOne';
 import { useOneOnOnesContextValue } from 'contexts/OneOnOnesContext';
 import { getDisplayName } from 'utils/userUtils';
-import { IOneOnOneSchedule } from 'apollo/types/oneOnOnes';
+import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 const { Title } = Typography;
 
@@ -62,15 +63,13 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }
     <>
       <Row className="mx-0" gutter={24}>
         <Col sm={24} md={17} className="pl-0">
-          {(!data || loading) ? (
-            <Spinner label="Loading 1-on-1 details..." />
-          ) : (
-            <Title>One on one details</Title>
+          <OneOnOneHeader
+            oneOnOneSchedule={data?.oneOnOneSchedule}
+            loading={!Boolean(data) || loading}
+          />
+          {selectedSession?.info && (
+            <OneOnOneSession sessionId={selectedSession.info.currentSessionId} />
           )}
-          {/* <CheckInDetailContainer
-            data={data.checkInSchedule}
-            pastCheckInId={pastCheckInId}
-          /> */}
         </Col>
         <Col sm={24} md={7} className="pr-0">
           <Affix offsetTop={24}>

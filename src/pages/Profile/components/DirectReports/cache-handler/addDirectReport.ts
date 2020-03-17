@@ -4,7 +4,7 @@ import { MEMBER } from 'apollo/queries/member';
 import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
 import { IAccount } from 'apollo/types/user';
-import { IOneOnOnes } from 'apollo/types/oneOnOnes';
+import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 
 interface ICacheHandler {

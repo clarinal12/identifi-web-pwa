@@ -3,7 +3,7 @@ import { DataProxy } from 'apollo-cache/lib/types';
 import { MEMBER } from 'apollo/queries/member';
 import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
-import { IOneOnOnes } from 'apollo/types/oneOnOnes';
+import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 

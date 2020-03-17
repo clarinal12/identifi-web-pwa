@@ -7,7 +7,7 @@ import { Card, Table, List, Avatar, Typography, Icon, Button } from 'antd';
 import { Spinner } from 'components/PageSpinner';
 import ScheduleOneOnOne from '../ScheduleOneOnOne';
 import { getDisplayName } from 'utils/userUtils';
-import { IOneOnOnes } from 'apollo/types/oneOnOnes';
+import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useOneOnOnesContextValue } from 'contexts/OneOnOnesContext';
 

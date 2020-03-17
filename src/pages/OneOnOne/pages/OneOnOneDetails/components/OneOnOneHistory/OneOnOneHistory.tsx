@@ -12,7 +12,7 @@ import { PastClockIcon } from 'utils/iconUtils';
 import { getDisplayName } from 'utils/userUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
-import { IOneOnOneSession } from 'apollo/types/oneOnOnes';
+import { IOneOnOneSession } from 'apollo/types/oneOnOne';
 import { IAccount } from 'apollo/types/user';
 
 const { Title, Text } = Typography;
