@@ -51,7 +51,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule }
             </div>
             <div className="d-flex align-items-end">
               <div>
-                <Button className="mr-3 active-btn">Reschedule</Button>
+                <Button className="mr-3" type="primary" ghost>Reschedule</Button>
                 <Button type="primary">Complete 1-1</Button>
               </div>
             </div>

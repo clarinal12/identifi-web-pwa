@@ -4,10 +4,14 @@ import { withFormik, FormikProps } from 'formik';
 
 import AppTextEditor from 'components/AppTextEditor';
 import { agendaFormSchema } from './validation';
+import { TAgenda } from 'apollo/types/oneOnOne';
 
 interface IExternalProps {
-  addOneOnOneAgendaAction: (values: IAgendaFormValues) => void,
+  data?: TAgenda,
+  isEditing?: boolean,
+  onSubmit: (values: IAgendaFormValues) => void,
   setVisibility: (visibility: boolean) => void,
+  deleteAction: () => void,
 }
 
 export interface IAgendaFormValues {
@@ -16,7 +20,7 @@ export interface IAgendaFormValues {
 }
 
 const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
-  values, handleBlur, handleChange, isSubmitting, errors, touched,
+  values, handleBlur, handleChange, isSubmitting, errors, touched, isEditing, deleteAction,
   setVisibility, setFieldValue, setFieldTouched, isValid, resetForm, handleSubmit,
 }) => {
   return (
@@ -61,28 +65,42 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
           </Form.Item>
         </Col>
       </Row>
-      <div style={{ marginTop: 32 }} className="text-right">
-        <Button
-          disabled={isSubmitting}
-          className="mr-4"
-          size="large"
-          onClick={() => {
-            resetForm();
-            setVisibility(false);
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          style={{ minWidth: 140 }}
-          loading={isSubmitting}
-          disabled={!isValid}
-          type="primary"
-          size="large"
-          htmlType="submit"
-        >
-          Add item
-        </Button>
+      <div className="d-flex justify-content-between mt-4">
+        <div>
+          {isEditing && (
+            <Button
+              disabled={isSubmitting}
+              className="mr-4 text-danger"
+              size="large"
+              onClick={deleteAction}
+            >
+              Delete this item
+            </Button>
+          )}
+        </div>
+        <div>
+          <Button
+            disabled={isSubmitting}
+            className="mr-4"
+            size="large"
+            onClick={() => {
+              resetForm();
+              setVisibility(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{ minWidth: 140 }}
+            loading={isSubmitting}
+            disabled={!isValid}
+            type="primary"
+            size="large"
+            htmlType="submit"
+          >
+            {isEditing ? 'Save changes' : 'Add item'}
+          </Button>
+        </div>
       </div>
     </Form>
   );
@@ -90,14 +108,14 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
 
 export default withFormik<IExternalProps, IAgendaFormValues>({
   validationSchema: agendaFormSchema,
-  mapPropsToValues: () => ({
-    topic: '',
-    content: '',
+  mapPropsToValues: ({ data }) => ({
+    topic: data?.topic || '',
+    content: data?.content || '',
   }),
   handleSubmit: (values, { props, resetForm, setSubmitting }) => {
     resetForm();
     setSubmitting(false);
-    props.addOneOnOneAgendaAction(values);
+    props.onSubmit(values);
   },
   displayName: 'AgendaForm',
 })(AgendaForm);

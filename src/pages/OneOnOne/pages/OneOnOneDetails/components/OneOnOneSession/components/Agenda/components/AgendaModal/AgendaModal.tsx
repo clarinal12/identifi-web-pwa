@@ -5,9 +5,10 @@ import { Modal, Button, Typography } from 'antd';
 
 import AgendaForm from './components/AgendaForm';
 import { IAgendaFormValues } from './components/AgendaForm/AgendaForm';
-import { ADD_ONE_ON_ONE_AGENDA } from 'apollo/mutations/agenda';
+import { ADD_ONE_ON_ONE_AGENDA, UPDATE_ONE_ON_ONE_AGENDA, DELETE_ONE_ON_ONE_AGENDA } from 'apollo/mutations/agenda';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { TAgenda } from 'apollo/types/oneOnOne';
 
 const { Title } = Typography;
 
@@ -24,11 +25,18 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AgendaModal = () => {
+interface IAgendaModal {
+  agenda?: TAgenda,
+  isEditing?: boolean,
+}
+
+const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [visiblity, setVisibility] = useState(false);
   const [addOneOnOneAgendaMutation] = useMutation(ADD_ONE_ON_ONE_AGENDA);
+  const [updateOneOnOneAgendaMutation] = useMutation(UPDATE_ONE_ON_ONE_AGENDA);
+  const [deleteOneOnOneAgendaMutation] = useMutation(DELETE_ONE_ON_ONE_AGENDA);
 
   const addOneOnOneAgendaAction = (values: IAgendaFormValues) => {
     try {
@@ -48,21 +56,61 @@ const AgendaModal = () => {
     }
   }
 
+  const updateOneOnOneAgendaAction = (values: IAgendaFormValues) => {
+    try {
+      updateOneOnOneAgendaMutation({
+        variables: {
+          agendaId: agenda?.id,
+          input: { ...values },
+        },
+      });
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+  }
+
+  const deleteOneOnOneAgendaAction = () => {
+    try {
+      deleteOneOnOneAgendaMutation({
+        variables: {  agendaId: agenda?.id },
+      });
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+  }
+
   return (
     <div>
       <StyledModal
         closable={false}
         maskClosable={false}
         visible={visiblity}
-        title={<Title level={3}>Add agenda item</Title>}
+        title={<Title level={3}>{isEditing ? 'Edit' : 'Add'} agenda item</Title>}
         onCancel={() => setVisibility(false)}
       >
         <AgendaForm
-          addOneOnOneAgendaAction={addOneOnOneAgendaAction}
+          data={agenda}
+          isEditing={isEditing}
+          onSubmit={isEditing ? updateOneOnOneAgendaAction : addOneOnOneAgendaAction}
+          deleteAction={deleteOneOnOneAgendaAction}
           setVisibility={setVisibility}
         />
       </StyledModal>
-      <Button className="active-btn" onClick={() => setVisibility(true)}>Add talking points</Button>
+      {isEditing ? (
+        <Button onClick={() => setVisibility(true)} className="text-muted" type="link" icon="form" size="large" />
+      ) : (
+        <Button type="primary" ghost onClick={() => setVisibility(true)}>Add talking points</Button>
+      )}
     </div>
   );
 }

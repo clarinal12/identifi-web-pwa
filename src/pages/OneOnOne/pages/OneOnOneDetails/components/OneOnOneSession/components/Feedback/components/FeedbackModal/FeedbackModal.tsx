@@ -34,7 +34,7 @@ const FeedbackModal = () => {
           setVisibility={setVisibility}
         />
       </StyledModal>
-      <Button className="mt-3 active-btn" onClick={() => setVisibility(true)}>Leave feedback</Button>
+      <Button className="mt-3" type="primary" ghost onClick={() => setVisibility(true)}>Leave feedback</Button>
     </div>
   );
 }
