@@ -1,17 +1,29 @@
 import React from 'react';
-import { Empty, Typography, Button } from 'antd';
+import { Empty, Typography } from 'antd';
+
+import AgendaModal from './components/AgendaModal';
+import { TAgenda } from 'apollo/types/oneOnOne';
 
 const { Text } = Typography;
 
-const Agenda = () => {
-  return (
-    <div>
+interface IAgenda {
+  agenda?: TAgenda[],
+}
+
+const Agenda: React.FC<IAgenda> = ({ agenda }) => {
+  if (!Boolean(agenda?.length)) {
+    return (
       <Empty
         className="mb-3"
         description={<Text type="secondary">Add talking points you want to talk about with your manager.</Text>}
       >
-        <Button type="primary">Add talking points</Button>
+        <AgendaModal />
       </Empty>
+    )
+  } 
+  return (
+    <div>
+      
     </div>
   )
 }

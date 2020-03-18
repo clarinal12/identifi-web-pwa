@@ -30,7 +30,7 @@ const StyledCard = styled(Card)`
 `;
 
 const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
-  const { data, loading } = useQuery(ONE_ON_ONE_SESSION, {
+  const { data, loading } = useQuery<IOneOnOneSessionQuery>(ONE_ON_ONE_SESSION, {
     variables: { sessionId },
   });
   return (loading && !data) ? (
@@ -41,7 +41,7 @@ const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
         <Feedback />
       </StyledCard>
       <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
-        <Agenda />
+        <Agenda agenda={data?.oneOnOneSession?.agenda} />
       </StyledCard>
     </>
   );

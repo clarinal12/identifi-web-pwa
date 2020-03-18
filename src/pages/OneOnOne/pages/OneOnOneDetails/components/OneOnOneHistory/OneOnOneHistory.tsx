@@ -18,7 +18,7 @@ import { IAccount } from 'apollo/types/user';
 const { Title, Text } = Typography;
 
 interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string }> {
-  nextSessionDate?: string,
+  upcomingSessionDate?: string,
   directReport?: IAccount,
   scheduleId?: string,
   pastOneOnOneId: string,
@@ -72,7 +72,7 @@ const EmptyState = () => (
 
 const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
   match, history, location, setPastOneOnOneId,
-  pastOneOnOneId, scheduleId, nextSessionDate, directReport,
+  pastOneOnOneId, scheduleId, upcomingSessionDate, directReport,
 }) => {
   const [state, setState] = useState<IOneOnOneSessionState>({
     dataSource: [],
@@ -117,7 +117,7 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
           const isActive = (id === pastOneOnOneId);
           const isPastCheckIn = (time && id);
           const dateString = isPastCheckIn ?
-            moment(time).format('MMM DD, YYYY hh:mm A') : moment(nextSessionDate).calendar();
+            moment(time).format('MMM DD, YYYY hh:mm A') : moment(upcomingSessionDate).calendar();
           return (
             <List.Item
               className={cx({ active: isActive })}

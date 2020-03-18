@@ -10,7 +10,7 @@ export const ONE_ON_ONES = gql`
         ${MEMBER_FIELDS}
       }
       info {
-        nextSessionDate
+        upcomingSessionDate
         frequency
         scheduleId
         currentSessionId
@@ -23,7 +23,7 @@ export const ONE_ON_ONE_SCHEDULE = gql`
   query OneOnOneSchedule($scheduleId: ID!) {
     oneOnOneSchedule(scheduleId: $scheduleId) {
       id
-      nextSessionDate
+      upcomingSessionDate
       frequency
       duration
       displayMember {

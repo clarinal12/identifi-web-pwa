@@ -53,7 +53,7 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
           directReportId,
           values: {
             frequency: values.frequency,
-            nextSessionDate: values.time.utc(false).format(),
+            upcomingSessionDate: values.time.utc(false).format(),
           },
         }),
       });

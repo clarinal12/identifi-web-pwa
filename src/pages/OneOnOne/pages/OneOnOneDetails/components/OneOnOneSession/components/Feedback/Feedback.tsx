@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Button } from 'antd';
+import { Typography } from 'antd';
 
+import FeedbackModal from './components/FeedbackModal';
 import { NoFeedbackIcon } from 'utils/iconUtils';
 
 const { Text } = Typography;
@@ -35,7 +36,7 @@ const Feedback = () => {
         </div>
         <div className="px-3">
           <Text type="secondary" className="fs-16 d-block">You didn’t leave feedback for Christopher yet.</Text>
-          <Button className="mt-3">Leave feedback</Button>
+          <FeedbackModal />
         </div>
       </StyledDiv>
     </div>

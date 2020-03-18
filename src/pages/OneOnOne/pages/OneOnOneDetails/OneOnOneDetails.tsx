@@ -85,7 +85,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }
               )}
             >
               <OneOnOneHistory
-                nextSessionDate={data?.oneOnOneSchedule.nextSessionDate}
+                upcomingSessionDate={data?.oneOnOneSchedule.upcomingSessionDate}
                 scheduleId={selectedSession?.info?.scheduleId}
                 directReport={selectedSession?.teammate}
                 pastOneOnOneId={pastOneOnOneId}

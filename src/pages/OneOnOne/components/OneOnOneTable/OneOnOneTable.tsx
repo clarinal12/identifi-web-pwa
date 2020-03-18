@@ -66,10 +66,10 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
           {
             key: 'nextCheckInDate',
             title: 'Next check-in date',
-            render: ({ info }: IOneOnOnes) => info?.nextSessionDate && (
+            render: ({ info }: IOneOnOnes) => info?.upcomingSessionDate && (
               <Text className="text-muted">
                 <Icon type="clock-circle" className="mr-2" />
-                {moment(info.nextSessionDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
+                {moment(info.upcomingSessionDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
               </Text>
             ),
           },

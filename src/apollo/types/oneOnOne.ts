@@ -1,7 +1,7 @@
 import { IAccount } from './user';
 
 export type TOneOnOneInfo = {
-  nextSessionDate: string,
+  upcomingSessionDate: string,
   frequency: 'WEEKLY' | 'BI_WEEKLY',
   scheduleId: string,
   currentSessionId: string,
@@ -31,8 +31,8 @@ export interface IOneOnOneSession {
   id: string,
   time: string,
   completed: boolean,
-  feedback: TFeedback,
-  agenda: TAgenda,
+  feedback: TFeedback[],
+  agenda: TAgenda[],
 }
 
 export interface IOneOnOneSchedule extends TOneOnOneInfo {
