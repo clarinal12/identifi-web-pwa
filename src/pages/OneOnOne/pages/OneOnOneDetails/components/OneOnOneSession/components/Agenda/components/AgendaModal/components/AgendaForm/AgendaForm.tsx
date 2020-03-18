@@ -6,20 +6,21 @@ import AppTextEditor from 'components/AppTextEditor';
 import { agendaFormSchema } from './validation';
 
 interface IExternalProps {
+  addOneOnOneAgendaAction: (values: IAgendaFormValues) => void,
   setVisibility: (visibility: boolean) => void,
 }
 
-interface IAgendaFormValues {
+export interface IAgendaFormValues {
   topic: string,
   content: string,
 }
 
 const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
   values, handleBlur, handleChange, isSubmitting, errors, touched,
-  setVisibility, setFieldValue, setFieldTouched, isValid, resetForm,
+  setVisibility, setFieldValue, setFieldTouched, isValid, resetForm, handleSubmit,
 }) => {
   return (
-    <Form colon={false}>
+    <Form colon={false} onSubmit={handleSubmit}>
       <Row gutter={24}>
         <Col>
           <Form.Item
@@ -50,6 +51,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
             })}
           >
             <AppTextEditor
+              disabled={isSubmitting}
               value={values.content}
               onChange={content => {
                 setFieldTouched('content');
@@ -92,6 +94,10 @@ export default withFormik<IExternalProps, IAgendaFormValues>({
     topic: '',
     content: '',
   }),
-  handleSubmit: () => {},
+  handleSubmit: (values, { props, resetForm, setSubmitting }) => {
+    resetForm();
+    setSubmitting(false);
+    props.addOneOnOneAgendaAction(values);
+  },
   displayName: 'AgendaForm',
 })(AgendaForm);

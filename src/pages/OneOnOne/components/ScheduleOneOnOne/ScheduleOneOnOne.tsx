@@ -40,9 +40,9 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
   const [visibility, setVisibility] = useState(false);
   const [scheduleOneOnOneMutation] = useMutation(SCHEDULE_ONE_ON_ONE);
 
-  const scheduleOneOnOneAction = async (values: IScheduleFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const scheduleOneOnOneAction = (values: IScheduleFormValues) => {
     try {
-      await scheduleOneOnOneMutation({
+      scheduleOneOnOneMutation({
         variables: {
           directReportId,
           input: {
@@ -64,7 +64,6 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
       }
       alertError(errorMessage);
     }
-    setSubmitting(false);
   }
 
   return (

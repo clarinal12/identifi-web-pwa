@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { CheckInScheduleConsumer } from 'contexts/CheckInScheduleContext';
 import { UserConsumer } from 'contexts/UserContext';
 import { MembersConsumer } from 'contexts/MembersContext';
-import { OneOnOnesConsumer } from 'contexts/OneOnOnesContext';
+import { OneOnOneConsumer } from 'contexts/OneOnOneContext';
 import { getDisplayName } from 'utils/userUtils';
 
 type TSegmentWithSubmenu = {
@@ -87,7 +87,7 @@ const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ m
 const ProfilesMenuWithRouter = withRouter(ProfilesMenu);
 
 const OneOnOnesMenu: React.FC<RouteComponentProps<{ direct_report_id: string }>> = ({ match, location }) => (
-  <OneOnOnesConsumer>
+  <OneOnOneConsumer>
     {({ oneOnOnes }) => (
       <UserConsumer>
         {({ account }) => {
@@ -121,7 +121,7 @@ const OneOnOnesMenu: React.FC<RouteComponentProps<{ direct_report_id: string }>>
         }}
       </UserConsumer>
     )}
-  </OneOnOnesConsumer>
+  </OneOnOneConsumer>
 );
 const OneOnOnesMenuWithRouter = withRouter(OneOnOnesMenu);
 

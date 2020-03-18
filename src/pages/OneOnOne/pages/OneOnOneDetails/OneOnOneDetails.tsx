@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Alert, Row, Col, Affix, Card, Icon, Typography } from 'antd';
+import { OneOnOneProviderWithRouter } from 'contexts/OneOnOneContext';
 
 import AppLayout from 'components/AppLayout';
 import OneOnOneHeader from './components/OneOnOneHeader';
 import OneOnOneSession from './components/OneOnOneSession';
 import OneOnOneHistory from './components/OneOnOneHistory';
 import { ONE_ON_ONE_SCHEDULE } from 'apollo/queries/oneOnOne';
-import { useOneOnOnesContextValue } from 'contexts/OneOnOnesContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { getDisplayName } from 'utils/userUtils';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
@@ -29,21 +30,20 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }>> = ({ match, history }) => {
+const OneOnOneDetails: React.FC<RouteComponentProps> = ({ history }) => {
   const [pastOneOnOneId, setPastOneOnOneId] = useState('');
-  const { oneOnOnes } = useOneOnOnesContextValue();
-  const selectedSession = oneOnOnes.find(({ teammate }) => teammate.id === match.params.direct_report_id);
+  const { selectedUserSession } = useOneOnOneContextValue();
 
   const { data, loading = true, error } = useQuery<IOneOnOneScheduleQuery>(ONE_ON_ONE_SCHEDULE, {
     variables: {
-      scheduleId: selectedSession?.info?.scheduleId,
+      scheduleId: selectedUserSession?.info?.scheduleId,
     },
     onCompleted: () => {
       history.replace({
-        state: { direct_report_id_alias: getDisplayName(selectedSession?.teammate) },
+        state: { direct_report_id_alias: getDisplayName(selectedUserSession?.teammate) },
       });
     },
-    skip: !Boolean(selectedSession?.info),
+    skip: !Boolean(selectedUserSession?.info),
   });
 
   const contentBody = error ? (
@@ -67,8 +67,8 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }
             oneOnOneSchedule={data?.oneOnOneSchedule}
             loading={!Boolean(data) || loading}
           />
-          {selectedSession?.info && (
-            <OneOnOneSession sessionId={selectedSession.info.currentSessionId} />
+          {selectedUserSession?.info && (
+            <OneOnOneSession sessionId={selectedUserSession.info.currentSessionId} />
           )}
         </Col>
         <Col sm={24} md={7} className="pr-0">
@@ -86,8 +86,8 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }
             >
               <OneOnOneHistory
                 upcomingSessionDate={data?.oneOnOneSchedule.upcomingSessionDate}
-                scheduleId={selectedSession?.info?.scheduleId}
-                directReport={selectedSession?.teammate}
+                scheduleId={selectedUserSession?.info?.scheduleId}
+                directReport={selectedUserSession?.teammate}
                 pastOneOnOneId={pastOneOnOneId}
                 setPastOneOnOneId={setPastOneOnOneId}
               />
@@ -105,4 +105,10 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ direct_report_id: string }
   );
 }
 
-export default withRouter(OneOnOneDetails);
+const OneOnOneDetailsWithRouter = withRouter(OneOnOneDetails);
+
+export default () => (
+  <OneOnOneProviderWithRouter>
+    <OneOnOneDetailsWithRouter />
+  </OneOnOneProviderWithRouter>
+);

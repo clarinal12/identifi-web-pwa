@@ -8,10 +8,7 @@ const { Option } = Select;
 
 interface IExternalProps {
   setVisibility: (visibility: boolean) => void,
-  scheduleOneOnOneAction: (
-    values: IScheduleFormValues,
-    setSubmitting: (isSubmitting: boolean) => void,
-  ) => void,
+  scheduleOneOnOneAction: (values: IScheduleFormValues) => void,
 }
 
 export interface IScheduleFormValues {
@@ -149,8 +146,8 @@ export default withFormik<IExternalProps, IScheduleFormValues>({
     frequency: 'WEEKLY',
     time: moment(),
   }),
-  handleSubmit: (values, { setSubmitting, props }) => {
-    props.scheduleOneOnOneAction(values, setSubmitting);
+  handleSubmit: (values, { props }) => {
+    props.scheduleOneOnOneAction(values);
   },
   displayName: 'ScheduleForm',
 })(ScheduleForm);;

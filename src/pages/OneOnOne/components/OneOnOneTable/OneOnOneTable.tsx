@@ -9,7 +9,7 @@ import ScheduleOneOnOne from '../ScheduleOneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { useUserContextValue } from 'contexts/UserContext';
-import { useOneOnOnesContextValue } from 'contexts/OneOnOnesContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 
 const { Text } = Typography;
 
@@ -38,7 +38,7 @@ const StyledTable = styled(Table)`
 
 const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
   const { account } = useUserContextValue();
-  const { oneOnOnes, loading } = useOneOnOnesContextValue();
+  const { oneOnOnes, loading } = useOneOnOneContextValue();
   const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return loading ? (

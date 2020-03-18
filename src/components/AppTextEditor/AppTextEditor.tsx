@@ -17,28 +17,30 @@ const StyledBraftEditor = styled(BraftEditor)`
 
 interface IAppTextEditor {
   value: string,
+  disabled?: boolean,
   onChange: (content: string) => void,
 }
 
-const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange }) => {
+const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange, disabled }) => {
   const [editorState, setEditorState] = useState<EditorState | null>(BraftEditor.createEditorState(value));
 
   useEffect(() => {
-    if (!value) {
-      setEditorState(BraftEditor.createEditorState(value))
+    if (!value && !editorState.isEmpty()) {
+      setEditorState(BraftEditor.createEditorState(value));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
     <StyledBraftEditor
+      readOnly={disabled}
       language="en"
       value={editorState}
       onChange={editorState => {
         setEditorState(editorState);
-        if (!value && editorState.toHTML() !== '<p></p>') {
+        if (!editorState.isEmpty()) {
           onChange(editorState.toHTML());
-        }
-        if (value && editorState.toHTML() === '<p></p>') {
+        } else if (editorState.isEmpty() && value) {
           onChange('');
         }
       }}
