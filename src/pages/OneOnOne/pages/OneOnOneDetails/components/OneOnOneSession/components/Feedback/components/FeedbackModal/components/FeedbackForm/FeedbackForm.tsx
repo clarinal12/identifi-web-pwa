@@ -6,19 +6,20 @@ import AppTextEditor from 'components/AppTextEditor';
 import { feedbackFormSchema } from './validation';
 
 interface IExternalProps {
+  onSubmit: (values: IFeedbackFormValues) => void,
   setVisibility: (visibility: boolean) => void,
 }
 
-interface IFeedbackFormValues {
+export interface IFeedbackFormValues {
   content: string,
 }
 
 const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> = ({
-  values, isSubmitting, errors, touched,
+  values, isSubmitting, errors, touched, handleSubmit,
   setVisibility, setFieldValue, setFieldTouched, isValid, resetForm,
 }) => {
   return (
-    <Form colon={false}>
+    <Form colon={false} onSubmit={handleSubmit}>
       <Row gutter={24}>
         <Col>
           <Form.Item
@@ -70,6 +71,10 @@ export default withFormik<IExternalProps, IFeedbackFormValues>({
   mapPropsToValues: () => ({
     content: '',
   }),
-  handleSubmit: () => {},
+  handleSubmit: (values, { props, resetForm, setSubmitting }) => {
+    resetForm();
+    setSubmitting(false);
+    props.onSubmit(values);
+  },
   displayName: 'FeedbackForm',
 })(FeedbackForm);

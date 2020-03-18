@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Modal, Button, Typography } from 'antd';
 
 import FeedbackForm from './components/FeedbackForm';
+import { IFeedbackFormValues } from './components/FeedbackForm/FeedbackForm';
+import { ADD_ONE_ON_ONE_FEEDBACK } from 'apollo/mutations/feedback';
+import { useMessageContextValue } from 'contexts/MessageContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 
 const { Title } = Typography;
 
@@ -20,7 +25,29 @@ const StyledModal = styled(Modal)`
 `;
 
 const FeedbackModal = () => {
+  const { alertError } = useMessageContextValue();
+  const { selectedUserSession } = useOneOnOneContextValue();
   const [visiblity, setVisibility] = useState(false);
+  const [addOneOnOneFeedbackMutation] = useMutation(ADD_ONE_ON_ONE_FEEDBACK);
+
+  const addOneOnOneFeedbackAction = (values: IFeedbackFormValues) => {
+    try {
+      addOneOnOneFeedbackMutation({
+        variables: {
+          sessionId: selectedUserSession?.info?.currentSessionId,
+          input: { ...values },
+        },
+      });
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+  }
+
   return (
     <div>
       <StyledModal
@@ -31,6 +58,7 @@ const FeedbackModal = () => {
         onCancel={() => setVisibility(false)}
       >
         <FeedbackForm
+          onSubmit={addOneOnOneFeedbackAction}
           setVisibility={setVisibility}
         />
       </StyledModal>
