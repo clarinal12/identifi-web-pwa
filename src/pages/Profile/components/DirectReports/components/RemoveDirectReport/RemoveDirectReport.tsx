@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useMutation } from 'react-apollo';
@@ -74,7 +75,7 @@ const RemoveDirectReport: React.FC<IRemoveDirectReport> = ({ managerId, directRe
         title="Remove"
         getPopupContainer={() => document.getElementById('tooltip-container') || document.body}
       >
-        <a href="#!" className="custom-close-btn" onClick={() => setVisibility(true)}>
+        <a className="custom-close-btn" onClick={() => setVisibility(true)}>
           <Icon type="close" />
         </a>
       </Tooltip>

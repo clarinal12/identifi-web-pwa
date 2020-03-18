@@ -38,7 +38,7 @@ const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
   ) : (
     <>
       <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
-        <Feedback />
+        <Feedback feedbackInfo={data?.oneOnOneSession?.feedbackInfo} />
       </StyledCard>
       <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
         <Agenda agenda={data?.oneOnOneSession?.agenda} />

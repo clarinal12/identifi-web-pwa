@@ -59,9 +59,11 @@ export const ONE_ON_ONE_SESSION = gql`
       id
       time
       completed
-      feedback {
-        id
-        content
+      feedbackInfo {
+        feedback {
+          id
+          content
+        }
         author {
           ${MEMBER_FIELDS}
         }

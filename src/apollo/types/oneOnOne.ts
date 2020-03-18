@@ -14,9 +14,11 @@ export interface IOneOnOnes {
   __typename: string,
 }
 
-export type TFeedback = {
-  id: string,
-  content: string,
+export type TFeedbackInfo = {
+  feedback: {
+    id: string,
+    content: string,
+  }
   author: IAccount,
 }
 
@@ -31,7 +33,7 @@ export interface IOneOnOneSession {
   id: string,
   time: string,
   completed: boolean,
-  feedback: TFeedback[],
+  feedbackInfo: TFeedbackInfo[],
   agenda: TAgenda[],
 }
 

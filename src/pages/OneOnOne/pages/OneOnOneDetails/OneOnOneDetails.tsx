@@ -64,6 +64,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps> = ({ history }) => {
       <Row className="mx-0" gutter={24}>
         <Col sm={24} md={17} className="pl-0">
           <OneOnOneHeader
+            isManager={selectedUserSession?.isManager}
             oneOnOneSchedule={data?.oneOnOneSchedule}
             loading={!Boolean(data) || loading}
           />

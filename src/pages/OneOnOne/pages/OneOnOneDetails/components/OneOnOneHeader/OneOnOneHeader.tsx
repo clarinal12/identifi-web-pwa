@@ -11,6 +11,7 @@ import { getDisplayName } from 'utils/userUtils';
 const { Title, Text } = Typography;
 
 interface IOneOnOneHeader {
+  isManager?: boolean,
   loading: boolean,
   oneOnOneSchedule?: IOneOnOneSchedule,
 }
@@ -21,7 +22,7 @@ const StyledSpinnerWrapper = styled.div`
   }
 `;
 
-const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule }) => {
+const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, isManager }) => {
   return (
     <Card className="mb-3">
       {loading ? (
@@ -40,7 +41,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule }
           <div className="d-flex justify-content-between w-100">
             <div>
               <div className="d-flex" style={{ alignItems: 'center' }}>
-                <Title className="mb-0 mr-2" level={3}>
+                <Title className="mb-0 mr-2 text-capitalize" level={3}>
                   {getDisplayName(oneOnOneSchedule?.displayMember)}
                 </Title>
                 <Button style={{ color: '#595959' }} type="link" icon="setting" size="large" />
@@ -49,12 +50,14 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule }
                 {moment().format('MMM DD, hh:mm a')}
               </Text>
             </div>
-            <div className="d-flex align-items-end">
-              <div>
-                <Button className="mr-3" type="primary" ghost>Reschedule</Button>
-                <Button type="primary">Complete 1-1</Button>
+            {isManager && (
+              <div className="d-flex align-items-end">
+                <div>
+                  <Button className="mr-3" type="primary" ghost>Reschedule</Button>
+                  <Button type="primary">Complete 1-1</Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

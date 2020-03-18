@@ -3,9 +3,16 @@ import styled from 'styled-components';
 import { Typography } from 'antd';
 
 import FeedbackModal from './components/FeedbackModal';
+import { useUserContextValue } from 'contexts/UserContext';
 import { NoFeedbackIcon } from 'utils/iconUtils';
+import { getDisplayName } from 'utils/userUtils';
+import { TFeedbackInfo } from 'apollo/types/oneOnOne';
 
 const { Text } = Typography;
+
+interface IFeedback {
+  feedbackInfo?: TFeedbackInfo[],
+}
 
 const StyledDiv = styled.div`
   &:not(:last-of-type) {
@@ -18,8 +25,10 @@ const StyledDiv = styled.div`
     height: 85px;
   }
 `;
-
-const Feedback = () => {
+ 
+const Feedback: React.FC<IFeedback> = ({ feedbackInfo }) => {
+  const { account } = useUserContextValue();
+  const otherUser = feedbackInfo?.find(({ author }) => author.id !== account?.id);
   return (
     <div>
       <StyledDiv className="d-flex py-3 align-items-center">
@@ -27,7 +36,9 @@ const Feedback = () => {
           <NoFeedbackIcon />
         </div>
         <div className="px-3">
-          <Text type="secondary" className="fs-16 d-block">Chrisopher didn’t leave any feedback for you yet.</Text>
+          <Text type="secondary" className="fs-16 d-block">
+            <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span> didn’t leave any feedback for you yet.
+          </Text>
         </div>
       </StyledDiv>
       <StyledDiv className="d-flex py-3 align-items-center">
@@ -35,7 +46,9 @@ const Feedback = () => {
           <NoFeedbackIcon />
         </div>
         <div className="px-3">
-          <Text type="secondary" className="fs-16 d-block">You didn’t leave feedback for Christopher yet.</Text>
+          <Text type="secondary" className="fs-16 d-block">
+            You didn’t leave any feedback for <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span>
+          </Text>
           <FeedbackModal />
         </div>
       </StyledDiv>
