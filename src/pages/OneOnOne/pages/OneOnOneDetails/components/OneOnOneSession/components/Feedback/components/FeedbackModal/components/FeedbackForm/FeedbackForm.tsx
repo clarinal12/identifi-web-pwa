@@ -10,6 +10,7 @@ interface IExternalProps {
   data?: TFeedback,
   onSubmit: (values: IFeedbackFormValues) => void,
   setVisibility: (visibility: boolean) => void,
+  deleteAction: () => void,
 }
 
 export interface IFeedbackFormValues {
@@ -17,7 +18,7 @@ export interface IFeedbackFormValues {
 }
 
 const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> = ({
-  values, isSubmitting, errors, touched, handleSubmit, data,
+  values, isSubmitting, errors, touched, handleSubmit, data, deleteAction,
   setVisibility, setFieldValue, setFieldTouched, isValid, resetForm,
 }) => {
   return (
@@ -41,28 +42,42 @@ const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> 
           </Form.Item>
         </Col>
       </Row>
-      <div style={{ marginTop: 32 }} className="text-right">
-        <Button
-          disabled={isSubmitting}
-          className="mr-4"
-          size="large"
-          onClick={() => {
-            resetForm();
-            setVisibility(false);
-          }}
-        >
-          {data ? 'Cancel' : 'Maybe later'}
-        </Button>
-        <Button
-          style={{ minWidth: 140 }}
-          loading={isSubmitting}
-          disabled={!isValid}
-          type="primary"
-          size="large"
-          htmlType="submit"
-        >
-          {data ? 'Save changes' : 'Submit feedback'}
-        </Button>
+      <div className="d-flex justify-content-between mt-4">
+        <div>
+          {data && (
+            <Button
+              disabled={isSubmitting}
+              className="mr-4 text-danger"
+              size="large"
+              onClick={deleteAction}
+            >
+              Delete feedback
+            </Button>
+          )}
+        </div>
+        <div>
+          <Button
+            disabled={isSubmitting}
+            className="mr-4"
+            size="large"
+            onClick={() => {
+              resetForm();
+              setVisibility(false);
+            }}
+          >
+            {data ? 'Cancel' : 'Maybe later'}
+          </Button>
+          <Button
+            style={{ minWidth: 140 }}
+            loading={isSubmitting}
+            disabled={!isValid}
+            type="primary"
+            size="large"
+            htmlType="submit"
+          >
+            {data ? 'Save changes' : 'Submit feedback'}
+          </Button>
+        </div>
       </div>
     </Form>
   );

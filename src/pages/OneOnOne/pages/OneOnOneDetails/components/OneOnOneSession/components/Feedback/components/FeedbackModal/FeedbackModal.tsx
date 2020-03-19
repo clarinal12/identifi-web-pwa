@@ -7,7 +7,8 @@ import FeedbackForm from './components/FeedbackForm';
 import { IFeedbackFormValues } from './components/FeedbackForm/FeedbackForm';
 import addOneOnOneFeedbackCacheHandler from './cache-handler/addOneOnOneFeedback';
 import updateOneOnOneFeedbackCacheHandler from './cache-handler/updateOneOnOneFeedback';
-import { ADD_ONE_ON_ONE_FEEDBACK, UPDATE_ONE_ON_ONE_FEEDBACK } from 'apollo/mutations/feedback';
+import deleteOneOnOneFeedbackCacheHandler from './cache-handler/deleteOneOnOneFeedback';
+import { ADD_ONE_ON_ONE_FEEDBACK, UPDATE_ONE_ON_ONE_FEEDBACK, DELETE_ONE_ON_ONE_FEEDBACK } from 'apollo/mutations/feedback';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { useUserContextValue } from 'contexts/UserContext';
@@ -40,6 +41,7 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
   const [visiblity, setVisibility] = useState(false);
   const [addOneOnOneFeedbackMutation] = useMutation(ADD_ONE_ON_ONE_FEEDBACK);
   const [updateOneOnOneFeedbackMutation] = useMutation(UPDATE_ONE_ON_ONE_FEEDBACK);
+  const [deleteOneOnOneFeedbackMutation] = useMutation(DELETE_ONE_ON_ONE_FEEDBACK);
 
   const addOneOnOneFeedbackAction = (values: IFeedbackFormValues) => {
     if (!selectedUserSession?.info || !account) return;
@@ -88,6 +90,26 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
     setVisibility(false);
   }
 
+  const deleteOneOnOneFeedbackAction = () => {
+    if (!selectedUserSession?.info || !feedback || !account) return;
+    try {
+      deleteOneOnOneFeedbackMutation({
+        variables: {  feedbackId: feedback.id },
+        ...deleteOneOnOneFeedbackCacheHandler({
+          author: account,
+          sessionId: selectedUserSession.info.currentSessionId,
+        }),
+      });
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+  }
+
   return (
     <div className="flex-shrink-0">
       <StyledModal
@@ -100,6 +122,7 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
         <FeedbackForm
           data={feedback}
           onSubmit={feedback ? updateOneOnOneFeedbackAction : addOneOnOneFeedbackAction}
+          deleteAction={deleteOneOnOneFeedbackAction}
           setVisibility={setVisibility}
         />
       </StyledModal>

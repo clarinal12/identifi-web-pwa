@@ -22,7 +22,7 @@ export type TFeedback = {
 }
 
 export type TFeedbackInfo = {
-  feedback: TFeedback,
+  feedback: TFeedback | null,
   author: IAccount,
 }
 
