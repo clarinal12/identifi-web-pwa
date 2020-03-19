@@ -48,7 +48,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo }) => {
             {otherUser?.author.avatar && (
               <div>
                 <Avatar className="mr-2" src={otherUser.author.avatar} />
-                <Text strong>{getDisplayName(otherUser.author)}</Text>
+                <Text strong className="text-capitalize">{getDisplayName(otherUser.author)}</Text>
               </div>
             )}
           </div>

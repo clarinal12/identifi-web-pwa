@@ -4,11 +4,14 @@ import moment from 'moment-timezone';
 import { withFormik, FormikProps } from 'formik';
 import { Row, Col, Form, Select, InputNumber, TimePicker, DatePicker, Button } from 'antd';
 
+import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
+
 const { Option } = Select;
 
 interface IExternalProps {
+  data?: IOneOnOneSchedule,
   setVisibility: (visibility: boolean) => void,
-  scheduleOneOnOneAction: (values: IScheduleFormValues) => void,
+  onSubmitAction: (values: IScheduleFormValues) => void,
 }
 
 export interface IScheduleFormValues {
@@ -19,7 +22,7 @@ export interface IScheduleFormValues {
 
 const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit,
-  setVisibility,
+  setVisibility, data,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -133,7 +136,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
           size="large"
           htmlType="submit"
         >
-          Schedule
+          {data ? 'Save changes' : 'Schedule'}
         </Button>
       </div>
     </Form>
@@ -141,13 +144,15 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
 }
 
 export default withFormik<IExternalProps, IScheduleFormValues>({
-  mapPropsToValues: () => ({
-    duration: 10,
-    frequency: 'WEEKLY',
-    time: moment(),
-  }),
+  mapPropsToValues: ({ data }) => {
+    return {
+      duration: data?.duration || 10,
+      frequency: data?.frequency || 'WEEKLY',
+      time: data ? moment(data.upcomingSessionDate) : moment(),
+    };
+  },
   handleSubmit: (values, { props }) => {
-    props.scheduleOneOnOneAction(values);
+    props.onSubmitAction(values);
   },
   displayName: 'ScheduleForm',
 })(ScheduleForm);;

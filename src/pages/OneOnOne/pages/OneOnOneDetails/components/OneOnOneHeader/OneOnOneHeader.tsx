@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Card, Button, Typography, Spin, Avatar } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
+import ScheduleOneOnOne from 'pages/OneOnOne/components/ScheduleOneOnOne';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 
@@ -43,12 +44,16 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, 
                 <Title className="mb-0 mr-2 text-capitalize" level={3}>
                   {getDisplayName(oneOnOneSchedule?.displayMember)}
                 </Title>
-                {isManager && (
-                  <Button style={{ color: '#595959' }} type="link" icon="setting" size="large" />
+                {(isManager && oneOnOneSchedule) && (
+                  <ScheduleOneOnOne
+                    oneOnOneSchedule={oneOnOneSchedule}
+                    directReportId={oneOnOneSchedule.displayMember.id}
+                    title={`Edit 1-1 with ${getDisplayName(oneOnOneSchedule.displayMember)}`}
+                  />
                 )}
               </div>
               <Text type="secondary" className="fs-16">
-                {moment().format('MMM DD, hh:mm a')}
+                {moment(oneOnOneSchedule?.upcomingSessionDate).format('MMM DD, hh:mm a')}
               </Text>
             </div>
             {isManager && (
