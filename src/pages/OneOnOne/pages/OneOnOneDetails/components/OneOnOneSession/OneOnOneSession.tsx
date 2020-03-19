@@ -8,7 +8,6 @@ import Feedback from './components/Feedback';
 import Agenda from './components/Agenda';
 import { ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
 import { IOneOnOneSession } from 'apollo/types/oneOnOne';
-// import UserStatusAvatar from 'components/UserStatusAvatar';
 
 const { Title } = Typography;
 
