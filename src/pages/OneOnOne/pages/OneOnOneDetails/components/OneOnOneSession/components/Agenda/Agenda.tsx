@@ -1,7 +1,6 @@
 import React from 'react';
-import cx from 'classnames';
 import styled from 'styled-components';
-import { Empty, Typography, Avatar } from 'antd';
+import { Empty, Typography, Avatar, Table } from 'antd';
 
 import AgendaModal from './components/AgendaModal';
 import { getDisplayName } from 'utils/userUtils';
@@ -14,29 +13,34 @@ interface IAgenda {
   agenda?: TAgenda[],
 }
 
-const StyledDiv = styled.div`
-  .bordered-div {
-    cursor: pointer;
-    border-bottom: 1px solid #e1e4e980
-    .ant-btn {
-      display: none;
-      width: auto;
-      height: auto;
-      margin-right: 16px;
-      line-height: 16px;
-    }
-    &.first {
-      padding-top: 0 !important;
-    }
-    &.last {
-      border: none;
-      margin-bottom: 16px;
-    }
-    &:hover {
-      .ant-btn {
-        display: block;
+const StyledTable = styled(Table)`
+  table {
+    border-collapse: collapse !important;
+    .ant-table-row {
+      border-bottom: 1px solid #F5F5F5;
+      &:last-of-type {
+        border-bottom: none;
+      }
+      &:hover > td {
+        background: #c5dbd8cc !important;
+        .ant-btn {
+          display: block;
+        }
+      }
+      td {
+        border-bottom: none;
+        .ant-btn {
+          display: none;
+          width: auto;
+          height: auto;
+          margin-right: 16px;
+          line-height: 16px;
+        }
       }
     }
+  }
+  .ant-table-footer {
+    background: transparent;
   }
 `;
 
@@ -48,39 +52,42 @@ const Agenda: React.FC<IAgenda> = ({ agenda }) => {
         className="mb-3"
         description={<Text type="secondary">Add talking points you want to talk about with your manager.</Text>}
       >
-        <AgendaModal />
+        <AgendaModal isEmpty />
       </Empty>
     )
   } 
   return (
-    <StyledDiv>
-      {agenda?.map((singleAgenda, idx) => {
-        const { topic, author } = singleAgenda;
-        const isOwner = author.id === account?.id;
-        return (
-          <div
-            key={idx}
-            className={cx({
-              'bordered-div d-flex justify-content-between align-items-center py-3': true,
-              'first': idx === 0,
-              'last': idx === (agenda.length - 1),
-            })}
-          >
-            <Text className="fs-16">{topic}</Text>
-            {author.avatar && (
-              <div className="d-flex align-items-center" title={getDisplayName(author)}>
+    <StyledTable
+      showHeader={false}
+      footer={() => <AgendaModal />}
+      pagination={{ hideOnSinglePage: true }}
+      dataSource={agenda}
+      rowKey="id"
+      columns={[
+        {
+          key: 'agenda',
+          title: 'agenda',
+          render: ({ topic }: TAgenda) => <Text className="fs-16">{topic}</Text>,
+        },
+        {
+          key: 'action',
+          title: 'Action',
+          render: (singleAgenda: TAgenda) => {
+            const { author } = singleAgenda;
+            const isOwner = author.id === account?.id;
+            return author.avatar && (
+              <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
                 {isOwner && (
                   <AgendaModal isEditing agenda={singleAgenda} />
                 )}
                 <Avatar size="small" src={author.avatar} />
               </div>
-            )}
-          </div>
-        );  
-      })}
-      <AgendaModal />
-    </StyledDiv>
-  )
+            );
+          },
+        }
+      ]}
+    />
+  );
 }
 
 export default Agenda;

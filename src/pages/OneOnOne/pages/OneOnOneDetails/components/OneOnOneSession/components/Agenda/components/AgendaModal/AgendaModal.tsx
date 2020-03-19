@@ -30,11 +30,12 @@ const StyledModal = styled(Modal)`
 `;
 
 interface IAgendaModal {
+  isEmpty?: boolean,
   agenda?: TAgenda,
   isEditing?: boolean,
 }
 
-const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
+const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing, isEmpty }) => {
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
@@ -57,7 +58,9 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
           values,
         }),
       });
-      setVisibility(false);
+      if (!isEmpty) {
+        setVisibility(false);
+      }
     } catch (error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
