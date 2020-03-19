@@ -55,11 +55,11 @@ const Agenda: React.FC<IAgenda> = ({ agenda }) => {
   return (
     <StyledDiv>
       {agenda?.map((singleAgenda, idx) => {
-        const { id, topic, author } = singleAgenda;
+        const { topic, author } = singleAgenda;
         const isOwner = author.id === account?.id;
         return (
           <div
-            key={id}
+            key={idx}
             className={cx({
               'bordered-div d-flex justify-content-between align-items-center py-3': true,
               'first': idx === 0,

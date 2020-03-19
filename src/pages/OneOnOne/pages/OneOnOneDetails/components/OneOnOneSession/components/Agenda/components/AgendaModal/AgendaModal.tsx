@@ -5,9 +5,13 @@ import { Modal, Button, Typography } from 'antd';
 
 import AgendaForm from './components/AgendaForm';
 import { IAgendaFormValues } from './components/AgendaForm/AgendaForm';
+import addOneOnOneAgendaCacheHandler from './cache-handler/addOneOnOneAgenda';
+import updateOneOnOneAgendaCacheHandler from './cache-handler/updateOneOnOneAgenda';
+import deleteOneOnOneAgendaCacheHandler from './cache-handler/deleteOneOnOneAgenda';
 import { ADD_ONE_ON_ONE_AGENDA, UPDATE_ONE_ON_ONE_AGENDA, DELETE_ONE_ON_ONE_AGENDA } from 'apollo/mutations/agenda';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { useUserContextValue } from 'contexts/UserContext';
 import { TAgenda } from 'apollo/types/oneOnOne';
 
 const { Title } = Typography;
@@ -31,6 +35,7 @@ interface IAgendaModal {
 }
 
 const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
+  const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [visiblity, setVisibility] = useState(false);
@@ -39,12 +44,18 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
   const [deleteOneOnOneAgendaMutation] = useMutation(DELETE_ONE_ON_ONE_AGENDA);
 
   const addOneOnOneAgendaAction = (values: IAgendaFormValues) => {
+    if (!selectedUserSession?.info || !account) return;
     try {
       addOneOnOneAgendaMutation({
         variables: {
-          sessionId: selectedUserSession?.info?.currentSessionId,
+          sessionId: selectedUserSession.info.currentSessionId,
           input: { ...values },
         },
+        ...addOneOnOneAgendaCacheHandler({
+          sessionId: selectedUserSession.info.currentSessionId,
+          author: account,
+          values,
+        }),
       });
       setVisibility(false);
     } catch (error) {
@@ -57,12 +68,19 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
   }
 
   const updateOneOnOneAgendaAction = (values: IAgendaFormValues) => {
+    if (!selectedUserSession?.info || !agenda) return;
     try {
       updateOneOnOneAgendaMutation({
         variables: {
-          agendaId: agenda?.id,
+          agendaId: agenda.id,
           input: { ...values },
         },
+        ...updateOneOnOneAgendaCacheHandler({
+          agendaId: agenda.id,
+          author: agenda.author,
+          sessionId: selectedUserSession.info.currentSessionId,
+          values,
+        }),
       });
       setVisibility(false);
     } catch (error) {
@@ -75,9 +93,14 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing }) => {
   }
 
   const deleteOneOnOneAgendaAction = () => {
+    if (!selectedUserSession?.info || !agenda) return;
     try {
       deleteOneOnOneAgendaMutation({
         variables: {  agendaId: agenda?.id },
+        ...deleteOneOnOneAgendaCacheHandler({
+          agendaId: agenda.id,
+          sessionId: selectedUserSession.info.currentSessionId,
+        }),
       });
       setVisibility(false);
     } catch (error) {
