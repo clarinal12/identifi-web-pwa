@@ -2,9 +2,11 @@ import { IAccount } from './user';
 
 export type TOneOnOneInfo = {
   upcomingSessionDate: string,
+  nextSessionDate: string,
   frequency: 'WEEKLY' | 'BI_WEEKLY',
   scheduleId: string,
   currentSessionId: string,
+  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED'
 }
 
 export interface IOneOnOnes {

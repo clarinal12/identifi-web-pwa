@@ -17,8 +17,8 @@ export default ({ directReportId, values }: ICacheHandler) => ({
       });
       const oneOnOneScheduleIndex = oneOnOnesCacheData?.oneOnOnes.findIndex(({ teammate }) => {
         return teammate.id === directReportId;
-      }) || -1;
-      if (oneOnOnesCacheData && oneOnOneScheduleIndex >= 0) {
+      });
+      if (oneOnOnesCacheData && typeof oneOnOneScheduleIndex === 'number') {
         oneOnOnesCacheData.oneOnOnes[oneOnOneScheduleIndex].info = scheduleOneOnOne;
         store.writeQuery({
           query: ONE_ON_ONES,
@@ -31,6 +31,7 @@ export default ({ directReportId, values }: ICacheHandler) => ({
     scheduleOneOnOne: {
       scheduleId: `optimistic-${Date.now()}-schedule-id`,
       currentSessionId: `optimistic-${Date.now()}-session-id`,
+      status: 'ACTIVE',
       ...values,
       __typename: "OneOnOneScheduleInfo",
     },

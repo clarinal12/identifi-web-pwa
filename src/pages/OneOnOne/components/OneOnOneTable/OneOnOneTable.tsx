@@ -74,6 +74,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
             title: 'Frequency',
             render: ({ info }: IOneOnOnes) => info?.frequency && (
               <Text className="text-muted text-capitalize">
+                <Icon type="reload" className="mr-2" />
                 {info.frequency.toLowerCase().replace('_', '-')}
               </Text>
             ),

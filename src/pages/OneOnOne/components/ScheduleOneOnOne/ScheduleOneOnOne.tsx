@@ -8,6 +8,7 @@ import { IScheduleFormValues } from './components/ScheduleForm/ScheduleForm';
 import { SCHEDULE_ONE_ON_ONE, UPDATE_ONE_ON_ONE_ESCHEDULE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import scheduleOneOnOneCacheHandler from './cache-handler/scheduleOneOnOne';
+import updateOneOnOneScheduleCacheHandler from './cache-handler/updateOneOnOneSchedule';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 interface IScheduleOneOnOneForm {
@@ -44,6 +45,7 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
 
   const scheduleOneOnOneAction = (values: IScheduleFormValues) => {
     try {
+      const daysToAdd = values.frequency === 'BI_WEEKLY' ? 14 : 7;
       scheduleOneOnOneMutation({
         variables: {
           directReportId,
@@ -56,6 +58,7 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
           values: {
             frequency: values.frequency,
             upcomingSessionDate: values.time.utc(false).format(),
+            nextSessionDate: values.time.add(daysToAdd, 'days').utc(false).format(),
           },
         }),
       });
@@ -69,21 +72,26 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
   }
 
   const updateOneOnOneScheduleAction = (values: IScheduleFormValues) => {
+    if (!oneOnOneSchedule) return;
     try {
       updateOneOnOneScheduleMutation({
         variables: {
-          scheduleId: oneOnOneSchedule?.id,
+          scheduleId: oneOnOneSchedule.id,
           input: {
             timings: { ...values },
           },
         },
-        // ...scheduleOneOnOneCacheHandler({
-        //   directReportId,
-        //   values: {
-        //     frequency: values.frequency,
-        //     upcomingSessionDate: values.time.utc(false).format(),
-        //   },
-        // }),
+        ...updateOneOnOneScheduleCacheHandler({
+          directReportId,
+          values: {
+            frequency: values.frequency,
+            upcomingSessionDate: values.time.utc(false).format(),
+            nextSessionDate: oneOnOneSchedule.nextSessionDate,
+            status: oneOnOneSchedule.status,
+            currentSessionId: oneOnOneSchedule.currentSessionId,
+            scheduleId: oneOnOneSchedule.id,
+          },
+        }),
       });
     } catch (error) {
       let errorMessage = null;

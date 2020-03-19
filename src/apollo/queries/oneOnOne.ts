@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 
 import MEMBER_FIELDS from '../fields/member';
+import ONE_ON_ONE_SCHEDULE_FIELDS from '../fields/oneOnOneSchedule';
 
 export const ONE_ON_ONES = gql`
   query OneOnOnes {
@@ -10,10 +11,7 @@ export const ONE_ON_ONES = gql`
         ${MEMBER_FIELDS}
       }
       info {
-        upcomingSessionDate
-        frequency
-        scheduleId
-        currentSessionId
+        ${ONE_ON_ONE_SCHEDULE_FIELDS}
       }
     }
   }
@@ -24,8 +22,11 @@ export const ONE_ON_ONE_SCHEDULE = gql`
     oneOnOneSchedule(scheduleId: $scheduleId) {
       id
       upcomingSessionDate
+      nextSessionDate
       frequency
       duration
+      status
+      currentSessionId
       displayMember {
         ${MEMBER_FIELDS}
       }

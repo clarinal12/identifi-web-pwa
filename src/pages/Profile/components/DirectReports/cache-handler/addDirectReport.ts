@@ -55,7 +55,7 @@ export default ({ managerId, directReport }: ICacheHandler) => ({
     try {
       const oneOnOnesCacheData: { oneOnOnes: IOneOnOnes[] } | null = store.readQuery({
         query: ONE_ON_ONES,
-      });    
+      });
       if (oneOnOnesCacheData && addDirectReport) {
         oneOnOnesCacheData.oneOnOnes.push({
           isManager: true,

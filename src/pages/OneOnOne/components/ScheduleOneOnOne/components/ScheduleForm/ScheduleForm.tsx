@@ -151,7 +151,8 @@ export default withFormik<IExternalProps, IScheduleFormValues>({
       time: data ? moment(data.upcomingSessionDate) : moment(),
     };
   },
-  handleSubmit: (values, { props }) => {
+  handleSubmit: (values, { props, setSubmitting }) => {
+    setSubmitting(false);
     props.onSubmitAction(values);
   },
   displayName: 'ScheduleForm',
