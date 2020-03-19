@@ -16,11 +16,13 @@ export interface IOneOnOnes {
   __typename: string,
 }
 
+export type TFeedback = {
+  id: string,
+  content: string,
+}
+
 export type TFeedbackInfo = {
-  feedback: {
-    id: string,
-    content: string,
-  }
+  feedback: TFeedback,
   author: IAccount,
 }
 

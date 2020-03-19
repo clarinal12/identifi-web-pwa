@@ -10,6 +10,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 const { Text } = Typography;
 
 interface IAgenda {
+  isRunning: boolean,
   agenda?: TAgenda[],
 }
 
@@ -44,7 +45,7 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const Agenda: React.FC<IAgenda> = ({ agenda }) => {
+const Agenda: React.FC<IAgenda> = ({ agenda, isRunning }) => {
   const { account } = useUserContextValue();
   if (!Boolean(agenda?.length)) {
     return (
@@ -59,7 +60,9 @@ const Agenda: React.FC<IAgenda> = ({ agenda }) => {
   return (
     <StyledTable
       showHeader={false}
-      footer={() => <AgendaModal />}
+      {...(!isRunning && {
+        footer: () => <AgendaModal />,
+      })}
       pagination={{ hideOnSinglePage: true }}
       dataSource={agenda}
       rowKey="id"
@@ -77,8 +80,8 @@ const Agenda: React.FC<IAgenda> = ({ agenda }) => {
             const isOwner = author.id === account?.id;
             return author.avatar && (
               <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
-                {isOwner && (
-                  <AgendaModal isEditing agenda={singleAgenda} />
+                {(isOwner && !isRunning) && (
+                  <AgendaModal agenda={singleAgenda} />
                 )}
                 <Avatar size="small" src={author.avatar} />
               </div>

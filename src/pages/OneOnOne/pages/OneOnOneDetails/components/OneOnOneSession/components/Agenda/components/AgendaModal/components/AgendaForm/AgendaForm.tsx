@@ -8,7 +8,6 @@ import { TAgenda } from 'apollo/types/oneOnOne';
 
 interface IExternalProps {
   data?: TAgenda,
-  isEditing?: boolean,
   onSubmit: (values: IAgendaFormValues) => void,
   setVisibility: (visibility: boolean) => void,
   deleteAction: () => void,
@@ -20,8 +19,8 @@ export interface IAgendaFormValues {
 }
 
 const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
-  values, handleBlur, handleChange, isSubmitting, errors, touched, isEditing, deleteAction,
-  setVisibility, setFieldValue, setFieldTouched, isValid, resetForm, handleSubmit,
+  values, handleBlur, handleChange, isSubmitting, errors, touched, deleteAction,
+  setVisibility, setFieldValue, setFieldTouched, isValid, resetForm, handleSubmit, data,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -67,7 +66,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
       </Row>
       <div className="d-flex justify-content-between mt-4">
         <div>
-          {isEditing && (
+          {data && (
             <Button
               disabled={isSubmitting}
               className="mr-4 text-danger"
@@ -98,7 +97,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
             size="large"
             htmlType="submit"
           >
-            {isEditing ? 'Save changes' : 'Add item'}
+            {data ? 'Save changes' : 'Add item'}
           </Button>
         </div>
       </div>

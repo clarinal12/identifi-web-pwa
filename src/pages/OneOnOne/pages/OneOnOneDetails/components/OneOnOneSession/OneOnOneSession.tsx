@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
 import { Card, Typography } from 'antd';
@@ -40,7 +41,15 @@ const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
         <Feedback feedbackInfo={data?.oneOnOneSession?.feedbackInfo} />
       </StyledCard>
       <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
-        <Agenda agenda={data?.oneOnOneSession?.agenda} />
+        <Agenda
+          isRunning={function() {
+            const currentDateTime = moment();
+            const upcomingSessionDate = moment(data?.oneOnOneSession?.time);
+            const hoursTillSession = upcomingSessionDate.diff(currentDateTime, 'hours', true);
+            return hoursTillSession <= 0;
+          }()}
+          agenda={data?.oneOnOneSession?.agenda}
+        />
       </StyledCard>
     </>
   );

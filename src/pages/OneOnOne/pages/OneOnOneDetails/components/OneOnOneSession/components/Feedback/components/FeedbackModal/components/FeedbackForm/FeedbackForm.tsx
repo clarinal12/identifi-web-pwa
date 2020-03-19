@@ -4,8 +4,10 @@ import { withFormik, FormikProps } from 'formik';
 
 import AppTextEditor from 'components/AppTextEditor';
 import { feedbackFormSchema } from './validation';
+import { TFeedback } from 'apollo/types/oneOnOne';
 
 interface IExternalProps {
+  data?: TFeedback,
   onSubmit: (values: IFeedbackFormValues) => void,
   setVisibility: (visibility: boolean) => void,
 }
@@ -15,7 +17,7 @@ export interface IFeedbackFormValues {
 }
 
 const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> = ({
-  values, isSubmitting, errors, touched, handleSubmit,
+  values, isSubmitting, errors, touched, handleSubmit, data,
   setVisibility, setFieldValue, setFieldTouched, isValid, resetForm,
 }) => {
   return (
@@ -49,7 +51,7 @@ const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> 
             setVisibility(false);
           }}
         >
-          Maybe later
+          {data ? 'Cancel' : 'Maybe later'}
         </Button>
         <Button
           style={{ minWidth: 140 }}
@@ -59,7 +61,7 @@ const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> 
           size="large"
           htmlType="submit"
         >
-          Submit feedback
+          {data ? 'Save changes' : 'Submit feedback'}
         </Button>
       </div>
     </Form>
@@ -68,8 +70,8 @@ const FeedbackForm: React.FC<FormikProps<IFeedbackFormValues> & IExternalProps> 
 
 export default withFormik<IExternalProps, IFeedbackFormValues>({
   validationSchema: feedbackFormSchema,
-  mapPropsToValues: () => ({
-    content: '',
+  mapPropsToValues: ({ data }) => ({
+    content: data?.content || '',
   }),
   handleSubmit: (values, { props, resetForm, setSubmitting }) => {
     resetForm();

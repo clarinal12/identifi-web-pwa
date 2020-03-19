@@ -30,6 +30,18 @@ const StyledDiv = styled.div`
       border: none;
       padding-bottom: 0 !important;
     }
+    .feedback-container {
+      .edit-btn {
+        display: none;
+        width: auto;
+        height: auto;
+      }
+      &:hover {
+        .edit-btn {
+          display: block;
+        }
+      }
+    }
   }
 `;
  
@@ -41,10 +53,12 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo }) => {
     <StyledDiv>
       <div className="bordered-div d-flex py-3 align-items-center first">
         {otherUser?.feedback ? (
-          <div>
-            <Text type="secondary" className="fs-16 d-block">
-              <div dangerouslySetInnerHTML={{ __html: otherUser?.feedback.content }} />
-            </Text>
+          <div className="w-100 feedback-container">
+            <div className="d-flex justify-content-between">
+              <Text type="secondary" className="fs-16 d-block">
+                <div dangerouslySetInnerHTML={{ __html: otherUser?.feedback.content }} />
+              </Text>
+            </div>
             {otherUser?.author.avatar && (
               <div>
                 <Avatar className="mr-2" src={otherUser.author.avatar} />
@@ -67,10 +81,13 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo }) => {
       </div>
       <div className="bordered-div d-flex py-3 align-items-center last">
         {currentUser?.feedback ? (
-          <div>
-            <Text type="secondary" className="fs-16 d-block">
-              <div dangerouslySetInnerHTML={{ __html: currentUser?.feedback.content }} />
-            </Text>
+          <div className="w-100 feedback-container">
+            <div className="d-flex justify-content-between">
+              <Text type="secondary" className="fs-16 d-block">
+                <div dangerouslySetInnerHTML={{ __html: currentUser?.feedback.content }} />
+              </Text>
+              <FeedbackModal feedback={currentUser?.feedback} isEditing />
+            </div>
             {currentUser?.author.avatar && (
               <div>
                 <Avatar className="mr-2" src={currentUser.author.avatar} />

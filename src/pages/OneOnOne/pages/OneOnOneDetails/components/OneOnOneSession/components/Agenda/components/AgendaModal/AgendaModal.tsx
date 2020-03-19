@@ -32,10 +32,9 @@ const StyledModal = styled(Modal)`
 interface IAgendaModal {
   isEmpty?: boolean,
   agenda?: TAgenda,
-  isEditing?: boolean,
 }
 
-const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing, isEmpty }) => {
+const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
@@ -121,18 +120,17 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEditing, isEmpty }) => 
         closable={false}
         maskClosable={false}
         visible={visiblity}
-        title={<Title level={3}>{isEditing ? 'Edit' : 'Add'} agenda item</Title>}
+        title={<Title level={3}>{agenda ? 'Edit' : 'Add'} agenda item</Title>}
         onCancel={() => setVisibility(false)}
       >
         <AgendaForm
           data={agenda}
-          isEditing={isEditing}
-          onSubmit={isEditing ? updateOneOnOneAgendaAction : addOneOnOneAgendaAction}
+          onSubmit={agenda ? updateOneOnOneAgendaAction : addOneOnOneAgendaAction}
           deleteAction={deleteOneOnOneAgendaAction}
           setVisibility={setVisibility}
         />
       </StyledModal>
-      {isEditing ? (
+      {agenda ? (
         <Button onClick={() => setVisibility(true)} className="text-muted" type="link" icon="form" size="large" />
       ) : (
         <Button type="primary" ghost onClick={() => setVisibility(true)}>Add talking points</Button>
