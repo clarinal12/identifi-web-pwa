@@ -27,6 +27,8 @@ export const ONE_ON_ONE_SCHEDULE = gql`
       duration
       status
       currentSessionId
+      canRescheduleCurrentSession
+      canSkipCurrentSession
       displayMember {
         ${MEMBER_FIELDS}
       }
@@ -42,7 +44,9 @@ export const ONE_ON_ONE_SESSIONS = gql`
         node {
           id
           time
-          completed
+          status
+          canModifyFeedback
+          canModifyAgenda
         }
       }
       pageInfo {
@@ -59,7 +63,9 @@ export const ONE_ON_ONE_SESSION = gql`
     oneOnOneSession(sessionId: $sessionId) {
       id
       time
-      completed
+      status
+      canModifyFeedback
+      canModifyAgenda
       feedbackInfo {
         feedback {
           id

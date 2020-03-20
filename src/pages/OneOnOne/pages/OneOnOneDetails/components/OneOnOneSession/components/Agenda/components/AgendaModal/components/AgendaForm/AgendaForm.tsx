@@ -20,7 +20,7 @@ export interface IAgendaFormValues {
 
 const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
   values, handleBlur, handleChange, isSubmitting, errors, touched, deleteAction,
-  setVisibility, setFieldValue, setFieldTouched, isValid, resetForm, handleSubmit, data,
+  setVisibility, setFieldValue, isValid, resetForm, handleSubmit, data,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -56,10 +56,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
             <AppTextEditor
               disabled={isSubmitting}
               value={values.content}
-              onChange={content => {
-                setFieldTouched('content');
-                setFieldValue('content', content);
-              }}
+              onChange={content => setFieldValue('content', content)}
             />
           </Form.Item>
         </Col>

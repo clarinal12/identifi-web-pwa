@@ -10,7 +10,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 const { Text } = Typography;
 
 interface IAgenda {
-  isRunning: boolean,
+  canModifyAgenda?: boolean,
   agenda?: TAgenda[],
 }
 
@@ -45,22 +45,29 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const Agenda: React.FC<IAgenda> = ({ agenda, isRunning }) => {
+const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
   const { account } = useUserContextValue();
   if (!Boolean(agenda?.length)) {
     return (
       <Empty
         className="mb-3"
-        description={<Text type="secondary">Add talking points you want to talk about with your manager.</Text>}
+        description={(
+          <Text type="secondary">
+            {canModifyAgenda
+              ? 'No talking points was set for this session.'
+              : 'Add talking points you want to talk about with your manager.'
+            }
+          </Text>
+        )}
       >
-        <AgendaModal isEmpty />
+        {!canModifyAgenda && <AgendaModal isEmpty />}
       </Empty>
     )
   } 
   return (
     <StyledTable
       showHeader={false}
-      {...(!isRunning && {
+      {...(!canModifyAgenda && {
         footer: () => <AgendaModal />,
       })}
       pagination={{ hideOnSinglePage: true }}
@@ -80,7 +87,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, isRunning }) => {
             const isOwner = author.id === account?.id;
             return author.avatar && (
               <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
-                {(isOwner && !isRunning) && (
+                {(isOwner && !canModifyAgenda) && (
                   <AgendaModal agenda={singleAgenda} />
                 )}
                 <Avatar size="small" src={author.avatar} />

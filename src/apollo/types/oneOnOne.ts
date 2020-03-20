@@ -36,7 +36,9 @@ export type TAgenda = {
 export interface IOneOnOneSession {
   id: string,
   time: string,
-  completed: boolean,
+  status: 'COMPLETED' | 'SKIPPED' | null
+  canModifyFeedback: boolean,
+  canModifyAgenda: boolean,
   feedbackInfo: TFeedbackInfo[],
   agenda: TAgenda[],
 }
@@ -45,4 +47,7 @@ export interface IOneOnOneSchedule extends TOneOnOneInfo {
   id: string,
   duration: number,
   displayMember: IAccount,
+  canRescheduleCurrentSession: boolean,
+  canSkipCurrentSession: boolean,
+  maxRescheduleDateRange: string,
 }
