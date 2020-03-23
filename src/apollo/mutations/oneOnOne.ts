@@ -25,3 +25,15 @@ export const RESCHEDULE_ONE_ON_ONE = gql`
     rescheduleOneOnOne(sessionId: $sessionId, time: $time)
   }
 `;
+
+export const SKIP_ONE_ON_ONE = gql`
+  mutation SkipOneOnOne($sessionId: ID!) {
+    skipOneOnOne(sessionId: $sessionId)
+  }
+`;
+
+export const COMPLETE_ONE_ON_ONE = gql`
+  mutation CompleteOneOnOne($sessionId: ID!) {
+    completeOneOnOne(sessionId: $sessionId)
+  }
+`;

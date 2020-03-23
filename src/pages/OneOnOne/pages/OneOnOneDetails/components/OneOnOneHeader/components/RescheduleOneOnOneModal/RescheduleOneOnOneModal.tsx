@@ -6,7 +6,7 @@ import { Modal, Button, Typography } from 'antd';
 import RescheduleOneOnOneForm from './components/RescheduleOneOnOneForm';
 import { IRescheduleOneOnOneFormValues } from './components/RescheduleOneOnOneForm/RescheduleOneOnOneForm';
 import { ONE_ON_ONES, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SCHEDULE, ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
-import { RESCHEDULE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
+import { RESCHEDULE_ONE_ON_ONE, SKIP_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
@@ -38,8 +38,10 @@ const StyledModal = styled(Modal)`
 const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneSchedule }) => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
+  const [skippingState, setSkippingState] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [rescheduleOneOnOneMutation] = useMutation(RESCHEDULE_ONE_ON_ONE);
+  const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
 
   const rescheduleOneOnOneAction = async (
     values: IRescheduleOneOnOneFormValues,
@@ -84,6 +86,44 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
     setSubmitting(false);
   }
 
+  const skipOneOnOneAction = async () => {
+    try {
+      setSkippingState(true);
+      await skipOneOnOneMutation({
+        variables: {
+          sessionId: oneOnOneSchedule?.currentSessionId,
+        },
+        refetchQueries: [{
+          query: ONE_ON_ONE_SCHEDULE,
+          variables: {
+            scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONE_SESSION,
+          variables: {
+            sessionId: oneOnOneSchedule?.currentSessionId,
+          },
+        }, {
+          query: ONE_ON_ONE_SESSIONS,
+          variables: {
+            scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONES,
+        }],
+        awaitRefetchQueries: true,
+      });
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+    setSkippingState(false);
+  }
+
   return (
     <div>
       <Button type="primary" ghost onClick={() => setVisibility(true)}>Reschedule</Button>
@@ -98,7 +138,9 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
         </Text>
         <RescheduleOneOnOneForm
           data={oneOnOneSchedule}
+          skippingState={skippingState}
           setVisibility={setVisibility}
+          onSkipAction={skipOneOnOneAction}
           onSubmitAction={rescheduleOneOnOneAction}
         />
       </StyledModal>

@@ -10,7 +10,9 @@ const { Text } = Typography;
 
 interface IExternalProps {
   data?: IOneOnOneSchedule,
+  skippingState: boolean,
   setVisibility: (visibility: boolean) => void,
+  onSkipAction: () => void,
   onSubmitAction: (
     values: IRescheduleOneOnOneFormValues,
     setSubmitting: (isSubmitting: boolean) => void,
@@ -24,6 +26,7 @@ export interface IRescheduleOneOnOneFormValues {
 
 const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
+  onSkipAction, skippingState,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -86,7 +89,7 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
       </div>
       <div className="d-flex justify-content-between">
         <Button
-          disabled={isSubmitting}
+          disabled={isSubmitting || skippingState}
           className="mr-4"
           size="large"
           onClick={() => setVisibility(false)}
@@ -96,14 +99,16 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
         <div>
           <Button
             disabled={isSubmitting}
+            loading={skippingState}
             className="mr-4"
             size="large"
-            onClick={() => setVisibility(false)}
+            onClick={onSkipAction}
           >
             Skip this 1-1
           </Button>
           <Button
             style={{ minWidth: 140 }}
+            disabled={skippingState}
             loading={isSubmitting}
             type="primary"
             size="large"
