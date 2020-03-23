@@ -68,7 +68,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [],
 }) => {
   const textAreaId = `textarea_${responseId}_${commentId}`;
-  const isUpdating = !!(defaultComment && commentId && setEditCommentId);
+  const isUpdating = Boolean(defaultComment && commentId && setEditCommentId);
   const [mentions, setMentions] = useState(defaultMentions);
   const [comment, setComment] = useState(defaultComment);
 
@@ -113,7 +113,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
           },
         },
         ...addCommentCacheHandler({
-          isPastCheckIn: !!match.params.past_checkin_id,
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
           checkInId: match.params.past_checkin_id || match.params.checkin_id,
           checkInResponseId: responseId,
           values: { comment, mentions, author: account }

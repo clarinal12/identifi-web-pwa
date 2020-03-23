@@ -1,7 +1,9 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
 import { MEMBER } from 'apollo/queries/member';
+import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
+import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 
@@ -48,6 +50,19 @@ export default ({ directReport, managerId }: ICacheHandler) => ({
           data: { member: newMember },
         });
       }
+    } catch (_) {}
+
+    try {
+      const oneOnOnesCacheData: { oneOnOnes: IOneOnOnes[] } | null = store.readQuery({
+        query: ONE_ON_ONES,
+      });    
+      if (oneOnOnesCacheData && removeDirectReport) {
+        oneOnOnesCacheData.oneOnOnes = oneOnOnesCacheData.oneOnOnes.filter(({ teammate }) => teammate.id !== directReport.id);
+        store.writeQuery({
+          query: ONE_ON_ONES,
+          data: oneOnOnesCacheData,
+        });
+      }  
     } catch (_) {}
   },
   optimisticResponse: {

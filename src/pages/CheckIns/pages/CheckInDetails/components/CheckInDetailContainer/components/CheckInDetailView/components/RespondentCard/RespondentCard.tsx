@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Card, Typography, Icon } from 'antd';
 
 import Comments from 'components/Comments';
-import RespondentAvatar from './components/RespondentAvatar';
+import UserStatusAvatar from 'components/UserStatusAvatar';
 import EditGoalModal from './components/EditGoalModal';
 import EditBlockerModal from './components/EditBlockerModal';
 import EditAnswerModal from './components/EditAnswerModal';
@@ -76,7 +76,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
       title={(
         <div className="d-flex">
           <div className="mr-3">
-            <RespondentAvatar
+            <UserStatusAvatar
               avatar={avatar}
               mood={mood}
               block={block}

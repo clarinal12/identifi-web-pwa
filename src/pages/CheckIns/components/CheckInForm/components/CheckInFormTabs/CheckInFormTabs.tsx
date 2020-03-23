@@ -67,7 +67,7 @@ const TAB_STEPS = [{
   tab: <Title className="fs-16">Choose Respondents</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue }: ITabComponents) => (
     <Respondents
-      isUpdating={!!defaultValues.id}
+      isUpdating={Boolean(defaultValues.id)}
       respondents={defaultValues.respondents}
       watchers={defaultValues.watchers}
       isPrivate={defaultValues.isPrivate}
@@ -138,7 +138,7 @@ const TAB_STEPS = [{
   tab: <Title className="fs-16">Slack Settings</Title>,
   component: ({ defaultValues, setActiveTabKey, parentValid, setFormValue, parentSubmitAction }: ITabComponents) => (
     <Settings
-      isUpdating={!!defaultValues.id}
+      isUpdating={Boolean(defaultValues.id)}
       defaultValue={defaultValues.slackChannelId}
       parentValid={parentValid}
       onBackStep={() => setActiveTabKey && setActiveTabKey('questions')}

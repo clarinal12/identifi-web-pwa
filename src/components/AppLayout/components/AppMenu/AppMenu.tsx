@@ -26,17 +26,7 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const APP_ROUTES: IAppRoute[] = [
-// {
-//   label: 'Timeline',
-//   icon: <Icon type="hourglass" />,
-//   route: '/timeline',
-// }, {
-//   label: 'Objectives',
-//   icon: <Icon type="bulb" />,
-//   route: '/objectives',
-// },
-{
+const APP_ROUTES: IAppRoute[] = [{
   label: 'Check-ins',
   icon: <Icon type="flag" />,
   route: '/checkins',
@@ -49,7 +39,12 @@ const APP_ROUTES: IAppRoute[] = [
   label: 'Links Directory',
   icon: <Icon type="link" />,
   route: '/links',
-}, 
+},
+{
+  label: '1-on-1s',
+  icon: <Icon type="team" />,
+  route: '/1-on-1s',
+},
 {
   label: 'Settings',
   icon: <Icon type="setting" />,

@@ -59,7 +59,7 @@ const StyledMenu = styled(Menu)`
 `;
 
 const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAction, removeCheckInReaction, reactedEmojis }) => {
-  const { loading, reactionEmojis } = useReactionContextValue();
+  const { loading, emojis } = useReactionContextValue();
   return (
     <StyledMenu className="d-flex p-1">
       {(loading) ? (
@@ -67,7 +67,7 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAct
           <Icon type="loading" spin />
         </Menu.Item>
       ) : (
-        reactionEmojis.map((emoji) => (
+        emojis.map((emoji) => (
           <Menu.Item
             className="text-center"
             key={emoji.id}
@@ -100,7 +100,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
           input: { responseId, emojiId: emoji.id }
         },
         ...addCheckInResponseReactionCacheHandler({
-          isPastCheckIn: !!match.params.past_checkin_id,
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
           checkInId: match.params.past_checkin_id || match.params.checkin_id,
           responseId: responseId,
           values: {
@@ -123,7 +123,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
       removeCheckInResponseReactionMutation({
         variables: { responseId, emojiId: emoji.id },
         ...removeCheckInResponseReaction({
-          isPastCheckIn: !!match.params.past_checkin_id,
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
           checkInId: match.params.past_checkin_id || match.params.checkin_id,
           responseId: responseId,
           values: {

@@ -33,7 +33,7 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         variables: { id: commentId },
         ...deleteCommentCacheHandler({
           commentId,
-          isPastCheckIn: !!match.params.past_checkin_id,
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
           checkInId: match.params.past_checkin_id || match.params.checkin_id,
           checkInResponseId: responseId,
         }),

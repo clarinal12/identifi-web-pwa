@@ -122,10 +122,10 @@ export default withFormik<IExternalProps, IPersonalInfoFormValues>({
     return !Object.keys(obj).some((key) => !obj[key]);
   },
   mapPropsToValues: ({ account }) => ({
-    location: account?.firstname || '',
-    role: account?.lastname || '',
     firstname: account?.firstname || '',
     lastname: account?.lastname || '',
+    location: account?.location || '',
+    role: account?.role || '',
   }),
   handleSubmit: (values, formikBag) => {
     formikBag.props.onSubmit(values, formikBag.setSubmitting);

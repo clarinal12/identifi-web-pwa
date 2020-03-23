@@ -69,6 +69,7 @@ const LinkList = () => {
         memberId: filterState.memberId,
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const LinkList = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, loading]);
 
   useEffect(() => {
     if (!state.hasMore) {

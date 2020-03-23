@@ -69,7 +69,7 @@ export default <P extends object>(
       newProps = {
         ...props,
         requireAuth, account: data.me, token,
-        authenticated: !!(data.me && token),
+        authenticated: Boolean(data.me && token),
       };
     }
 

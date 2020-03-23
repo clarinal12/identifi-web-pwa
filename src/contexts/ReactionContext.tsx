@@ -5,23 +5,21 @@ import { EMOJIS } from 'apollo/queries/reactions';
 import { TEmoji } from 'apollo/types/checkin';
 
 interface IReactionContext {
-  reactionEmojis: TEmoji[],
+  emojis: TEmoji[],
   loading: boolean,
 }
 
 const ReactionContext = createContext<IReactionContext>({
-  reactionEmojis: [],
+  emojis: [],
   loading: true,
 });
 
 const ReactionProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   const { data, loading } = useQuery<{ emojis: TEmoji[] }>(EMOJIS);
-
-
   return (
     <ReactionContext.Provider
       value={{
-        reactionEmojis: data?.emojis || [],
+        emojis: data?.emojis || [],
         loading,
       }}
     >

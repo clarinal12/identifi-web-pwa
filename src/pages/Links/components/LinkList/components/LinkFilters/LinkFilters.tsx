@@ -26,7 +26,7 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
     variables: { companyId },
     skip: !companyId,
   });
-  const hasFilters = !!(filterState.categoryId || filterState.memberId);
+  const hasFilters = Boolean(filterState.categoryId || filterState.memberId);
   const categorySource = !loading && data ? data.categories : [];
   return (
     <Row gutter={16} className="mb-3">

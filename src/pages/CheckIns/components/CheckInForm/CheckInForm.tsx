@@ -84,7 +84,7 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
 
 export default withFormik<IExternalProps, { name: string }>({
   validationSchema: checkInFormSchema,
-  isInitialValid: ({ data }) => !!data,
+  isInitialValid: ({ data }) => Boolean(data),
   mapPropsToValues: ({ data }) => ({
     name: data?.name || '',
   }),

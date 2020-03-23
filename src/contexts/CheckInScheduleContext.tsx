@@ -25,7 +25,7 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   const { account } = useUserContextValue();
   const activeCompany = account?.activeCompany;
 
-  const { loading, data } = useQuery(CHECKIN_CARDS, {
+  const { loading, data } = useQuery<ICheckInScheduleContext>(CHECKIN_CARDS, {
     variables: {
       companyId: activeCompany?.id,
     },
@@ -35,7 +35,7 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   return (
     <CheckInScheduleContext.Provider
       value={{
-        checkInCards: (!loading && data) ? data.checkInCards : {
+        checkInCards: data?.checkInCards || {
           myCheckIns: [],
           allCheckIns: [],
         },

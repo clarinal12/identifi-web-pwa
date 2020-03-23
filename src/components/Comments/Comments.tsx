@@ -100,7 +100,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
     variables: {
       checkInResponseId: responseId,
     },
-    skip: !collapseKey || !!(collapseKey && emptyComments),
+    skip: !collapseKey || Boolean(collapseKey && emptyComments),
   });
 
   useEffect(() => {
@@ -215,7 +215,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
         header={(
           <div className="d-flex" style={{ justifyContent: 'space-between' }}>
             <Text className="fs-16">
-              {collapseKey ? <CollapsedDownIcon /> : <CollapsedUpIcon />}
+              {collapseKey ? <CollapsedUpIcon /> : <CollapsedDownIcon />}
               Comments {!emptyComments && `(${numberOfComments})`}
             </Text>
             <Reactions reactions={reactions} responseId={responseId} />
