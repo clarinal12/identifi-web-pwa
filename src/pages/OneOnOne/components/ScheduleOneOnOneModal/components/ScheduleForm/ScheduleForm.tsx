@@ -33,6 +33,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
             label="Frequency"
           >
             <Select<string>
+              size="large"
               placeholder="How often?"
               disabled={isSubmitting}
               value={values.frequency}

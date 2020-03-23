@@ -60,7 +60,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, 
             {isManager && (
               <div className="d-flex align-items-end">
                 {oneOnOneSchedule?.canRescheduleCurrentSession && (
-                  <RescheduleOneOnOneModal />
+                  <RescheduleOneOnOneModal oneOnOneSchedule={oneOnOneSchedule} />
                 )}
                 <Button className="ml-3" type="primary">Complete 1-1</Button>
               </div>

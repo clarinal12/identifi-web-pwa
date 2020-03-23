@@ -11,6 +11,7 @@ export const ONE_ON_ONES = gql`
         ${MEMBER_FIELDS}
       }
       info {
+        scheduleId
         ${ONE_ON_ONE_SCHEDULE_FIELDS}
       }
     }
@@ -21,12 +22,9 @@ export const ONE_ON_ONE_SCHEDULE = gql`
   query OneOnOneSchedule($scheduleId: ID!) {
     oneOnOneSchedule(scheduleId: $scheduleId) {
       id
-      upcomingSessionDate
-      nextSessionDate
-      frequency
+      ${ONE_ON_ONE_SCHEDULE_FIELDS}
       duration
-      status
-      currentSessionId
+      maxRescheduleDateRange
       canRescheduleCurrentSession
       canSkipCurrentSession
       displayMember {

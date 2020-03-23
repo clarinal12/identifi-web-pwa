@@ -11,18 +11,19 @@ const { Text } = Typography;
 interface IExternalProps {
   data?: IOneOnOneSchedule,
   setVisibility: (visibility: boolean) => void,
-  onSubmitAction: (values: IScheduleFormValues) => void,
+  onSubmitAction: (
+    values: IRescheduleOneOnOneFormValues,
+    setSubmitting: (isSubmitting: boolean) => void,
+    resetForm: () => void,
+  ) => void,
 }
 
-export interface IScheduleFormValues {
-  frequency: 'WEEKLY' | 'BI_WEEKLY',
-  duration: number,
+export interface IRescheduleOneOnOneFormValues {
   time: Moment,
 }
 
-const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> = ({
-  values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit,
-  setVisibility, data,
+const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
+  values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -116,17 +117,14 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
   );
 }
 
-export default withFormik<IExternalProps, IScheduleFormValues>({
+export default withFormik<IExternalProps, IRescheduleOneOnOneFormValues>({
   mapPropsToValues: ({ data }) => {
     return {
-      duration: data?.duration || 10,
-      frequency: data?.frequency || 'WEEKLY',
       time: data ? moment(data.upcomingSessionDate) : moment(),
     };
   },
-  handleSubmit: (values, { props, setSubmitting }) => {
-    setSubmitting(false);
-    props.onSubmitAction(values);
+  handleSubmit: (values, { props, setSubmitting, resetForm }) => {
+    props.onSubmitAction(values, setSubmitting, resetForm);
   },
-  displayName: 'ScheduleForm',
-})(ScheduleForm);
+  displayName: 'RescheduleOneOnOneForm',
+})(RescheduleOneOnOneForm);

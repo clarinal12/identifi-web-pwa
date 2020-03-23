@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-// import { useMutation } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Modal, Button, Typography } from 'antd';
 
 import RescheduleOneOnOneForm from './components/RescheduleOneOnOneForm';
-import { IScheduleFormValues } from './components/RescheduleOneOnOneForm/RescheduleOneOnOneForm';
-// import { SCHEDULE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-// import { useMessageContextValue } from 'contexts/MessageContext';
-// import scheduleOneOnOneCacheHandler from './cache-handler/scheduleOneOnOne';
-// import updateOneOnOneScheduleCacheHandler from './cache-handler/updateOneOnOneSchedule';
+import { IRescheduleOneOnOneFormValues } from './components/RescheduleOneOnOneForm/RescheduleOneOnOneForm';
+import { ONE_ON_ONES, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SCHEDULE, ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
+import { RESCHEDULE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
+import { useMessageContextValue } from 'contexts/MessageContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 const { Text } = Typography;
 
 interface IRescheduleOneOnOneModal {
-  directReportId: string,
-  title: string,
   oneOnOneSchedule?: IOneOnOneSchedule,
 }
 
@@ -37,37 +35,53 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const RescheduleOneOnOneModal = () => {
-  // const { alertError } = useMessageContextValue();
+const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneSchedule }) => {
+  const { alertError } = useMessageContextValue();
+  const { selectedUserSession } = useOneOnOneContextValue();
   const [visibility, setVisibility] = useState(false);
-  // const [scheduleOneOnOneMutation] = useMutation(SCHEDULE_ONE_ON_ONE);
+  const [rescheduleOneOnOneMutation] = useMutation(RESCHEDULE_ONE_ON_ONE);
 
-  const scheduleOneOnOneAction = (values: IScheduleFormValues) => {
-    // try {
-    //   const daysToAdd = values.frequency === 'BI_WEEKLY' ? 14 : 7;
-    //   scheduleOneOnOneMutation({
-    //     variables: {
-    //       directReportId,
-    //       input: {
-    //         timings: { ...values },
-    //       },
-    //     },
-    //     ...scheduleOneOnOneCacheHandler({
-    //       directReportId,
-    //       values: {
-    //         frequency: values.frequency,
-    //         upcomingSessionDate: values.time.utc(false).format(),
-    //         nextSessionDate: values.time.add(daysToAdd, 'days').utc(false).format(),
-    //       },
-    //     }),
-    //   });
-    // } catch (error) {
-    //   let errorMessage = null;
-    //   if (error.graphQLErrors[0]) {
-    //     errorMessage = error.graphQLErrors[0].message;
-    //   }
-    //   alertError(errorMessage);
-    // }
+  const rescheduleOneOnOneAction = async (
+    values: IRescheduleOneOnOneFormValues,
+    setSubmitting: (isSubmitting: boolean) => void,
+    resetForm: () => void,
+  ) => {
+    try {
+      await rescheduleOneOnOneMutation({
+        variables: {
+          sessionId: oneOnOneSchedule?.currentSessionId,
+          ...values,
+        },
+        refetchQueries: [{
+          query: ONE_ON_ONE_SCHEDULE,
+          variables: {
+            scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONE_SESSION,
+          variables: {
+            sessionId: oneOnOneSchedule?.currentSessionId,
+          },
+        }, {
+          query: ONE_ON_ONE_SESSIONS,
+          variables: {
+            scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONES,
+        }],
+        awaitRefetchQueries: true,
+      });
+      resetForm();
+      setVisibility(false);
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+    setSubmitting(false);
   }
 
   return (
@@ -83,9 +97,9 @@ const RescheduleOneOnOneModal = () => {
           Something came up and you can’t do your 1-1 when you originally agreed? No worries, just select a new date and time below. Keep in mind this reschedules <strong>only</strong> the upcoming 1-1.
         </Text>
         <RescheduleOneOnOneForm
-          // data={oneOnOneSchedule}
+          data={oneOnOneSchedule}
           setVisibility={setVisibility}
-          onSubmitAction={scheduleOneOnOneAction}
+          onSubmitAction={rescheduleOneOnOneAction}
         />
       </StyledModal>
     </div>
