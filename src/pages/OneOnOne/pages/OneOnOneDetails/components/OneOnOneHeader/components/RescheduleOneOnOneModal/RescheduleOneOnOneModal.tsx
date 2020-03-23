@@ -52,7 +52,7 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
       await rescheduleOneOnOneMutation({
         variables: {
           sessionId: oneOnOneSchedule?.currentSessionId,
-          ...values,
+          time: values.time.utc(false).format(),
         },
         refetchQueries: [{
           query: ONE_ON_ONE_SCHEDULE,

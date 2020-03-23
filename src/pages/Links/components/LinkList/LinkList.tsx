@@ -49,7 +49,7 @@ const StyleSpinnerContainer = styled.div`
 const LinkList = () => {
   const { alertSuccess } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const companyId = account?.activeCompany.id;
+  const companyId = account?.activeCompany?.id;
   const [filterState, setFilterState] = useState<TFilterState>({
     memberId: undefined,
     categoryId: undefined,

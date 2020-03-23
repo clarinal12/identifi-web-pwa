@@ -60,14 +60,14 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
           </Text>
         )}
       >
-        {!canModifyAgenda && <AgendaModal isEmpty />}
+        {canModifyAgenda && <AgendaModal isEmpty />}
       </Empty>
     )
   } 
   return (
     <StyledTable
       showHeader={false}
-      {...(!canModifyAgenda && {
+      {...(canModifyAgenda && {
         footer: () => <AgendaModal />,
       })}
       pagination={{ hideOnSinglePage: true }}
@@ -87,7 +87,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
             const isOwner = author.id === account?.id;
             return author.avatar && (
               <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
-                {(isOwner && !canModifyAgenda) && (
+                {(isOwner && canModifyAgenda) && (
                   <AgendaModal agenda={singleAgenda} />
                 )}
                 <Avatar size="small" src={author.avatar} />

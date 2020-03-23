@@ -50,7 +50,10 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
         variables: {
           directReportId,
           input: {
-            timings: { ...values },
+            timings: {
+              ...values,
+              time: values.time.utc(false).format(),
+            },
           },
         },
         ...scheduleOneOnOneCacheHandler({
@@ -78,7 +81,10 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
         variables: {
           scheduleId: oneOnOneSchedule.id,
           input: {
-            timings: { ...values },
+            timings: {
+              ...values,
+              time: values.time.utc(false).format(),
+            },
           },
         },
         ...updateOneOnOneScheduleCacheHandler({

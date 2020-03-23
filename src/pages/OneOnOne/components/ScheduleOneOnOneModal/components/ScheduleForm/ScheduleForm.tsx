@@ -24,6 +24,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit,
   setVisibility, data,
 }) => {
+  console.log(values.time.utc(false).format());
   return (
     <Form colon={false} onSubmit={handleSubmit}>
       <Row gutter={[24, 24]}>
