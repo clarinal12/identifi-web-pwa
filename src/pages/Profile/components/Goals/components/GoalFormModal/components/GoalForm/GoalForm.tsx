@@ -59,7 +59,6 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
         })}
       >
         <InputNumber
-          min={0}
           name="target"
           style={{ width: '100%' }}
           size="large"
@@ -81,7 +80,6 @@ const GoalForm: React.FC<IExternalProps & FormikProps<IGoalFormValues>> = ({
         })}
       >
         <InputNumber
-          min={0}
           name="current"
           style={{ width: '100%' }}
           size="large"
@@ -135,8 +133,8 @@ export default withFormik<IExternalProps, IGoalFormValues>({
   enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     title: data?.title || '',
-    current: data?.current || 1,
-    target: data?.target || 5,
+    current: typeof data?.current === 'number' ? data?.current : 0,
+    target: typeof data?.target === 'number' ? data?.target : 0,
     type: 'INTEGER',
     unit: data?.unit || '',
   }),
