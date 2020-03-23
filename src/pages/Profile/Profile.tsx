@@ -56,7 +56,9 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
             {data?.member && (
               <>
                 <UserDetails memberInfo={data?.member} />
-                <DirectReports memberInfo={data?.member} />
+                {data?.member.isManager && (
+                  <DirectReports memberInfo={data?.member} />
+                )}
               </>
             )}
           </Col>

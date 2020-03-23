@@ -13,6 +13,7 @@ export const MEMBERS = gql`
 export const MEMBER = gql`
   query Member($memberId: ID!) {
     member(memberId: $memberId) {
+      isManager
       ${MEMBER_FIELDS}
       directReports {
         ${MEMBER_FIELDS}

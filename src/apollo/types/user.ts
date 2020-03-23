@@ -25,6 +25,7 @@ export interface IAccount {
   onboarded: boolean,
   invited: boolean,
   isGuest: boolean,
+  isManager: boolean,
   activeCompany: TActiveCompany | null
   isOwner: boolean,
   manager: IAccount,
