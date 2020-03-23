@@ -53,7 +53,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
             label="Duration"
           >
             <InputNumber
-              min={10}
+              min={1}
               name="waitingTime"
               style={{ width: '100%' }}
               size="large"
@@ -147,7 +147,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
 export default withFormik<IExternalProps, IScheduleFormValues>({
   mapPropsToValues: ({ data }) => {
     return {
-      duration: data?.duration || 10,
+      duration: data?.duration || 1,
       frequency: data?.frequency || 'WEEKLY',
       time: data ? moment(data.upcomingSessionDate) : moment(),
     };
