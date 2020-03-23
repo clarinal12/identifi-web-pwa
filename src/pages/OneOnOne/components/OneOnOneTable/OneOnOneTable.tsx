@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Card, Table, List, Avatar, Typography, Icon, Button } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
-import ScheduleOneOnOne from '../ScheduleOneOnOne';
+import ScheduleOneOnOneModal from '../ScheduleOneOnOneModal';
 import { getDisplayName } from 'utils/userUtils';
 import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
@@ -109,7 +109,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
               ) : (
                 <div>
                   {isManager ? (
-                    <ScheduleOneOnOne
+                    <ScheduleOneOnOneModal
                       directReportId={teammate.id}
                       title={`Schedule 1-1 with ${getDisplayName(teammate)}`}
                     />

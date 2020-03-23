@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { Card, Button, Typography, Spin, Avatar } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
-import ScheduleOneOnOne from 'pages/OneOnOne/components/ScheduleOneOnOne';
+import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
+import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 
@@ -45,7 +46,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, 
                   {getDisplayName(oneOnOneSchedule?.displayMember)}
                 </Title>
                 {(isManager && oneOnOneSchedule) && (
-                  <ScheduleOneOnOne
+                  <ScheduleOneOnOneModal
                     oneOnOneSchedule={oneOnOneSchedule}
                     directReportId={oneOnOneSchedule.displayMember.id}
                     title={`Edit 1-1 with ${getDisplayName(oneOnOneSchedule.displayMember)}`}
@@ -58,12 +59,10 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, 
             </div>
             {isManager && (
               <div className="d-flex align-items-end">
-                <div>
-                  {oneOnOneSchedule?.canRescheduleCurrentSession && (
-                    <Button type="primary" ghost>Reschedule</Button>
-                  )}
-                  <Button className="ml-3" type="primary">Complete 1-1</Button>
-                </div>
+                {oneOnOneSchedule?.canRescheduleCurrentSession && (
+                  <RescheduleOneOnOneModal />
+                )}
+                <Button className="ml-3" type="primary">Complete 1-1</Button>
               </div>
             )}
           </div>

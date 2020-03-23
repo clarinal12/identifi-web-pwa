@@ -2,11 +2,11 @@ import React from 'react';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import { withFormik, FormikProps } from 'formik';
-import { Row, Col, Form, Select, InputNumber, TimePicker, DatePicker, Button } from 'antd';
+import { Row, Col, Form, Typography, TimePicker, DatePicker, Button } from 'antd';
 
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
-const { Option } = Select;
+const { Text } = Typography;
 
 interface IExternalProps {
   data?: IOneOnOneSchedule,
@@ -25,52 +25,12 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
   setVisibility, data,
 }) => {
   return (
-    <Form colon={false} onSubmit={handleSubmit}>
-      <Row gutter={[24, 24]}>
+    <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
+      <Row gutter={24}>
         <Col sm={24} md={12}>
           <Form.Item
             className="m-0"
-            label="Frequency"
-          >
-            <Select<string>
-              placeholder="How often?"
-              disabled={isSubmitting}
-              value={values.frequency}
-              onChange={v => {
-                setFieldTouched('frequency');
-                setFieldValue('frequency', v);
-              }}       
-            >
-              <Option value="WEEKLY">Weekly</Option>
-              <Option value="BI_WEEKLY">Bi-Weekly</Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col sm={24} md={12}>
-          <Form.Item
-            className="m-0"
-            label="Duration"
-          >
-            <InputNumber
-              min={10}
-              name="waitingTime"
-              style={{ width: '100%' }}
-              size="large"
-              disabled={isSubmitting}
-              value={values.duration}
-              formatter={value => `${value} minutes`}
-              parser={value => value?.replace('minutes', '').trim() || ''}
-              onChange={(value) => {
-                setFieldValue('duration', value);
-                setFieldTouched('duration');
-              }}
-            />
-          </Form.Item>
-        </Col>
-        <Col sm={24} md={12}>
-          <Form.Item
-            className="m-0"
-            label="Starting date"
+            label="New date"
           >
             <DatePicker
               allowClear={false}
@@ -95,7 +55,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
         <Col sm={24} md={12}>
           <Form.Item
             className="m-0"
-            label="Time"
+            label="New time"
           >
             <TimePicker
               allowClear={false}
@@ -120,7 +80,10 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
           </Form.Item>
         </Col>
       </Row>
-      <div style={{ marginTop: 32 }} className="text-right">
+      <div style={{ padding: '32px 0 42px 0' }}>
+        <Text className="fs-16">None of the dates work for you? You can also entirely skip this 1-1.</Text>
+      </div>
+      <div className="d-flex justify-content-between">
         <Button
           disabled={isSubmitting}
           className="mr-4"
@@ -129,15 +92,25 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
         >
           Cancel
         </Button>
-        <Button
-          style={{ minWidth: 140 }}
-          loading={isSubmitting}
-          type="primary"
-          size="large"
-          htmlType="submit"
-        >
-          {data ? 'Save changes' : 'Schedule'}
-        </Button>
+        <div>
+          <Button
+            disabled={isSubmitting}
+            className="mr-4"
+            size="large"
+            onClick={() => setVisibility(false)}
+          >
+            Skip this 1-1
+          </Button>
+          <Button
+            style={{ minWidth: 140 }}
+            loading={isSubmitting}
+            type="primary"
+            size="large"
+            htmlType="submit"
+          >
+            Reschedule
+          </Button>
+        </div>
       </div>
     </Form>
   );
@@ -156,4 +129,4 @@ export default withFormik<IExternalProps, IScheduleFormValues>({
     props.onSubmitAction(values);
   },
   displayName: 'ScheduleForm',
-})(ScheduleForm);;
+})(ScheduleForm);

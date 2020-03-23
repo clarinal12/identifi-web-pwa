@@ -11,7 +11,7 @@ import scheduleOneOnOneCacheHandler from './cache-handler/scheduleOneOnOne';
 import updateOneOnOneScheduleCacheHandler from './cache-handler/updateOneOnOneSchedule';
 import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
-interface IScheduleOneOnOneForm {
+interface IScheduleOneOnOneModal {
   directReportId: string,
   title: string,
   oneOnOneSchedule?: IOneOnOneSchedule,
@@ -35,7 +35,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
+const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
   title, oneOnOneSchedule, directReportId,
 }) => {
   const { alertError } = useMessageContextValue();
@@ -126,4 +126,4 @@ const ScheduleOneOnOneForm: React.FC<IScheduleOneOnOneForm> = ({
   )
 }
 
-export default ScheduleOneOnOneForm;
+export default ScheduleOneOnOneModal;
