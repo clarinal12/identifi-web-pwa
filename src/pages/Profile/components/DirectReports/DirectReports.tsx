@@ -208,26 +208,28 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
             </div>
           );
         })}
-        <StyledPopover
-          getPopupContainer={() => document.getElementById('popover-container') || document.body}
-          placement="rightBottom"
-          content={<PopoverContent managerId={memberInfo.id} setVisibility={setVisibility} />}
-          title={(
-            <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
-              <Text className="ant-typography mr-5">Add a direct report</Text>
-              <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
-                <Icon className="fs-16" type="plus" />
-              </Button>
-            </StyledPopoverTitleWrapper>
-          )}
-          trigger="click"
-          visible={visibility}
-          onVisibleChange={v => setVisibility(v)}
-        >
-          <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
-            <Icon className={cx({ 'closable': visibility })} type="plus" />
-          </Button>
-        </StyledPopover>
+        {memberInfo.isManager && (
+          <StyledPopover
+            getPopupContainer={() => document.getElementById('popover-container') || document.body}
+            placement="rightBottom"
+            content={<PopoverContent managerId={memberInfo.id} setVisibility={setVisibility} />}
+            title={(
+              <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
+                <Text className="ant-typography mr-5">Add a direct report</Text>
+                <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
+                  <Icon className="fs-16" type="plus" />
+                </Button>
+              </StyledPopoverTitleWrapper>
+            )}
+            trigger="click"
+            visible={visibility}
+            onVisibleChange={v => setVisibility(v)}
+          >
+            <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
+              <Icon className={cx({ 'closable': visibility })} type="plus" />
+            </Button>
+          </StyledPopover>
+        )}
       </StyledAvatarWrapper>
     </div>
   );

@@ -28,7 +28,6 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
   onSkipAction, skippingState,
 }) => {
-  console.log(values.time.utc(false).format());
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
       <Row gutter={24}>

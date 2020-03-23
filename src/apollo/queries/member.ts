@@ -5,6 +5,7 @@ import MEMBER_FIELDS from '../fields/member';
 export const MEMBERS = gql`
   query Members($companyId: ID!) {
     members(companyId: $companyId) {
+      isManager
       ${MEMBER_FIELDS}
     }
   }
