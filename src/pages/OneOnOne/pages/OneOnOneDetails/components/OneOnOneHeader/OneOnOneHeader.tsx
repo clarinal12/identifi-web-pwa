@@ -88,10 +88,10 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
             </div>
             {selectedUserSession?.isManager && (
               <div className="d-flex align-items-end">
-                {data?.oneOnOneHeader.canRescheduleCurrentSession && (
+                {data?.oneOnOneHeader.canRescheduleSession && (
                   <RescheduleOneOnOneModal />
                 )}
-                {data?.oneOnOneHeader.canCompleteCurrentSession && (
+                {data?.oneOnOneHeader.canCompleteSession && (
                   <Button
                     onClick={completeOneOnOneAction}
                     loading={loadingState}

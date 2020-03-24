@@ -49,7 +49,7 @@ export interface IOneOnOneHeader {
   time: string,
   status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED',
   maxRescheduleDateRange: string,
-  canRescheduleCurrentSession: boolean,
+  canRescheduleSession: boolean,
   canSkipSession: boolean,
-  canCompleteCurrentSession: boolean,
+  canCompleteSession: boolean,
 }

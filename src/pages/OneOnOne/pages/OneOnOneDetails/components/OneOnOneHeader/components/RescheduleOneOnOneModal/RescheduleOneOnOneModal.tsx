@@ -5,7 +5,7 @@ import { Modal, Button, Typography } from 'antd';
 
 import RescheduleOneOnOneForm from './components/RescheduleOneOnOneForm';
 import { IRescheduleOneOnOneFormValues } from './components/RescheduleOneOnOneForm/RescheduleOneOnOneForm';
-import { ONE_ON_ONES, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SCHEDULE, ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
+import { ONE_ON_ONES, ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SCHEDULE, ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
 import { RESCHEDULE_ONE_ON_ONE, SKIP_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
@@ -37,8 +37,6 @@ const RescheduleOneOnOneModal = () => {
   const [visibility, setVisibility] = useState(false);
   const [rescheduleOneOnOneMutation] = useMutation(RESCHEDULE_ONE_ON_ONE);
   const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
-
-  console.log(selectedUserSession);
 
   const rescheduleOneOnOneAction = async (
     values: IRescheduleOneOnOneFormValues,
@@ -106,11 +104,13 @@ const RescheduleOneOnOneModal = () => {
             scheduleId: selectedUserSession?.info?.scheduleId,
           },
         }, {
-          query: ONE_ON_ONES,
+          query: ONE_ON_ONE_HEADER,
+          variables: {
+            sessionId: selectedUserSession?.info?.currentSessionId,
+          },
         }],
         awaitRefetchQueries: true,
       });
-      setVisibility(false);
     } catch (error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {

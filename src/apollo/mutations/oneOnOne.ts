@@ -6,6 +6,7 @@ export const SCHEDULE_ONE_ON_ONE = gql`
       scheduleId
       upcomingSessionDate
       frequency
+      duration
       currentSessionId
       status
     }

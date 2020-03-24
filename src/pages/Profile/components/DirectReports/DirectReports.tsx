@@ -11,6 +11,7 @@ import { ADD_DIRECT_REPORT } from 'apollo/mutations/user';
 import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useUserContextValue } from 'contexts/UserContext';
 import addDirectReportCacheHandler from './cache-handler/addDirectReport';
 
 const { Text } = Typography;
@@ -187,6 +188,7 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
 }
 
 const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
+  const { account } = useUserContextValue();
   const [visibility, setVisibility] = useState(false);
   return (
     <div className="mb-3">
@@ -208,7 +210,7 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
             </div>
           );
         })}
-        {memberInfo.isManager && (
+        {(memberInfo.isManager || account?.isOwner) && (
           <StyledPopover
             getPopupContainer={() => document.getElementById('popover-container') || document.body}
             placement="rightBottom"
