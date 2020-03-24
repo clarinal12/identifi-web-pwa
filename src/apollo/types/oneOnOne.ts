@@ -47,7 +47,7 @@ export interface IOneOnOneHeader {
   scheduleId: string,
   displayMember: IAccount,
   time: string,
-  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED',
+  status: 'COMPLETED' | 'SKIPPED' | null,
   maxRescheduleDateRange: string,
   canRescheduleSession: boolean,
   canSkipSession: boolean,
