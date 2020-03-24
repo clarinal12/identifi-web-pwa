@@ -2,8 +2,8 @@ import { IAccount } from './user';
 
 export type TOneOnOneInfo = {
   upcomingSessionDate: string,
-  nextSessionDate: string,
   frequency: 'WEEKLY' | 'BI_WEEKLY',
+  duration: number,
   scheduleId: string,
   currentSessionId: string,
   status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED'
@@ -43,13 +43,13 @@ export interface IOneOnOneSession {
   agenda: TAgenda[],
 }
 
-export interface IOneOnOneSchedule extends TOneOnOneInfo {
-  id: string,
-  duration: number,
+export interface IOneOnOneHeader {
+  scheduleId: string,
   displayMember: IAccount,
-  canRescheduleCurrentSession: boolean,
-  canSkipCurrentSession: boolean,
-  canCompleteCurrentSession: boolean,
-  currentSessionStatus: 'COMPLETED' | 'SKIPPED' | null,
+  time: string,
+  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED',
   maxRescheduleDateRange: string,
+  canRescheduleCurrentSession: boolean,
+  canSkipSession: boolean,
+  canCompleteCurrentSession: boolean,
 }

@@ -7,14 +7,14 @@ import ScheduleForm from './components/ScheduleForm';
 import { IScheduleFormValues } from './components/ScheduleForm/ScheduleForm';
 import { SCHEDULE_ONE_ON_ONE, UPDATE_ONE_ON_ONE_ESCHEDULE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import scheduleOneOnOneCacheHandler from './cache-handler/scheduleOneOnOne';
 import updateOneOnOneScheduleCacheHandler from './cache-handler/updateOneOnOneSchedule';
-import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 interface IScheduleOneOnOneModal {
-  directReportId: string,
+  isEditing?: boolean,
+  directReportId: string | undefined,
   title: string,
-  oneOnOneSchedule?: IOneOnOneSchedule,
 }
 
 const StyledModal = styled(Modal)`
@@ -36,16 +36,16 @@ const StyledModal = styled(Modal)`
 `;
 
 const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
-  title, oneOnOneSchedule, directReportId,
+  title, directReportId, isEditing,
 }) => {
   const { alertError } = useMessageContextValue();
+  const { selectedUserSession } = useOneOnOneContextValue();
   const [visibility, setVisibility] = useState(false);
   const [scheduleOneOnOneMutation] = useMutation(SCHEDULE_ONE_ON_ONE);
   const [updateOneOnOneScheduleMutation] = useMutation(UPDATE_ONE_ON_ONE_ESCHEDULE);
 
   const scheduleOneOnOneAction = (values: IScheduleFormValues) => {
     try {
-      const daysToAdd = values.frequency === 'BI_WEEKLY' ? 14 : 7;
       scheduleOneOnOneMutation({
         variables: {
           directReportId,
@@ -59,9 +59,9 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
         ...scheduleOneOnOneCacheHandler({
           directReportId,
           values: {
+            duration: values.duration,
             frequency: values.frequency,
             upcomingSessionDate: values.time.utc(false).format(),
-            nextSessionDate: values.time.add(daysToAdd, 'days').utc(false).format(),
           },
         }),
       });
@@ -75,11 +75,11 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
   }
 
   const updateOneOnOneScheduleAction = (values: IScheduleFormValues) => {
-    if (!oneOnOneSchedule) return;
+    if (!selectedUserSession || !directReportId || !selectedUserSession?.info) return;
     try {
       updateOneOnOneScheduleMutation({
         variables: {
-          scheduleId: oneOnOneSchedule.id,
+          scheduleId: selectedUserSession.info?.scheduleId,
           input: {
             timings: {
               ...values,
@@ -90,12 +90,12 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
         ...updateOneOnOneScheduleCacheHandler({
           directReportId,
           values: {
+            duration: values.duration,
             frequency: values.frequency,
             upcomingSessionDate: values.time.utc(false).format(),
-            nextSessionDate: oneOnOneSchedule.nextSessionDate,
-            status: oneOnOneSchedule.status,
-            currentSessionId: oneOnOneSchedule.currentSessionId,
-            scheduleId: oneOnOneSchedule.id,
+            status: selectedUserSession.info.status,
+            currentSessionId: selectedUserSession.info.currentSessionId,
+            scheduleId: selectedUserSession.info.scheduleId,
           },
         }),
       });
@@ -111,7 +111,7 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
 
   return (
     <div className="float-right">
-      {oneOnOneSchedule ? (
+      {isEditing ? (
         <Button style={{ color: '#595959' }} type="link" icon="setting" size="large" onClick={() => setVisibility(true)} />
       ) : (
         <Button type="primary" onClick={() => setVisibility(true)}>Schedule 1-on-1</Button>
@@ -123,9 +123,9 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
         visible={visibility}
       >
         <ScheduleForm
-          data={oneOnOneSchedule}
+          data={selectedUserSession?.info}
           setVisibility={setVisibility}
-          onSubmitAction={oneOnOneSchedule ? updateOneOnOneScheduleAction : scheduleOneOnOneAction}
+          onSubmitAction={isEditing ? updateOneOnOneScheduleAction : scheduleOneOnOneAction}
         />
       </StyledModal>
     </div>

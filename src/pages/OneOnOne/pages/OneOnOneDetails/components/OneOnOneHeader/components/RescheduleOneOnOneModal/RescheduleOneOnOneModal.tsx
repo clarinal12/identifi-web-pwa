@@ -9,13 +9,8 @@ import { ONE_ON_ONES, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SCHEDULE, ONE_ON_ONE_SESSI
 import { RESCHEDULE_ONE_ON_ONE, SKIP_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
-import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 const { Text } = Typography;
-
-interface IRescheduleOneOnOneModal {
-  oneOnOneSchedule?: IOneOnOneSchedule,
-}
 
 const StyledModal = styled(Modal)`
   min-width: 625px;
@@ -35,13 +30,15 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneSchedule }) => {
+const RescheduleOneOnOneModal = () => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [skippingState, setSkippingState] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [rescheduleOneOnOneMutation] = useMutation(RESCHEDULE_ONE_ON_ONE);
   const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
+
+  console.log(selectedUserSession);
 
   const rescheduleOneOnOneAction = async (
     values: IRescheduleOneOnOneFormValues,
@@ -51,7 +48,7 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
     try {
       await rescheduleOneOnOneMutation({
         variables: {
-          sessionId: oneOnOneSchedule?.currentSessionId,
+          sessionId: selectedUserSession?.info?.currentSessionId,
           time: values.time.format(),
         },
         refetchQueries: [{
@@ -62,7 +59,7 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
         }, {
           query: ONE_ON_ONE_SESSION,
           variables: {
-            sessionId: oneOnOneSchedule?.currentSessionId,
+            sessionId: selectedUserSession?.info?.currentSessionId,
           },
         }, {
           query: ONE_ON_ONE_SESSIONS,
@@ -91,7 +88,7 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
       setSkippingState(true);
       await skipOneOnOneMutation({
         variables: {
-          sessionId: oneOnOneSchedule?.currentSessionId,
+          sessionId: selectedUserSession?.info?.currentSessionId,
         },
         refetchQueries: [{
           query: ONE_ON_ONE_SCHEDULE,
@@ -101,7 +98,7 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
         }, {
           query: ONE_ON_ONE_SESSION,
           variables: {
-            sessionId: oneOnOneSchedule?.currentSessionId,
+            sessionId: selectedUserSession?.info?.currentSessionId,
           },
         }, {
           query: ONE_ON_ONE_SESSIONS,
@@ -137,7 +134,11 @@ const RescheduleOneOnOneModal: React.FC<IRescheduleOneOnOneModal> = ({ oneOnOneS
           Something came up and you can’t do your 1-1 when you originally agreed? No worries, just select a new date and time below. Keep in mind this reschedules <strong>only</strong> the upcoming 1-1.
         </Text>
         <RescheduleOneOnOneForm
-          data={oneOnOneSchedule}
+          {...(selectedUserSession?.info && {
+            data: {
+              upcomingSessionDate: selectedUserSession.info.upcomingSessionDate,
+            },
+          })}
           skippingState={skippingState}
           setVisibility={setVisibility}
           onSkipAction={skipOneOnOneAction}

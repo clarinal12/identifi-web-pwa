@@ -1,7 +1,6 @@
 import gql from 'graphql-tag';
 
 import MEMBER_FIELDS from '../fields/member';
-import ONE_ON_ONE_SCHEDULE_FIELDS from '../fields/oneOnOneSchedule';
 
 export const ONE_ON_ONES = gql`
   query OneOnOnes {
@@ -12,7 +11,11 @@ export const ONE_ON_ONES = gql`
       }
       info {
         scheduleId
-        ${ONE_ON_ONE_SCHEDULE_FIELDS}
+        upcomingSessionDate
+        frequency
+        duration
+        currentSessionId
+        status
       }
     }
   }
@@ -22,16 +25,9 @@ export const ONE_ON_ONE_SCHEDULE = gql`
   query OneOnOneSchedule($scheduleId: ID!) {
     oneOnOneSchedule(scheduleId: $scheduleId) {
       id
-      ${ONE_ON_ONE_SCHEDULE_FIELDS}
+      upcomingSessionDate
+      frequency
       duration
-      maxRescheduleDateRange
-      canRescheduleCurrentSession
-      canCompleteCurrentSession
-      canSkipCurrentSession
-      currentSessionStatus
-      displayMember {
-        ${MEMBER_FIELDS}
-      }
     }
   }
 `;
@@ -45,8 +41,6 @@ export const ONE_ON_ONE_SESSIONS = gql`
           id
           time
           status
-          canModifyFeedback
-          canModifyAgenda
         }
       }
       pageInfo {
@@ -83,6 +77,24 @@ export const ONE_ON_ONE_SESSION = gql`
           ${MEMBER_FIELDS}
         }
       }
+    }
+  }
+`;
+
+
+export const ONE_ON_ONE_HEADER = gql`
+  query OneOnOneHeader($sessionId: ID!) {
+    oneOnOneHeader(sessionId: $sessionId) {
+      scheduleId
+      time
+      displayMember {
+        ${MEMBER_FIELDS}
+      }
+      status
+      maxRescheduleDateRange
+      canRescheduleSession
+      canSkipSession
+      canCompleteSession
     }
   }
 `;

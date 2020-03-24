@@ -4,12 +4,12 @@ import moment from 'moment-timezone';
 import { withFormik, FormikProps } from 'formik';
 import { Row, Col, Form, Select, InputNumber, TimePicker, DatePicker, Button } from 'antd';
 
-import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
+import { TOneOnOneInfo } from 'apollo/types/oneOnOne';
 
 const { Option } = Select;
 
 interface IExternalProps {
-  data?: IOneOnOneSchedule,
+  data?: TOneOnOneInfo | null,
   setVisibility: (visibility: boolean) => void,
   onSubmitAction: (values: IScheduleFormValues) => void,
 }

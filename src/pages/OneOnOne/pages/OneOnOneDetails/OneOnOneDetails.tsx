@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useQuery } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Alert, Row, Col, Affix, Card, Icon, Typography } from 'antd';
+import { Row, Col, Affix, Card, Icon, Typography } from 'antd';
 import { OneOnOneProviderWithRouter } from 'contexts/OneOnOneContext';
 
 import AppLayout from 'components/AppLayout';
 import OneOnOneHeader from './components/OneOnOneHeader';
 import OneOnOneSession from './components/OneOnOneSession';
 import OneOnOneHistory from './components/OneOnOneHistory';
-import { ONE_ON_ONE_SCHEDULE } from 'apollo/queries/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
-import { getDisplayName } from 'utils/userUtils';
-import { IOneOnOneSchedule } from 'apollo/types/oneOnOne';
 
 const { Title } = Typography;
-
-interface IOneOnOneScheduleQuery {
-  oneOnOneSchedule: IOneOnOneSchedule,
-}
 
 const StyledCard = styled(Card)`
   .ant-card-head {
@@ -33,41 +25,15 @@ const StyledCard = styled(Card)`
 const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>> = ({ history, match }) => {
   const [pastOneOnOneId, setPastOneOnOneId] = useState('');
   const { selectedUserSession } = useOneOnOneContextValue();
+  const derivedSessionId = match.params.past_session_id || selectedUserSession?.info?.currentSessionId;
 
-  const { data, loading = true, error } = useQuery<IOneOnOneScheduleQuery>(ONE_ON_ONE_SCHEDULE, {
-    variables: {
-      scheduleId: selectedUserSession?.info?.scheduleId,
-    },
-    onCompleted: () => {
-      history.replace({
-        state: { direct_report_id_alias: getDisplayName(selectedUserSession?.teammate) },
-      });
-    },
-    skip: !Boolean(selectedUserSession?.info),
-  });
-
-  const contentBody = error ? (
-    <Alert
-      showIcon
-      type="warning"
-      message={function() {
-        let errorMessage = "Network error";
-        if (error.graphQLErrors[0]) {
-          errorMessage = error.graphQLErrors[0].message;
-        }
-        return errorMessage;
-      }()}
-      description="The check-in you're looking for isn't available"
-    />
-  ) : (
-    <>
+  return (
+    <AppLayout>
       <Row className="mx-0" gutter={24}>
         <Col sm={24} md={17} className="pl-0">
-          <OneOnOneHeader
-            isManager={selectedUserSession?.isManager}
-            oneOnOneSchedule={data?.oneOnOneSchedule}
-            loading={!Boolean(data) || loading}
-          />
+          {derivedSessionId && (
+            <OneOnOneHeader sessionId={derivedSessionId} />
+          )}
           {selectedUserSession?.info && (
             <OneOnOneSession sessionId={match.params.past_session_id || selectedUserSession.info.currentSessionId} />
           )}
@@ -86,7 +52,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>
               )}
             >
               <OneOnOneHistory
-                upcomingSessionDate={data?.oneOnOneSchedule.upcomingSessionDate}
+                upcomingSessionDate={selectedUserSession?.info?.upcomingSessionDate}
                 scheduleId={selectedUserSession?.info?.scheduleId}
                 directReport={selectedUserSession?.teammate}
                 pastOneOnOneId={pastOneOnOneId}
@@ -96,12 +62,6 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>
           </Affix>
         </Col>
       </Row>
-    </>
-  );
-
-  return (
-    <AppLayout>
-      {contentBody}
     </AppLayout>
   );
 }

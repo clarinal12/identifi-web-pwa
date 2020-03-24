@@ -4,7 +4,7 @@ import { ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { IOneOnOnes, TOneOnOneInfo } from 'apollo/types/oneOnOne';
 
 interface ICacheHandler {
-  directReportId: string,
+  directReportId: string | undefined,
   values: Partial<TOneOnOneInfo>,
 }
 

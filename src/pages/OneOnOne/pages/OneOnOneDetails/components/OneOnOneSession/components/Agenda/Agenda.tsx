@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Empty, Typography, Avatar, Table } from 'antd';
 
@@ -9,7 +10,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 
 const { Text } = Typography;
 
-interface IAgenda {
+interface IAgenda extends RouteComponentProps<{ past_session_id: string }> {
   canModifyAgenda?: boolean,
   agenda?: TAgenda[],
 }
@@ -45,7 +46,7 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
+const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
   const { account } = useUserContextValue();
   if (!Boolean(agenda?.length)) {
     return (
@@ -53,7 +54,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
         className="mb-3"
         description={(
           <Text type="secondary">
-            {canModifyAgenda
+            {match.params.past_session_id
               ? 'No talking points was set for this session.'
               : 'Add talking points you want to talk about with your manager.'
             }
@@ -100,4 +101,4 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda }) => {
   );
 }
 
-export default Agenda;
+export default withRouter(Agenda);
