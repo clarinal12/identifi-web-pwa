@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Button, Typography, Spin, Avatar } from 'antd';
+import { Card, Button, Typography, Spin, Avatar, Tag } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
@@ -10,6 +10,7 @@ import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
 import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
 import { ONE_ON_ONE_HEADER } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
+import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { IOneOnOneHeader } from 'apollo/types/oneOnOne';
@@ -88,19 +89,28 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
             </div>
             {selectedUserSession?.isManager && (
               <div className="d-flex align-items-end">
-                {data?.oneOnOneHeader.canRescheduleSession && (
-                  <RescheduleOneOnOneModal />
-                )}
-                {data?.oneOnOneHeader.canCompleteSession && (
-                  <Button
-                    onClick={completeOneOnOneAction}
-                    loading={loadingState}
-                    className="ml-3"
-                    type="primary"
-                  >
-                    Complete 1-1
-                  </Button>
-                )}
+                <div className="d-block text-right">
+                  {data?.oneOnOneHeader.status && (
+                    <Tag className="m-0" color={COLOR_MAP[data.oneOnOneHeader.status]}>
+                      {data.oneOnOneHeader.status}
+                    </Tag>
+                  )}
+                </div>
+                <div className="d-block mt-3">
+                  {data?.oneOnOneHeader.canRescheduleSession && (
+                    <RescheduleOneOnOneModal />
+                  )}
+                  {data?.oneOnOneHeader.canCompleteSession && (
+                    <Button
+                      onClick={completeOneOnOneAction}
+                      loading={loadingState}
+                      className="ml-3"
+                      type="primary"
+                    >
+                      Complete 1-1
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
           </div>
