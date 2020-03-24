@@ -49,5 +49,7 @@ export interface IOneOnOneSchedule extends TOneOnOneInfo {
   displayMember: IAccount,
   canRescheduleCurrentSession: boolean,
   canSkipCurrentSession: boolean,
+  canCompleteCurrentSession: boolean,
+  currentSessionStatus: 'COMPLETED' | 'SKIPPED' | null,
   maxRescheduleDateRange: string,
 }

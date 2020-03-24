@@ -26,7 +26,9 @@ export const ONE_ON_ONE_SCHEDULE = gql`
       duration
       maxRescheduleDateRange
       canRescheduleCurrentSession
+      canCompleteCurrentSession
       canSkipCurrentSession
+      currentSessionStatus
       displayMember {
         ${MEMBER_FIELDS}
       }

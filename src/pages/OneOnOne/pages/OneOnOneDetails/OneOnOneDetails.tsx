@@ -30,7 +30,7 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const OneOnOneDetails: React.FC<RouteComponentProps> = ({ history }) => {
+const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>> = ({ history, match }) => {
   const [pastOneOnOneId, setPastOneOnOneId] = useState('');
   const { selectedUserSession } = useOneOnOneContextValue();
 
@@ -69,7 +69,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps> = ({ history }) => {
             loading={!Boolean(data) || loading}
           />
           {selectedUserSession?.info && (
-            <OneOnOneSession sessionId={selectedUserSession.info.currentSessionId} />
+            <OneOnOneSession sessionId={match.params.past_session_id || selectedUserSession.info.currentSessionId} />
           )}
         </Col>
         <Col sm={24} md={7} className="pr-0">

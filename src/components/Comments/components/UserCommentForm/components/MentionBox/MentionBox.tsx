@@ -7,6 +7,13 @@ import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 import { getDisplayName } from 'utils/userUtils';
 import { IAccount } from 'apollo/types/user';
 
+declare module "react-mentions" {
+  export interface SuggestionDataItem {
+    avatar: any,
+    position: any,
+  }
+}
+
 const StyledMentionInput = styled(MentionsInput)`
   div[class$="__highlighter"], textarea {
     padding: 6px 10px;
@@ -91,12 +98,12 @@ const MentionBox: React.FC<IMentionBox> = ({
       <Mention
         trigger="@"
         data={mentionableUsers}
-        renderSuggestion={({ display }, _search, _highlightedDisplay, index) => (
+        renderSuggestion={({ display, avatar, position }, _search, _highlightedDisplay) => (
           <List.Item.Meta
             className="align-items-center"
-            avatar={<Avatar className="rounded-0" src={mentionableUsers[index].avatar || undefined} />}
+            avatar={<Avatar className="rounded-0" src={avatar || undefined} />}
             title={display}
-            description={mentionableUsers[index].position}
+            description={position}
           />
         )}
       />

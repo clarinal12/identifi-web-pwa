@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Button, Typography, Spin, Avatar } from 'antd';
+import { Card, Button, Typography, Spin, Avatar, Tag } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
@@ -104,22 +104,20 @@ const OneOnOneHeader: React.FC<IOneOnOneHeader> = ({ loading, oneOnOneSchedule, 
             </div>
             {isManager && (
               <div className="d-flex align-items-end">
-                {oneOnOneSchedule?.canRescheduleCurrentSession && (
-                  <RescheduleOneOnOneModal oneOnOneSchedule={oneOnOneSchedule} />
-                )}
-                <Button onClick={completeOneOnOneAction} loading={loadingState} className="ml-3" type="primary">Complete 1-1</Button>
-                {/* {oneOnOneSchedule?.status === 'ACTIVE' ? (
+                {oneOnOneSchedule?.currentSessionStatus ? (
+                  <Tag className="m-0" color="#E8E8E8">
+                    <Text>{oneOnOneSchedule?.currentSessionStatus}</Text>
+                  </Tag>
+                ) : (
                   <>
                     {oneOnOneSchedule?.canRescheduleCurrentSession && (
                       <RescheduleOneOnOneModal oneOnOneSchedule={oneOnOneSchedule} />
                     )}
-                    <Button onClick={completeOneOnOneAction} loading={loadingState} className="ml-3" type="primary">Complete 1-1</Button>
+                    {oneOnOneSchedule?.canCompleteCurrentSession && (
+                      <Button onClick={completeOneOnOneAction} loading={loadingState} className="ml-3" type="primary">Complete 1-1</Button>
+                    )}
                   </>
-                ) : (
-                  <Tag className="m-0" color="#E8E8E8">
-                    <Text>{oneOnOneSchedule?.status}</Text>
-                  </Tag>
-                )} */}
+                )}
               </div>
             )}
           </div>
