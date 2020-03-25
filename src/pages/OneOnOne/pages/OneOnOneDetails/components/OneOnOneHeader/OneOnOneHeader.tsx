@@ -111,9 +111,9 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
                     <RescheduleOneOnOneModal />
                   )}
                   {data?.oneOnOneHeader.showCompleteButton && (
-                    <CompleteButtonWrapper disabled={data?.oneOnOneHeader.canCompleteSession}>
+                    <CompleteButtonWrapper disabled={!(data?.oneOnOneHeader.canCompleteSession)}>
                       <Button
-                        disabled={data?.oneOnOneHeader.canCompleteSession}
+                        disabled={!(data?.oneOnOneHeader.canCompleteSession)}
                         onClick={completeOneOnOneAction}
                         loading={loadingState}
                         className="ml-3"
