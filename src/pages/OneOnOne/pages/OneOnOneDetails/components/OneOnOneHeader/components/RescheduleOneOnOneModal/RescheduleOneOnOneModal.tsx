@@ -52,7 +52,7 @@ const RescheduleOneOnOneModal = () => {
         refetchQueries: [{
           query: ONE_ON_ONE_HEADER,
           variables: {
-            scheduleId: selectedUserSession?.info?.scheduleId,
+            sessionId: selectedUserSession?.info?.currentSessionId,
           },
         }, {
           query: ONE_ON_ONE_SESSION,
@@ -89,11 +89,6 @@ const RescheduleOneOnOneModal = () => {
           sessionId: selectedUserSession?.info?.currentSessionId,
         },
         refetchQueries: [{
-          query: ONE_ON_ONE_HEADER,
-          variables: {
-            scheduleId: selectedUserSession?.info?.scheduleId,
-          },
-        }, {
           query: ONE_ON_ONE_SESSION,
           variables: {
             sessionId: selectedUserSession?.info?.currentSessionId,
@@ -102,6 +97,11 @@ const RescheduleOneOnOneModal = () => {
           query: ONE_ON_ONE_SESSIONS,
           variables: {
             scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONE_HEADER,
+          variables: {
+            sessionId: selectedUserSession?.info?.currentSessionId,
           },
         }],
         awaitRefetchQueries: true,
