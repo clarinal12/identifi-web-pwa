@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Row, Col, Affix, Card, Icon, Typography } from 'antd';
@@ -22,8 +22,7 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>> = ({ history, match }) => {
-  const [pastOneOnOneId, setPastOneOnOneId] = useState('');
+const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>> = ({ match }) => {
   const { selectedUserSession } = useOneOnOneContextValue();
   const derivedSessionId = match.params.past_session_id || selectedUserSession?.info?.currentSessionId;
 
@@ -55,8 +54,6 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>
                 upcomingSessionDate={selectedUserSession?.info?.upcomingSessionDate}
                 scheduleId={selectedUserSession?.info?.scheduleId}
                 directReport={selectedUserSession?.teammate}
-                pastOneOnOneId={pastOneOnOneId}
-                setPastOneOnOneId={setPastOneOnOneId}
               />
             </StyledCard>
           </Affix>

@@ -17,12 +17,10 @@ import { IAccount } from 'apollo/types/user';
 
 const { Title, Text } = Typography;
 
-interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string }> {
+interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string, past_session_id: string }> {
   upcomingSessionDate?: string,
   directReport?: IAccount,
   scheduleId?: string,
-  pastOneOnOneId: string,
-  setPastOneOnOneId: (id: string) => void,
 }
 
 interface IOneOnOneHistoryQuery {
@@ -71,9 +69,9 @@ const EmptyState = () => (
 );
 
 const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
-  match, history, location, setPastOneOnOneId,
-  pastOneOnOneId, scheduleId, upcomingSessionDate, directReport,
+  match, history, location, scheduleId, upcomingSessionDate, directReport,
 }) => {
+  const derivedSessionId = match.params.past_session_id || '';
   const [state, setState] = useState<IOneOnOneSessionState>({
     dataSource: [],
     loading: true,
@@ -114,7 +112,7 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
         size="large"
         dataSource={[{ time: '', id: '' }].concat(state.dataSource)}
         renderItem={({ time, id }) => {
-          const isActive = (id === pastOneOnOneId);
+          const isActive = (id === derivedSessionId);
           const isPastCheckIn = (time && id);
           const dateString = isPastCheckIn ?
             moment(time).format('MMM DD, YYYY hh:mm A') : moment(upcomingSessionDate).calendar();
@@ -124,7 +122,6 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
               key={id}
               onClick={() => {
                 scrollToTop();
-                setPastOneOnOneId(id);
                 if (isPastCheckIn) {
                   history.push({
                     pathname: `/1-on-1s/${match.params.direct_report_id}/${id}`,

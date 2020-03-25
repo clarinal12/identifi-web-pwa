@@ -27,7 +27,6 @@ const StyledList = styled(List)`
 
 const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
   const { account } = useUserContextValue();
-  // const isCheckInOwner = (account?.id === memberId);
   const { data, loading, error } = useQuery(MEMBER_CHECKINS, {
     variables: { memberId },
   });
