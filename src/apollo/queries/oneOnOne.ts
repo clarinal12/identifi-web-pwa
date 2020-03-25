@@ -21,17 +21,6 @@ export const ONE_ON_ONES = gql`
   }
 `;
 
-export const ONE_ON_ONE_SCHEDULE = gql`
-  query OneOnOneSchedule($scheduleId: ID!) {
-    oneOnOneSchedule(scheduleId: $scheduleId) {
-      id
-      upcomingSessionDate
-      frequency
-      duration
-    }
-  }
-`;
-
 export const ONE_ON_ONE_SESSIONS = gql`
   query OneOnOneSessions($scheduleId: ID!, $pagination: PaginationInput) {
     oneOnOneSessions(scheduleId: $scheduleId, pagination: $pagination) {
