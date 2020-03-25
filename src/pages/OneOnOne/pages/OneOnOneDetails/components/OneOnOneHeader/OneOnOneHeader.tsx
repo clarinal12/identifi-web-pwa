@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, PropsWithChildren } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Button, Typography, Spin, Avatar, Tag } from 'antd';
+import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
@@ -26,6 +26,16 @@ const StyledSpinnerWrapper = styled.div`
 interface IQueryResult {
   oneOnOneHeader: IOneOnOneHeader
 }
+
+const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boolean }> = ({
+  children, disabled,
+}) => {
+  return disabled ? (
+    <Tooltip placement="bottom" title="Add your feedback to complete this session.">
+      {children}
+    </Tooltip>
+  ) : children;
+};
 
 const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId }) => {
   const { alertError } = useMessageContextValue();
@@ -100,15 +110,18 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
                   {data?.oneOnOneHeader.canRescheduleSession && (
                     <RescheduleOneOnOneModal />
                   )}
-                  {data?.oneOnOneHeader.canCompleteSession && (
-                    <Button
-                      onClick={completeOneOnOneAction}
-                      loading={loadingState}
-                      className="ml-3"
-                      type="primary"
-                    >
-                      Complete 1-1
-                    </Button>
+                  {data?.oneOnOneHeader.showCompleteButton && (
+                    <CompleteButtonWrapper disabled={data?.oneOnOneHeader.canCompleteSession}>
+                      <Button
+                        disabled={data?.oneOnOneHeader.canCompleteSession}
+                        onClick={completeOneOnOneAction}
+                        loading={loadingState}
+                        className="ml-3"
+                        type="primary"
+                      >
+                        Complete 1-1
+                      </Button>
+                    </CompleteButtonWrapper>
                   )}
                 </div>
               </div>

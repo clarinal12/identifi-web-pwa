@@ -51,5 +51,6 @@ export interface IOneOnOneHeader {
   maxRescheduleDateRange: string,
   canRescheduleSession: boolean,
   canSkipSession: boolean,
+  showCompleteButton: boolean,
   canCompleteSession: boolean,
 }

@@ -65,8 +65,10 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
         <div>
           {data && (
             <Button
+              ghost
+              type="danger"
               disabled={isSubmitting}
-              className="mr-4 text-danger"
+              className="mr-4"
               size="large"
               onClick={deleteAction}
             >

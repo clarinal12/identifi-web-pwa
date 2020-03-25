@@ -98,6 +98,8 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
         </Button>
         <div>
           <Button
+            ghost
+            type="primary"
             disabled={isSubmitting}
             loading={skippingState}
             className="mr-4"

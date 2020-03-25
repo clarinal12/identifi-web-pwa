@@ -94,6 +94,7 @@ export const ONE_ON_ONE_HEADER = gql`
       maxRescheduleDateRange
       canRescheduleSession
       canSkipSession
+      showCompleteButton
       canCompleteSession
     }
   }
