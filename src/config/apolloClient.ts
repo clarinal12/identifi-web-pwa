@@ -1,7 +1,7 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache,IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
-import { onError } from 'apollo-link-error';
+// import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable, Operation } from 'apollo-link';
 import { ZenObservable } from 'zen-observable-ts';
 
@@ -44,10 +44,10 @@ const requestLink = new ApolloLink((operation, forward) =>
 
 const client = new ApolloClient({
   link: ApolloLink.from([
-    onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors) console.log(graphQLErrors);
-      if (networkError) console.log(networkError);
-    }),
+    // onError(({ graphQLErrors, networkError }) => {
+    //   if (graphQLErrors) console.log(graphQLErrors);
+    //   if (networkError) console.log(networkError);
+    // }),
     requestLink,
     new HttpLink({
       uri: process.env[`REACT_APP_${env}_API_URL`],
