@@ -12,10 +12,8 @@ import { StyledListWrapper } from 'utils/styledComponentUtils';
 
 const { Title, Text } = Typography;
 
-interface IPastCheckInList extends RouteComponentProps<{ checkin_id: string }> {
+interface IPastCheckInList extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
   data: ICheckinData,
-  pastCheckInId: string,
-  setPastCheckInId: (id: string) => void,
 }
 
 const StyledEmptyRow = styled(Row)`
@@ -37,8 +35,9 @@ const EmptyState = () => (
 );
 
 const PastCheckInList: React.FC<IPastCheckInList> = ({
-  data, match, history, location, setPastCheckInId, pastCheckInId,
+  data, match, history, location,
 }) => {
+  const derivedPastCheckinId = match.params.past_checkin_id || '';
   const { name, pastCheckIns, currentCheckIn } = data;
   return (pastCheckIns.length > 0) ? (
     <StyledListWrapper>
@@ -46,7 +45,7 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
         size="large"
         dataSource={[{ date: '', id: '' }].concat(pastCheckIns)}
         renderItem={({ date, id }) => {
-          const isActive = (id === pastCheckInId);
+          const isActive = (id === derivedPastCheckinId);
           const isPastCheckIn = (date && id);
           const dateString = isPastCheckIn ?
             moment(date).format('MMM DD, YYYY hh:mm A') : moment(currentCheckIn.date).calendar();
@@ -56,7 +55,6 @@ const PastCheckInList: React.FC<IPastCheckInList> = ({
               key={id}
               onClick={() => {
                 scrollToTop();
-                setPastCheckInId(id);
                 if (isPastCheckIn) {
                   history.push({
                     pathname: `/checkins/${match.params.checkin_id}/${id}`,

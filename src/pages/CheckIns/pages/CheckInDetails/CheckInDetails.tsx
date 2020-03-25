@@ -10,7 +10,6 @@ import PastCheckInList from './components/PastCheckInList';
 import CheckInNavigation from './components/CheckInNavigation';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
-import { usePastCheckInContextValue } from 'contexts/PastCheckInContext';
 import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 
 const { Title } = Typography;
@@ -25,27 +24,18 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({ match, history, location }) => {
-  const { pastCheckInId, setPastCheckInId } = usePastCheckInContextValue();
+const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, history, location }) => {
   const { setMentionSource } = useMentionSourceContextValue();
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.checkin_id },
-    // fetchPolicy: 'cache-and-network',
     onCompleted: data => {
       history.replace({
         state: { checkin_id_alias: data.checkInSchedule.name },
         ...(location.search && { search: location.search }),
       });
-      setPastCheckInId(match.params.past_checkin_id || '');
     },
   });
-
-  useEffect(() => {
-    if (!match.params.past_checkin_id) {
-      setPastCheckInId('');
-    }
-  }, [match.params.past_checkin_id, setPastCheckInId]);
 
   useEffect(() => {
     if (data) {
@@ -74,10 +64,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
       ) : (
         <Row className="mx-0" gutter={24}>
           <Col sm={24} md={17} className="pl-0">
-            <CheckInDetailContainer
-              data={data.checkInSchedule}
-              pastCheckInId={pastCheckInId}
-            />
+            <CheckInDetailContainer data={data.checkInSchedule} />
           </Col>
           <Col sm={24} md={7} className="pr-0">
             <Affix offsetTop={24}>
@@ -93,11 +80,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string, past_ch
                     </div>
                   )}
                 >
-                  <PastCheckInList
-                    data={data.checkInSchedule}
-                    pastCheckInId={pastCheckInId}
-                    setPastCheckInId={setPastCheckInId}
-                  />
+                  <PastCheckInList data={data.checkInSchedule} />
                 </StyledCard>
                 <CheckInNavigation />
               </div>

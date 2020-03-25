@@ -10,15 +10,16 @@ import { CHECKIN } from 'apollo/queries/checkin';
 import { ICheckinData } from 'apollo/types/checkin';
 import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 
-interface ICheckInDetailContainer extends RouteComponentProps {
+interface ICheckInDetailContainer extends RouteComponentProps<{ past_checkin_id: string }> {
   data: ICheckinData,
-  pastCheckInId: string,
 }
 
-const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckInId, history, location, data }) => {
+const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ match, history, location, data }) => {
+  const derivedPastCheckinId = match.params.past_checkin_id || '';
   const { setMentionSource } = useMentionSourceContextValue();
+
   const { data: checkInData, loading, error } = useQuery(CHECKIN, {
-    variables: { id: pastCheckInId },
+    variables: { id: derivedPastCheckinId },
     onCompleted: response => {
       history.replace({
         state: {
@@ -28,7 +29,7 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
         ...(location.search && { search: location.search }),
       });
     },
-    skip: !pastCheckInId,
+    skip: !derivedPastCheckinId,
   });
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ pastCheckIn
     <CheckInDetailView
       checkInName={data.name}
       checkInStatus={data.status}
-      done={Boolean(pastCheckInId)}
+      done={Boolean(derivedPastCheckinId)}
       data={checkInSource}
     />
   );
