@@ -21,6 +21,7 @@ export const UPDATE_ONE_ON_ONE_ESCHEDULE = gql`
       frequency
       currentSessionId
       status
+      duration
     }
   }
 `;
