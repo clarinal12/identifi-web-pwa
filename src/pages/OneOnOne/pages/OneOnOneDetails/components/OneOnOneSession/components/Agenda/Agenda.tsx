@@ -76,6 +76,9 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
       rowKey="id"
       columns={[
         {
+          onCell: (record, index) => ({
+            onClick: () => console.log(record),
+          }),
           key: 'agenda',
           title: 'agenda',
           render: ({ topic }: TAgenda) => <Text className="fs-16">{topic}</Text>,
