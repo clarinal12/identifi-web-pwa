@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Empty, Typography, Avatar, Table } from 'antd';
 
 import AgendaModal from './components/AgendaModal';
+import AgendaDetails from './components/AgendaDetails';
 import { getDisplayName } from 'utils/userUtils';
 import { TAgenda } from 'apollo/types/oneOnOne';
 import { useUserContextValue } from 'contexts/UserContext';
@@ -19,11 +20,13 @@ const StyledTable = styled(Table)`
   table {
     border-collapse: collapse !important;
     .ant-table-row {
+      display: flex;
       border-bottom: 1px solid #F5F5F5;
       &:last-of-type {
         border-bottom: none;
       }
       &:hover > td {
+        cursor: pointer;
         background: #c5dbd8cc !important;
         .ant-btn {
           display: block;
@@ -47,6 +50,11 @@ const StyledTable = styled(Table)`
 `;
 
 const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
+  const [visibility, setVisibility] = useState(false);
+  const [modalContet, setModalContent] = useState<{ topic: string, content: string }>({
+    topic: '',
+    content: '',
+  });
   const { account } = useUserContextValue();
   if (!Boolean(agenda?.length)) {
     return (
@@ -66,41 +74,53 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
     )
   } 
   return (
-    <StyledTable
-      showHeader={false}
-      {...(canModifyAgenda && {
-        footer: () => <AgendaModal />,
-      })}
-      pagination={{ hideOnSinglePage: true }}
-      dataSource={agenda}
-      rowKey="id"
-      columns={[
-        {
-          onCell: (record, index) => ({
-            onClick: () => console.log(record),
-          }),
-          key: 'agenda',
-          title: 'agenda',
-          render: ({ topic }: TAgenda) => <Text className="fs-16">{topic}</Text>,
-        },
-        {
-          key: 'action',
-          title: 'Action',
-          render: (singleAgenda: TAgenda) => {
-            const { author } = singleAgenda;
-            const isOwner = author.id === account?.id;
-            return author.avatar && (
-              <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
-                {(isOwner && canModifyAgenda) && (
-                  <AgendaModal agenda={singleAgenda} />
-                )}
-                <Avatar size="small" src={author.avatar} />
-              </div>
-            );
+    <div>
+      <StyledTable
+        showHeader={false}
+        {...(canModifyAgenda && {
+          footer: () => <AgendaModal />,
+        })}
+        pagination={{ hideOnSinglePage: true }}
+        dataSource={agenda}
+        rowKey="id"
+        columns={[
+          {
+            className: 'w-100 flex-grow-1',
+            onCell: ({ topic, content }: any) => ({
+              onClick: () => {
+                setModalContent({ topic, content });
+                setVisibility(true);
+              },
+            }),
+            key: 'agenda',
+            title: 'agenda',
+            render: ({ topic }: TAgenda) => <Text className="fs-16">{topic}</Text>,
           },
-        }
-      ]}
-    />
+          {
+            key: 'action',
+            title: 'Action',
+            render: (singleAgenda: TAgenda) => {
+              const { author } = singleAgenda;
+              const isOwner = author.id === account?.id;
+              return author.avatar && (
+                <div className="d-flex align-items-center float-right" title={getDisplayName(author)}>
+                  {(isOwner && canModifyAgenda) && (
+                    <AgendaModal agenda={singleAgenda} />
+                  )}
+                  <Avatar size="small" src={author.avatar} />
+                </div>
+              );
+            },
+          }
+        ]}
+      />
+      <AgendaDetails
+        topic={modalContet.topic}
+        content={modalContet.content}
+        visibility={visibility}
+        setVisibility={setVisibility}
+      />
+    </div>
   );
 }
 
