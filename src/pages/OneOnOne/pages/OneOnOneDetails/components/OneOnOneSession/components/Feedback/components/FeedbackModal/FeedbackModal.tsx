@@ -10,7 +10,6 @@ import updateOneOnOneFeedbackCacheHandler from './cache-handler/updateOneOnOneFe
 import deleteOneOnOneFeedbackCacheHandler from './cache-handler/deleteOneOnOneFeedback';
 import { ADD_ONE_ON_ONE_FEEDBACK, UPDATE_ONE_ON_ONE_FEEDBACK, DELETE_ONE_ON_ONE_FEEDBACK } from 'apollo/mutations/feedback';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { TFeedback } from 'apollo/types/oneOnOne';
 
@@ -30,29 +29,29 @@ const StyledModal = styled(Modal)`
 `;
 
 interface IFeedbackModal {
+  sessionId: string,
   feedback?: TFeedback,
   isEditing?: boolean,
 }
 
-const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
+const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing, sessionId }) => {
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
-  const { selectedUserSession } = useOneOnOneContextValue();
   const [visiblity, setVisibility] = useState(false);
   const [addOneOnOneFeedbackMutation] = useMutation(ADD_ONE_ON_ONE_FEEDBACK);
   const [updateOneOnOneFeedbackMutation] = useMutation(UPDATE_ONE_ON_ONE_FEEDBACK);
   const [deleteOneOnOneFeedbackMutation] = useMutation(DELETE_ONE_ON_ONE_FEEDBACK);
 
   const addOneOnOneFeedbackAction = (values: IFeedbackFormValues) => {
-    if (!selectedUserSession?.info || !account) return;
+    if (!account) return;
     try {
       addOneOnOneFeedbackMutation({
         variables: {
-          sessionId: selectedUserSession?.info?.currentSessionId,
+          sessionId,
           input: { ...values },
         },
         ...addOneOnOneFeedbackCacheHandler({
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId,
           author: account,
           values,
         }),
@@ -67,7 +66,7 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
   }
 
   const updateOneOnOneFeedbackAction = (values: IFeedbackFormValues) => {
-    if (!selectedUserSession?.info || !account || !feedback) return;
+    if (!account || !feedback) return;
     try {
       updateOneOnOneFeedbackMutation({
         variables: {
@@ -75,7 +74,7 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
           input: { ...values },
         },
         ...updateOneOnOneFeedbackCacheHandler({
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId,
           author: account,
           values,
         }),
@@ -91,13 +90,13 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing }) => {
   }
 
   const deleteOneOnOneFeedbackAction = () => {
-    if (!selectedUserSession?.info || !feedback || !account) return;
+    if (!feedback || !account) return;
     try {
       deleteOneOnOneFeedbackMutation({
         variables: {  feedbackId: feedback.id },
         ...deleteOneOnOneFeedbackCacheHandler({
           author: account,
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId,
         }),
       });
       setVisibility(false);

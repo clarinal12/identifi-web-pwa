@@ -11,6 +11,7 @@ import { TFeedbackInfo } from 'apollo/types/oneOnOne';
 const { Text } = Typography;
 
 interface IFeedback {
+  sessionId: string,
   canModifyFeedback?: boolean,
   feedbackInfo?: TFeedbackInfo[],
 }
@@ -46,7 +47,7 @@ const StyledDiv = styled.div`
   }
 `;
  
-const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback }) => {
+const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessionId }) => {
   const { account } = useUserContextValue();
   const currentUser = feedbackInfo?.find(({ author }) => author.id === account?.id);
   const otherUser = feedbackInfo?.find(({ author }) => author.id !== account?.id);
@@ -88,7 +89,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback }) => {
                 <div dangerouslySetInnerHTML={{ __html: currentUser?.feedback.content }} />
               </Text>
               {canModifyFeedback && (
-                <FeedbackModal feedback={currentUser?.feedback} isEditing />
+                <FeedbackModal sessionId={sessionId} feedback={currentUser?.feedback} isEditing />
               )}              
             </div>
             {currentUser?.author.avatar && (
@@ -107,7 +108,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback }) => {
               <Text type="secondary" className="fs-16 d-block">
                 You didn’t leave any feedback for <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span>
               </Text>
-              {canModifyFeedback && <FeedbackModal />}
+              {canModifyFeedback && <FeedbackModal sessionId={sessionId} />}
             </div>
           </>
         )}

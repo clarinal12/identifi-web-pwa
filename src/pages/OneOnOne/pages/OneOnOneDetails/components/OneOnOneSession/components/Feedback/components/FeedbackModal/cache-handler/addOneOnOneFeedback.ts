@@ -1,7 +1,7 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
-import { ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
-import { IOneOnOneSession } from 'apollo/types/oneOnOne';
+import { ONE_ON_ONE_SESSION, ONE_ON_ONE_HEADER } from 'apollo/queries/oneOnOne';
+import { IOneOnOneSession, IOneOnOneHeader } from 'apollo/types/oneOnOne';
 import { IAccount } from 'apollo/types/user';
 import { IFeedbackFormValues } from '../components/FeedbackForm/FeedbackForm';
 
@@ -29,6 +29,21 @@ export default ({
           query: ONE_ON_ONE_SESSION,
           variables: { sessionId },
           data: oneOnOneSessionCacheData,
+        });
+      }
+    } catch (_) {}
+
+    try {
+      const oneOnOneHeaderCacheData: { oneOnOneHeader: IOneOnOneHeader } | null = store.readQuery({
+        query: ONE_ON_ONE_HEADER,
+        variables: { sessionId },
+      });
+      if (oneOnOneHeaderCacheData) {
+        oneOnOneHeaderCacheData.oneOnOneHeader.canCompleteSession = true;
+        store.writeQuery({
+          query: ONE_ON_ONE_HEADER,
+          variables: { sessionId },
+          data: oneOnOneHeaderCacheData,
         });
       }
     } catch (_) {}
