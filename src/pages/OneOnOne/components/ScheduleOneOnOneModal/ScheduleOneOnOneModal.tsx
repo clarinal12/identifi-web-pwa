@@ -83,7 +83,7 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           input: {
             timings: {
               ...values,
-              time: values.time.utc(false).format(),
+              time: values.time.format(),
             },
           },
         },
