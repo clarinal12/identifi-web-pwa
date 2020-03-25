@@ -58,6 +58,7 @@ export const ONE_ON_ONE_SESSION = gql`
       id
       time
       status
+      showFeedback
       canModifyFeedback
       canModifyAgenda
       feedbackInfo {

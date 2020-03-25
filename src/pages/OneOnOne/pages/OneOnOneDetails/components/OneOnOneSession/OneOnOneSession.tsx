@@ -36,12 +36,14 @@ const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
     <Spinner label="Loading session details" />
   ) : (
     <>
-      <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
-        <Feedback
-          canModifyFeedback={data?.oneOnOneSession?.canModifyFeedback}
-          feedbackInfo={data?.oneOnOneSession?.feedbackInfo}
-        />
-      </StyledCard>
+      {data?.oneOnOneSession?.showFeedback && (
+        <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
+          <Feedback
+            canModifyFeedback={data?.oneOnOneSession?.canModifyFeedback}
+            feedbackInfo={data?.oneOnOneSession?.feedbackInfo}
+          />
+        </StyledCard>
+      )}
       <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
         <Agenda
           canModifyAgenda={data?.oneOnOneSession?.canModifyAgenda}

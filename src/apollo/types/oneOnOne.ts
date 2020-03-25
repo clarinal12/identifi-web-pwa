@@ -37,6 +37,7 @@ export interface IOneOnOneSession {
   id: string,
   time: string,
   status: 'COMPLETED' | 'SKIPPED' | null
+  showFeedback: boolean,
   canModifyFeedback: boolean,
   canModifyAgenda: boolean,
   feedbackInfo: TFeedbackInfo[],
