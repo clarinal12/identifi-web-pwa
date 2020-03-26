@@ -30,7 +30,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const RescheduleOneOnOneModal = () => {
+const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxRescheduleDate }) => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [skippingState, setSkippingState] = useState(false);
@@ -134,6 +134,7 @@ const RescheduleOneOnOneModal = () => {
               upcomingSessionDate: selectedUserSession.info.upcomingSessionDate,
             },
           })}
+          maxRescheduleDate={maxRescheduleDate}
           skippingState={skippingState}
           setVisibility={setVisibility}
           onSkipAction={skipOneOnOneAction}

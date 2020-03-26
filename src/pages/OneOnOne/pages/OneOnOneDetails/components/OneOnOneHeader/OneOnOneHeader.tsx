@@ -104,18 +104,18 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
                 {moment(data?.oneOnOneHeader.time).format('MMM DD, hh:mm a')}
               </Text>
             </div>
-            {selectedUserSession?.isManager && (
-              <div className="d-flex align-items-end">
-                <div className="d-block text-right">
-                  {data?.oneOnOneHeader.status && (
-                    <Tag className="m-0" color={COLOR_MAP[data.oneOnOneHeader.status]}>
-                      {data.oneOnOneHeader.status}
-                    </Tag>
-                  )}
-                </div>
+            <div className="d-flex align-items-end">
+              <div className="d-block text-right">
+                {data?.oneOnOneHeader.status && (
+                  <Tag className="m-0" color={COLOR_MAP[data.oneOnOneHeader.status]}>
+                    {data.oneOnOneHeader.status}
+                  </Tag>
+                )}
+              </div>
+              {selectedUserSession?.isManager && (
                 <div className="d-block mt-3">
                   {data?.oneOnOneHeader.canRescheduleSession && (
-                    <RescheduleOneOnOneModal />
+                    <RescheduleOneOnOneModal maxRescheduleDate={data.oneOnOneHeader.maxRescheduleDateRange} />
                   )}
                   {data?.oneOnOneHeader.showCompleteButton && (
                     <CompleteButtonWrapper disabled={!(data?.oneOnOneHeader.canCompleteSession)}>
@@ -131,8 +131,8 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
                     </CompleteButtonWrapper>
                   )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}

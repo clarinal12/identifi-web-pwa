@@ -10,6 +10,7 @@ const { Text } = Typography;
 
 interface IExternalProps {
   data?: Partial<TOneOnOneInfo>,
+  maxRescheduleDate: string,
   skippingState: boolean,
   setVisibility: (visibility: boolean) => void,
   onSkipAction: () => void,
@@ -26,7 +27,7 @@ export interface IRescheduleOneOnOneFormValues {
 
 const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
-  onSkipAction, skippingState,
+  onSkipAction, skippingState, maxRescheduleDate,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -37,6 +38,16 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
             label="New date"
           >
             <DatePicker
+              disabledDate={(current) => {
+                // if (!current) return false;
+                // const currentDateTime = moment();
+                // const maxAllowedDateToReschedule = moment(maxRescheduleDate);
+                // const hoursTillToday = currentDateTime.diff(current, 'hours', true);
+                // const hoursTillMax = maxAllowedDateToReschedule.diff(current, 'hours', true);
+
+                // return hoursTillToday > 0 || hoursTillMax < 0;
+                return false;
+              }}
               allowClear={false}
               style={{ width: '100%' }}
               value={values.time}
