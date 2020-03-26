@@ -75,7 +75,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessio
             </div>
             <div className="px-3">
               <Text type="secondary" className="fs-16 d-block">
-                <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span> didn’t leave any feedback for you yet.
+                <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span> didn’t leave any feedback for you.
               </Text>
             </div>
           </>
@@ -106,7 +106,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessio
             </div>
             <div className="px-3">
               <Text type="secondary" className="fs-16 d-block">
-                You didn’t leave any feedback for <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span>
+                You didn’t leave any feedback for <span className="text-capitalize">{getDisplayName(otherUser?.author)}</span>.
               </Text>
               {canModifyFeedback && <FeedbackModal sessionId={sessionId} />}
             </div>

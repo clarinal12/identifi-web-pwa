@@ -201,16 +201,18 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
               <div title={getDisplayName(directReport)}>
                 <Avatar size="large" {...(avatar && { src : avatar })} />
               </div>
-              <Badge
-                className="position-absolute"
-                {...(!id.includes('optimistic-response') && {
-                  count: <RemoveDirectReport directReport={directReport} managerId={memberInfo.id} />,
-                })}
-              />
+              {account?.isOwner && (
+                <Badge
+                  className="position-absolute"
+                  {...(!id.includes('optimistic-response') && {
+                    count: <RemoveDirectReport directReport={directReport} managerId={memberInfo.id} />,
+                  })}
+                />
+              )}
             </div>
           );
         })}
-        {(memberInfo.isManager || account?.isOwner) && (
+        {account?.isOwner && (
           <StyledPopover
             getPopupContainer={() => document.getElementById('popover-container') || document.body}
             placement="rightBottom"
