@@ -106,6 +106,7 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string, canSkipSess
         }],
         awaitRefetchQueries: true,
       });
+      setVisibility(false);
     } catch (error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
