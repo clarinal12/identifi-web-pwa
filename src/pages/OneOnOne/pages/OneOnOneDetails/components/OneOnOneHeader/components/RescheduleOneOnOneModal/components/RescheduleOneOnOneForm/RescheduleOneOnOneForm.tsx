@@ -39,14 +39,12 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           >
             <DatePicker
               disabledDate={(current) => {
-                // if (!current) return false;
-                // const currentDateTime = moment();
-                // const maxAllowedDateToReschedule = moment(maxRescheduleDate);
-                // const hoursTillToday = currentDateTime.diff(current, 'hours', true);
-                // const hoursTillMax = maxAllowedDateToReschedule.diff(current, 'hours', true);
-
-                // return hoursTillToday > 0 || hoursTillMax < 0;
-                return false;
+                if (!current) return false;
+                const currentDateTime = moment().startOf('day');
+                const maxAllowedDateToReschedule = moment(maxRescheduleDate).startOf('day');
+                const hoursDiffFromToday = currentDateTime.diff(current.startOf('day'), 'hours', true);
+                const hoursDiffTillLimit = maxAllowedDateToReschedule.diff(current.startOf('day'), 'hours', true);
+                return hoursDiffFromToday > 0 || hoursDiffTillLimit < 0;
               }}
               allowClear={false}
               style={{ width: '100%' }}
