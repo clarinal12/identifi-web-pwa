@@ -10,7 +10,7 @@ import { ICheckinData } from 'apollo/types/checkin';
 import { MEMBER_CHECKINS } from 'apollo/queries/member';
 import { useUserContextValue } from 'contexts/UserContext';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const StyledList = styled(List)`
   .ant-list-item {
@@ -47,8 +47,8 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
   ) : (
     <>
       <Title className="mb-3" level={4}>Check-ins</Title>
-      {data?.memberCheckIns.length > 0 ? (
-        <Card>
+      <Card>
+        {data?.memberCheckIns.length > 0 ? (
           <StyledList>
             {data.memberCheckIns.map((checkin: ICheckinData) => {
               const { scheduleId, name, currentCheckInDate, nextCheckInDate, frequency } = checkin;
@@ -79,10 +79,12 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
               );
             })}
           </StyledList>
-        </Card>
-      ) : (
-        <Empty description="This user doesn't have any check-ins yet or you don't have access to view user's check-ins." />
-      )}
+        ) : (
+          <Empty description="No check-ins">
+            <Paragraph className="text-muted fs-16">This user doesn't have any check-ins yet or you don't have access to view user's check-ins.</Paragraph>
+          </Empty>
+        )}
+      </Card>
     </>
   );
 

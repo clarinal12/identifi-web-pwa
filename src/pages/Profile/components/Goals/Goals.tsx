@@ -99,14 +99,16 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
           )}
         </>
       ) : (
-        <Empty description="No goals yet">
-          {isGoalOwner && (
-            <>
-              <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
-              <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
-            </>
-          )}
-        </Empty>
+        <Card>
+          <Empty description="No goals yet">
+            {isGoalOwner && (
+              <>
+                <Paragraph className="text-muted fs-16">Start adding your goals and track your progress here.</Paragraph>
+                <Button size="large" type="primary" onClick={() => setVisibility(true)}>Add new goal</Button>
+              </>
+            )}
+          </Empty>
+        </Card>
       )}
       <GoalFormModal
         editGoalInfo={editGoalInfo}
