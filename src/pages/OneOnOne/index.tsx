@@ -17,8 +17,7 @@ export default () => (
         </OneOnOneProviderWithRouter>
       )}
     />
-    <Route exact path="/1-on-1s/:direct_report_id" component={OneOnOneDetails} />
-    <Route exact path="/1-on-1s/:direct_report_id/:past_session_id" component={OneOnOneDetails} />
+    <Route exact path="/1-on-1s/:direct_report_id/:session_id" component={OneOnOneDetails} />
     <Route component={FourOhFour} />
   </Switch>
 );

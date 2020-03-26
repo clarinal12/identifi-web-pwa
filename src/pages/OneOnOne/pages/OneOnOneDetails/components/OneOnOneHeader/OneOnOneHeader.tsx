@@ -1,4 +1,5 @@
 import React, { useState, PropsWithChildren } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -27,17 +28,21 @@ interface IQueryResult {
   oneOnOneHeader: IOneOnOneHeader
 }
 
+interface IOneOnOneHeaderComponent extends RouteComponentProps {
+  sessionId: string | undefined
+}
+
 const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boolean }> = ({
   children, disabled,
 }) => {
   return disabled ? (
-    <Tooltip placement="bottom" title="Add your feedback to complete this session.">
+    <Tooltip placement="bottom" title="You need to add your feedback to complete this session.">
       {children}
     </Tooltip>
   ) : children;
 };
 
-const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId }) => {
+const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history }) => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [loadingState, setLoadingState] = useState(false);
@@ -45,6 +50,14 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
 
   const { data, loading } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
     variables: { sessionId },
+    onCompleted: ({ oneOnOneHeader }) => {
+      history.replace({
+        state: {
+          direct_report_id_alias: getDisplayName(oneOnOneHeader.displayMember),
+          session_id_alias: moment(oneOnOneHeader.time).format('MMM DD, YYYY'),
+        },
+      });
+    }
   });
 
   const completeOneOnOneAction = async () => {
@@ -143,4 +156,4 @@ const OneOnOneHeader: React.FC<{ sessionId: string | undefined }> = ({ sessionId
   );
 }
 
-export default OneOnOneHeader;
+export default withRouter(OneOnOneHeader);

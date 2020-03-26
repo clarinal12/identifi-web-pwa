@@ -11,7 +11,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 
 const { Text } = Typography;
 
-interface IAgenda extends RouteComponentProps<{ past_session_id: string }> {
+interface IAgenda extends RouteComponentProps<{ session_id: string }> {
   canModifyAgenda?: boolean,
   agenda?: TAgenda[],
 }
@@ -62,7 +62,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
         className="mb-3"
         description={(
           <Text type="secondary">
-            {match.params.past_session_id
+            {match.params.session_id
               ? 'No talking points were set for this session.'
               : 'Add talking points you want to talk about with your manager.'
             }

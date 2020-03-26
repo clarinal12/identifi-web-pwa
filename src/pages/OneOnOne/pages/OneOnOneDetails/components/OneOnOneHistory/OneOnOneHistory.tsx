@@ -18,7 +18,7 @@ import { IAccount } from 'apollo/types/user';
 
 const { Title, Text } = Typography;
 
-interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string, past_session_id: string }> {
+interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string, session_id: string }> {
   upcomingSessionDate?: string,
   directReport?: IAccount,
   scheduleId?: string,
@@ -72,7 +72,7 @@ const EmptyState = () => (
 const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
   match, history, location, scheduleId, upcomingSessionDate, directReport,
 }) => {
-  const derivedSessionId = match.params.past_session_id || '';
+  const derivedSessionId = match.params.session_id || '';
   const [state, setState] = useState<IOneOnOneSessionState>({
     dataSource: [],
     loading: true,
@@ -128,7 +128,7 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
                     pathname: `/1-on-1s/${match.params.direct_report_id}/${id}`,
                     state: {
                       ...location.state,
-                      past_session_id_alias: moment(time).format('MMM DD, YYYY'),
+                      session_id_alias: moment(time).format('MMM DD, YYYY'),
                     },
                   });
                 } else {

@@ -22,9 +22,9 @@ const StyledCard = styled(Card)`
   }
 `;
 
-const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>> = ({ match }) => {
+const OneOnOneDetails: React.FC<RouteComponentProps<{ session_id: string }>> = ({ match }) => {
   const { selectedUserSession } = useOneOnOneContextValue();
-  const derivedSessionId = match.params.past_session_id || selectedUserSession?.info?.currentSessionId;
+  const derivedSessionId = match.params.session_id || selectedUserSession?.info?.currentSessionId;
 
   return (
     <AppLayout>
@@ -34,7 +34,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ past_session_id: string }>
             <OneOnOneHeader sessionId={derivedSessionId} />
           )}
           {selectedUserSession?.info && (
-            <OneOnOneSession sessionId={match.params.past_session_id || selectedUserSession.info.currentSessionId} />
+            <OneOnOneSession sessionId={match.params.session_id || selectedUserSession.info.currentSessionId} />
           )}
         </Col>
         <Col sm={24} md={7} className="pr-0">
