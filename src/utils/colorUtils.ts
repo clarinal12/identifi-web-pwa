@@ -3,6 +3,9 @@ export const COLOR_MAP: { [key: string]: string } = {
   FINISHED: '#87E8DE',
   DEACTIVATED: '#E8E8E8',
   SCHEDULED: '#91D5FF',
-  COMPLETED: 'cyan',
+  UPCOMING: 'blue',
+  HAPPENING: 'cyan',
+  INCOMPLETE: 'gold',
+  COMPLETED: 'green',
   SKIPPED: 'red',
 };

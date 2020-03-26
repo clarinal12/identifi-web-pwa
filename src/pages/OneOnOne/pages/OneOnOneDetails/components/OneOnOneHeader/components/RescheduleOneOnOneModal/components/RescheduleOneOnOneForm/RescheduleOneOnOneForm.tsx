@@ -11,6 +11,7 @@ const { Text } = Typography;
 interface IExternalProps {
   data?: Partial<TOneOnOneInfo>,
   maxRescheduleDate: string,
+  canSkipSession: boolean,
   skippingState: boolean,
   setVisibility: (visibility: boolean) => void,
   onSkipAction: () => void,
@@ -27,7 +28,7 @@ export interface IRescheduleOneOnOneFormValues {
 
 const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
-  onSkipAction, skippingState, maxRescheduleDate,
+  onSkipAction, skippingState, maxRescheduleDate, canSkipSession,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -109,7 +110,7 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           <Button
             ghost
             type="primary"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !canSkipSession}
             loading={skippingState}
             className="mr-4"
             size="large"

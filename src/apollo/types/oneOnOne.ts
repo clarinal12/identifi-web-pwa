@@ -6,6 +6,7 @@ export type TOneOnOneInfo = {
   duration: number,
   scheduleId: string,
   currentSessionId: string,
+  currentSessionStatus: 'UPCOMING' | 'HAPPENING' | 'INCOMPLETE' | 'COMPLETED' | 'SKIPPED',
   status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED'
 }
 
@@ -36,7 +37,7 @@ export type TAgenda = {
 export interface IOneOnOneSession {
   id: string,
   time: string,
-  status: 'COMPLETED' | 'SKIPPED' | null
+  status: 'UPCOMING' | 'HAPPENING' | 'INCOMPLETE' | 'COMPLETED' | 'SKIPPED',
   showFeedback: boolean,
   canModifyFeedback: boolean,
   canModifyAgenda: boolean,

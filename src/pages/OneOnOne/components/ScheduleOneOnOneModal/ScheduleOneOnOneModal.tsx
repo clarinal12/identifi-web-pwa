@@ -95,6 +95,7 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
             upcomingSessionDate: values.time.utc(false).format(),
             status: selectedUserSession.info.status,
             currentSessionId: selectedUserSession.info.currentSessionId,
+            currentSessionStatus: 'UPCOMING',
             scheduleId: selectedUserSession.info.scheduleId,
           },
         }),

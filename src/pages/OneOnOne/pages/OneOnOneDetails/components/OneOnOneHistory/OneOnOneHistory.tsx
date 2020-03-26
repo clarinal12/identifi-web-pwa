@@ -10,6 +10,7 @@ import { LoadingIcon } from 'components/PageSpinner';
 import { scrollToTop } from 'utils/scrollUtils';
 import { PastClockIcon } from 'utils/iconUtils';
 import { getDisplayName } from 'utils/userUtils';
+import { SESSION_STATUS_ICON } from 'utils/oneOnOneUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { IOneOnOneSession } from 'apollo/types/oneOnOne';
@@ -110,8 +111,8 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
     <StyledListWrapper>
       <List
         size="large"
-        dataSource={[{ time: '', id: '' }].concat(state.dataSource)}
-        renderItem={({ time, id }) => {
+        dataSource={[{ time: '', id: '', status: 'UPCOMING' }].concat(state.dataSource)}
+        renderItem={({ time, id, status }) => {
           const isActive = (id === derivedSessionId);
           const isPastCheckIn = (time && id);
           const dateString = isPastCheckIn ?
@@ -145,6 +146,7 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
                   type={isActive ? undefined : 'secondary'}
                   strong={isActive}
                 >
+                  {SESSION_STATUS_ICON[status]}
                   {dateString}
                 </Text>
                 <Icon className="float-right" type="right" />

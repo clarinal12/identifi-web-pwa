@@ -15,6 +15,7 @@ export const ONE_ON_ONES = gql`
         frequency
         duration
         currentSessionId
+        currentSessionStatus
         status
       }
     }

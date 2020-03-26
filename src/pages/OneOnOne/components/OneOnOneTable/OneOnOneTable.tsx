@@ -2,11 +2,12 @@ import React from 'react';
 import moment from 'moment-timezone';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import { Card, Table, List, Avatar, Typography, Icon, Button } from 'antd';
+import { Card, Table, List, Avatar, Typography, Icon, Button, Tag } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from '../ScheduleOneOnOneModal';
 import { getDisplayName } from 'utils/userUtils';
+import { COLOR_MAP } from 'utils/colorUtils';
 import { IOneOnOnes } from 'apollo/types/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 
@@ -78,6 +79,16 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
                 {info.frequency.toLowerCase().replace('_', '-')}
               </Text>
             ),
+          },
+          {
+            key: 'currentSessionStatus',
+            title: 'Status',
+            className: 'text-center',
+            render: ({ info }: IOneOnOnes) => {
+              return info?.currentSessionStatus && (
+                <Tag color={COLOR_MAP[info?.currentSessionStatus]}>{info?.currentSessionStatus}</Tag>
+              );
+            },
           },
           {
             key: 'action',
