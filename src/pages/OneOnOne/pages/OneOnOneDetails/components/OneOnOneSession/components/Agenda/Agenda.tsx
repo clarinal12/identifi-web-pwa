@@ -63,7 +63,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
         description={(
           <Text type="secondary">
             {match.params.past_session_id
-              ? 'No talking points was set for this session.'
+              ? 'No talking points were set for this session.'
               : 'Add talking points you want to talk about with your manager.'
             }
           </Text>
