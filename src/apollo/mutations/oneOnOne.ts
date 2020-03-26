@@ -8,6 +8,7 @@ export const SCHEDULE_ONE_ON_ONE = gql`
       frequency
       duration
       currentSessionId
+      currentSessionStatus
       status
     }
   }

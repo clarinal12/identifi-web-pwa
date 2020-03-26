@@ -31,6 +31,7 @@ export default ({ directReportId, values }: ICacheHandler) => ({
     scheduleOneOnOne: {
       scheduleId: `optimistic-${Date.now()}-schedule-id`,
       currentSessionId: `optimistic-${Date.now()}-session-id`,
+      currentSessionStatus: 'UPCOMING',
       status: null,
       ...values,
       __typename: "OneOnOneScheduleInfo",
