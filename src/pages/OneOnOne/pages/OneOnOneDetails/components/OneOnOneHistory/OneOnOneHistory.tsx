@@ -18,10 +18,11 @@ import { IAccount } from 'apollo/types/user';
 
 const { Title, Text } = Typography;
 
-interface IOneOnOneHistory extends RouteComponentProps<{ direct_report_id: string, session_id: string }> {
+interface IOneOnOneHistory extends RouteComponentProps<{ schedule_id: string, session_id: string }> {
   upcomingSessionDate?: string,
   directReport?: IAccount,
   scheduleId?: string,
+  currentSessionId?: string,
 }
 
 interface IOneOnOneHistoryQuery {
@@ -70,7 +71,7 @@ const EmptyState = () => (
 );
 
 const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
-  match, history, location, scheduleId, upcomingSessionDate, directReport,
+  match, history, currentSessionId, scheduleId, upcomingSessionDate, directReport,
 }) => {
   const derivedSessionId = match.params.session_id || '';
   const [state, setState] = useState<IOneOnOneSessionState>({
@@ -111,34 +112,23 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
     <StyledListWrapper>
       <List
         size="large"
-        dataSource={[{ time: '', id: '', status: 'UPCOMING' }].concat(state.dataSource)}
+        dataSource={[{ time: upcomingSessionDate, id: currentSessionId, status: 'UPCOMING' }].concat(state.dataSource)}
         renderItem={({ time, id, status }) => {
           const isActive = (id === derivedSessionId);
-          const isPastCheckIn = (time && id);
-          const dateString = isPastCheckIn ?
-            moment(time).format('MMM DD, YYYY hh:mm A') : moment(upcomingSessionDate).calendar();
           return (
             <List.Item
               className={cx({ active: isActive })}
               key={id}
               onClick={() => {
                 scrollToTop();
-                if (isPastCheckIn) {
-                  history.push({
-                    pathname: `/1-on-1s/${match.params.direct_report_id}/${id}`,
-                    state: {
-                      ...location.state,
-                      session_id_alias: moment(time).format('MMM DD, YYYY'),
-                    },
-                  });
-                } else {
-                  history.push({
-                    pathname: `/1-on-1s/${match.params.direct_report_id}`,
-                    state: {
-                      direct_report_id_alias: getDisplayName(directReport),
-                    },
-                  });
-                }
+                history.push({
+                  pathname: `/1-on-1s/${match.params.schedule_id}/${id || currentSessionId}`,
+                  state: {
+                    schedule_id_alias: getDisplayName(directReport),
+                    session_id_alias: moment(time).format('MMM DD, YYYY'),
+                    ignore_breadcrumb_link: ['schedule_id_alias'],
+                  },
+                });
               }}
             >
               <div className="d-flex list-content-wrapper">
@@ -147,7 +137,7 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
                   strong={isActive}
                 >
                   {SESSION_STATUS_ICON[status]}
-                  {dateString}
+                  {moment(time).format('MMM DD, YYYY hh:mm A')}
                 </Text>
                 <Icon className="float-right" type="right" />
               </div>

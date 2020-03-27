@@ -86,7 +86,7 @@ const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ m
 );
 const ProfilesMenuWithRouter = withRouter(ProfilesMenu);
 
-const OneOnOnesMenu: React.FC<RouteComponentProps<{ direct_report_id: string }>> = ({ match, location }) => (
+const OneOnOnesMenu: React.FC<RouteComponentProps<{ schedule_id: string }>> = ({ match, location }) => (
   <OneOnOneConsumer>
     {({ oneOnOnes }) => (
       <UserConsumer>
@@ -97,18 +97,18 @@ const OneOnOnesMenu: React.FC<RouteComponentProps<{ direct_report_id: string }>>
               prefixCls="ignore-class"
               className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
             >
-              {oneOnOnes.filter(({ info }) => info ).map(({ teammate }) => (
+              {oneOnOnes.filter(({ info }) => info ).map(({ teammate, info }) => (
                 <Menu.Item
                   id={teammate.id}
                   key={teammate.id}
                   className={cx({
                     "ant-dropdown-menu-item": true,
-                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.direct_report_id === teammate.id,
+                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.schedule_id === info?.scheduleId,
                   })}
                 >
                   <Link
                     to={{
-                      pathname: `/1-on-1s/${teammate.id}`,
+                      pathname: `/1-on-1s/${info?.scheduleId}/${info?.currentSessionId}`,
                       state: location.state,
                     }}
                   >
@@ -132,6 +132,6 @@ export const ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU: TSegmentWithSubmenu[] = [{
   routeSegment: ':profile_id',
   SubMenu: <ProfilesMenuWithRouter />,
 }, {
-  routeSegment: ':direct_report_id',
+  routeSegment: ':schedule_id',
   SubMenu: <OneOnOnesMenuWithRouter />,
 }];

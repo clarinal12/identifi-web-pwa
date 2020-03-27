@@ -17,11 +17,11 @@ const OneOnOneContext = createContext<IOneOnOneContext>({
   selectedUserSession: undefined,
 });
 
-const OneOnOneProvider: React.FC<RouteComponentProps<{ direct_report_id: string }>> = ({
+const OneOnOneProvider: React.FC<RouteComponentProps<{ schedule_id: string }>> = ({
   children, match
 }) => {
   const { loading, data } = useQuery<IOneOnOneContext>(ONE_ON_ONES);
-  const selectedUserSession = data?.oneOnOnes.find(({ teammate }) => teammate.id === match.params.direct_report_id);
+  const selectedUserSession = data?.oneOnOnes.find(({ info }) => info?.scheduleId === match.params.schedule_id);
   return (
     <OneOnOneContext.Provider
       value={{

@@ -53,8 +53,9 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
     onCompleted: ({ oneOnOneHeader }) => {
       history.replace({
         state: {
-          direct_report_id_alias: getDisplayName(oneOnOneHeader.displayMember),
+          schedule_id_alias: getDisplayName(oneOnOneHeader.displayMember),
           session_id_alias: moment(oneOnOneHeader.time).format('MMM DD, YYYY'),
+          ignore_breadcrumb_link: ['schedule_id_alias'],
         },
       });
     }

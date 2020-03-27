@@ -51,6 +51,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ session_id: string }>> = (
               )}
             >
               <OneOnOneHistory
+                currentSessionId={selectedUserSession?.info?.currentSessionId}
                 upcomingSessionDate={selectedUserSession?.info?.upcomingSessionDate}
                 scheduleId={selectedUserSession?.info?.scheduleId}
                 directReport={selectedUserSession?.teammate}

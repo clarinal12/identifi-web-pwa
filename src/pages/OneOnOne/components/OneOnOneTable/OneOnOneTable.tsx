@@ -107,10 +107,11 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
                       className="float-right fs-16"
                       style={{ fontWeight: 500 }}
                       onClick={() => history.push({
-                        pathname: `/1-on-1s/${teammate.id}/${info.currentSessionId}`,
+                        pathname: `/1-on-1s/${info.scheduleId}/${info.currentSessionId}`,
                         state: {
-                          direct_report_id_alias: getDisplayName(teammate),
+                          schedule_id_alias: getDisplayName(teammate),
                           session_id_alias: moment(info.upcomingSessionDate).format('MMM DD, YYYY'),
+                          ignore_breadcrumb_link: ['schedule_id_alias'],
                         },
                       })}
                     >

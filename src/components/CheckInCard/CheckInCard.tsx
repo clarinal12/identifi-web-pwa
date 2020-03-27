@@ -64,9 +64,7 @@ const CheckInCard: React.FC<ICheckinCard> = ({
         hoverable
         onClick={() => history.push({
           pathname: `/checkins/${scheduleId}`,
-          state: {
-            checkin_id_alias: name,
-          },
+          state: { checkin_id_alias: name },
         })}
         className="d-flex"
         title={<Tag style={{ color: '#595959' }} color={COLOR_MAP[status]}>{status}</Tag>}
