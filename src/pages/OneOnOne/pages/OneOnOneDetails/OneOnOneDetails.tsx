@@ -50,12 +50,7 @@ const OneOnOneDetails: React.FC<RouteComponentProps<{ session_id: string }>> = (
                 </div>
               )}
             >
-              <OneOnOneHistory
-                currentSessionId={selectedUserSession?.info?.currentSessionId}
-                upcomingSessionDate={selectedUserSession?.info?.upcomingSessionDate}
-                scheduleId={selectedUserSession?.info?.scheduleId}
-                directReport={selectedUserSession?.teammate}
-              />
+              <OneOnOneHistory />
             </StyledCard>
           </Affix>
         </Col>

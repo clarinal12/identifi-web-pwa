@@ -14,16 +14,9 @@ import { SESSION_STATUS_ICON } from 'utils/oneOnOneUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { IOneOnOneSession } from 'apollo/types/oneOnOne';
-import { IAccount } from 'apollo/types/user';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 
 const { Title, Text } = Typography;
-
-interface IOneOnOneHistory extends RouteComponentProps<{ schedule_id: string, session_id: string }> {
-  upcomingSessionDate?: string,
-  directReport?: IAccount,
-  scheduleId?: string,
-  currentSessionId?: string,
-}
 
 interface IOneOnOneHistoryQuery {
   oneOnOneSessions: {
@@ -70,9 +63,14 @@ const EmptyState = () => (
   </StyledEmptyRow>
 );
 
-const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
-  match, history, currentSessionId, scheduleId, upcomingSessionDate, directReport,
-}) => {
+const OneOnOneHistory: React.FC<RouteComponentProps<{ schedule_id: string, session_id: string }>> = ({ match, history }) => {
+  const { selectedUserSession } = useOneOnOneContextValue();
+  const directReport = selectedUserSession?.teammate;
+  const scheduleId = selectedUserSession?.info?.scheduleId;
+  const currentSessionStatus = selectedUserSession?.info?.currentSessionStatus || 'UPCOMING';
+  const currentSessionId = selectedUserSession?.info?.currentSessionId;
+  const upcomingSessionDate = selectedUserSession?.info?.upcomingSessionDate;
+
   const derivedSessionId = match.params.session_id || '';
   const [state, setState] = useState<IOneOnOneSessionState>({
     dataSource: [],
@@ -112,7 +110,11 @@ const OneOnOneHistory: React.FC<IOneOnOneHistory> = ({
     <StyledListWrapper>
       <List
         size="large"
-        dataSource={[{ time: upcomingSessionDate, id: currentSessionId, status: 'UPCOMING' }].concat(state.dataSource)}
+        dataSource={[{
+          id: currentSessionId,
+          status: currentSessionStatus,
+          time: upcomingSessionDate,
+        }].concat(state.dataSource)}
         renderItem={({ time, id, status }) => {
           const isActive = (id === derivedSessionId);
           return (

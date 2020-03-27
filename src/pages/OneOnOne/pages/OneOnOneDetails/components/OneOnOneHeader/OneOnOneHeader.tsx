@@ -9,7 +9,7 @@ import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
 import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
 import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
+import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION, ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
@@ -72,6 +72,8 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
         }, {
           query: ONE_ON_ONE_SESSION,
           variables: { sessionId },
+        }, {
+          query: ONE_ON_ONES,
         }],
         awaitRefetchQueries: true,
       });

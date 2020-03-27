@@ -103,6 +103,8 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string, canSkipSess
           variables: {
             sessionId: selectedUserSession?.info?.currentSessionId,
           },
+        }, {
+          query: ONE_ON_ONES,
         }],
         awaitRefetchQueries: true,
       });
