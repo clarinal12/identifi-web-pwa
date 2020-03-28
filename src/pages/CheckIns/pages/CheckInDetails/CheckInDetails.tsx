@@ -40,7 +40,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
   useEffect(() => {
     if (data) {
       const { currentCheckIn } = data.checkInSchedule;
-      setMentionSource(currentCheckIn.mentionables);
+      currentCheckIn && setMentionSource(currentCheckIn.mentionables);
     }
   }, [data, setMentionSource]);
 
