@@ -5,7 +5,7 @@ import { Card, Typography, Icon, Button, Tag } from 'antd';
 
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useUserContextValue } from 'contexts/UserContext';
-import { TCurrentCheckIn } from 'apollo/types/graphql-types';
+import { TCurrentCheckIn } from 'apollo/types/checkin';
 
 const { Title, Text } = Typography;
 

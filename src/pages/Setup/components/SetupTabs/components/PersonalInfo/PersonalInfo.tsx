@@ -3,7 +3,7 @@ import { withFormik, FormikProps } from 'formik';
 import { Form, Input, Button, Row, Col } from 'antd';
 
 import { personalInfoFormSchema } from './validation';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 export interface IPersonalInfoFormValues {
   firstname: string,
@@ -122,10 +122,10 @@ export default withFormik<IExternalProps, IPersonalInfoFormValues>({
     return !Object.keys(obj).some((key) => !obj[key]);
   },
   mapPropsToValues: ({ account }) => ({
-    location: account?.firstname || '',
-    role: account?.lastname || '',
     firstname: account?.firstname || '',
     lastname: account?.lastname || '',
+    location: account?.location || '',
+    role: account?.role || '',
   }),
   handleSubmit: (values, formikBag) => {
     formikBag.props.onSubmit(values, formikBag.setSubmitting);

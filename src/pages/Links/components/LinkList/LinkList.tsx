@@ -9,7 +9,7 @@ import LinkCard from './components/LinkCard';
 import LinkFilters from './components/LinkFilters';
 import { TFilterState } from './components/LinkFilters/LinkFilters';
 import { STORED_LINKS } from 'apollo/queries/links';
-import { IStoredLink } from 'apollo/types/graphql-types';
+import { IStoredLink } from 'apollo/types/link';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
 
@@ -49,7 +49,7 @@ const StyleSpinnerContainer = styled.div`
 const LinkList = () => {
   const { alertSuccess } = useMessageContextValue();
   const { account } = useUserContextValue();
-  const companyId = account?.activeCompany.id;
+  const companyId = account?.activeCompany?.id;
   const [filterState, setFilterState] = useState<TFilterState>({
     memberId: undefined,
     categoryId: undefined,
@@ -69,6 +69,7 @@ const LinkList = () => {
         memberId: filterState.memberId,
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const LinkList = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, loading]);
 
   useEffect(() => {
     if (!state.hasMore) {
@@ -95,10 +96,14 @@ const LinkList = () => {
     const { data: refetchResult } = await refetch({
       companyId,
       filter: {
-        after: state.endCursor,
         categoryId: filterState.categoryId,
         memberId: filterState.memberId,
       },
+      ...(state.endCursor && {
+        pagination: {
+          after: state.endCursor,
+        }
+      }),
     });
     setState({
       ...state,

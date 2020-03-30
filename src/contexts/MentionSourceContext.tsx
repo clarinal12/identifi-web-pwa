@@ -1,5 +1,5 @@
 import React, { createContext, useContext, PropsWithChildren, useState } from 'react';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 interface IMentionSourceContext {
   mentionSource: IAccount[],

@@ -5,7 +5,7 @@ import { Row, Col, Typography, Button, Icon } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import CheckInCard from 'components/CheckInCard';
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 

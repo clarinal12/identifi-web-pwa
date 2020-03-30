@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { emojify } from 'node-emoji';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation, useQuery } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Button, Menu, Dropdown, Icon } from 'antd';
 
 import ReactionButton from './components/ReactionButton';
 import { SmileyIcon } from 'utils/iconUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useReactionContextValue } from 'contexts/ReactionContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
-import { CHECKIN_RESPONSE_REACTORS, EMOJIS } from 'apollo/queries/reactions';
-import { TReaction, TEmoji } from 'apollo/types/graphql-types';
+import { TReaction, TEmoji } from 'apollo/types/checkin';
+import addCheckInResponseReactionCacheHandler from './cache-handler/addCheckInResponseReaction';
+import removeCheckInResponseReaction from './cache-handler/removeCheckInResponseReaction';
 
 interface IReactions extends RouteComponentProps<{ checkin_id: string, past_checkin_id: string }> {
   responseId: string,
@@ -19,8 +21,8 @@ interface IReactions extends RouteComponentProps<{ checkin_id: string, past_chec
 }
 
 interface IReactionsMenu {
-  addCheckInReaction: (emoji: number) => void,
-  removeCheckInReaction: (emoji: number) => void,
+  addCheckInResponseReactionAction: (emoji: TEmoji) => void,
+  removeCheckInReaction: (emoji: TEmoji) => void,
   reactedEmojis: number[],
 }
 
@@ -56,28 +58,28 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeCheckInReaction, reactedEmojis }) => {
-  const { data, loading } = useQuery<{ emojis: TEmoji[] }>(EMOJIS);
+const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAction, removeCheckInReaction, reactedEmojis }) => {
+  const { loading, emojis } = useReactionContextValue();
   return (
     <StyledMenu className="d-flex p-1">
-      {(loading || !data) ? (
+      {(loading) ? (
         <Menu.Item className="loading-item">
           <Icon type="loading" spin />
         </Menu.Item>
       ) : (
-        data.emojis.map(({ id, web, description }, idx) => (
+        emojis.map((emoji) => (
           <Menu.Item
             className="text-center"
-            key={id}
-            title={description}
+            key={emoji.id}
+            title={emoji.description}
             onClick={({ domEvent, key }) => {
               domEvent.stopPropagation();
               reactedEmojis.includes(+key) ?
-                removeCheckInReaction(+key) :
-                addCheckInReaction(+key);
+                removeCheckInReaction(emoji) :
+                addCheckInResponseReactionAction(emoji)
             }}
           >
-            {emojify(web)}
+            {emojify(emoji.web)}
           </Menu.Item>
         ))
       )}      
@@ -87,33 +89,25 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInReaction, removeChe
 
 const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
   const { alertError } = useMessageContextValue();
-  const [loadingState, setLoadingState] = useState(false);
-  const [addCheckInResponseReaction] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
-  const [removeCheckInResponseReaction] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
+  const { account } = useUserContextValue();
+  const [addCheckInResponseReactionMutation] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
+  const [removeCheckInResponseReactionMutation] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
 
-  const refetchQueries = (emojiId: number) => {
-    return [{
-      query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-      variables: {
-        id: match.params.past_checkin_id || match.params.checkin_id,
-      },
-    }, {
-      query: CHECKIN_RESPONSE_REACTORS,
-      variables: {
-        filter: { responseId, emojiId },
-      }
-    }];
-  }
-
-  const addCheckInReaction = async (emojiId: number) => {
-    setLoadingState(true);
+  const addCheckInResponseReactionAction = (emoji: TEmoji) => {
     try {
-      await addCheckInResponseReaction({
+      addCheckInResponseReactionMutation({
         variables: {
-          input: { responseId, emojiId }
+          input: { responseId, emojiId: emoji.id }
         },
-        refetchQueries: refetchQueries(emojiId),
-        awaitRefetchQueries: true,
+        ...addCheckInResponseReactionCacheHandler({
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
+          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          responseId: responseId,
+          values: {
+            emoji,
+            reactor: account,
+          },
+        }),
       });
     } catch(error) {
       let errorMessage = "Network error";
@@ -122,16 +116,21 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
       }
       alertError(errorMessage);
     }
-    setLoadingState(false);
   }
 
-  const removeCheckInReaction = async (emojiId: number) => {
-    setLoadingState(true);
+  const removeCheckInReaction = (emoji: TEmoji) => {
     try {
-      await removeCheckInResponseReaction({
-        variables: { responseId, emojiId },
-        refetchQueries: refetchQueries(emojiId),
-        awaitRefetchQueries: true,
+      removeCheckInResponseReactionMutation({
+        variables: { responseId, emojiId: emoji.id },
+        ...removeCheckInResponseReaction({
+          isPastCheckIn: Boolean(match.params.past_checkin_id),
+          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          responseId: responseId,
+          values: {
+            emoji,
+            reactor: account,
+          },
+        }),
       });
     } catch(error) {
       let errorMessage = "Network error";
@@ -140,7 +139,6 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
       }
       alertError(errorMessage);
     }
-    setLoadingState(false);
   }
 
   return (
@@ -150,17 +148,15 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
           <ReactionButton
             responseId={responseId}
             reaction={reaction}
-            loadingState={loadingState}
             key={idx}
-            addCheckInReaction={addCheckInReaction}
+            addCheckInReaction={addCheckInResponseReactionAction}
             removeCheckInReaction={removeCheckInReaction}
           />
         ))}
       </StyledDiv>
       <Dropdown
-        disabled={loadingState}
         overlay={ReactionsMenu({
-          addCheckInReaction,
+          addCheckInResponseReactionAction,
           removeCheckInReaction,
           reactedEmojis: reactions
             .filter(({ hasReacted }) => hasReacted)

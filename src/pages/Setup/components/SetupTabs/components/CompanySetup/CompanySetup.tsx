@@ -50,7 +50,7 @@ export default withFormik<{
   companyName: string,
 }, ICompanyFormValues>({
   validationSchema: companySetupFormSchema,
-  isInitialValid: props => !!props.companyName,
+  isInitialValid: props => Boolean(props.companyName),
   mapPropsToValues: (props) => ({
     companyName: props.companyName,
   }),

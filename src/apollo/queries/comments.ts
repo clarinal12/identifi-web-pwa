@@ -1,24 +1,13 @@
 import gql from 'graphql-tag';
 
-const MEMBER_FIELDS = `
-  id
-  email
-  firstname
-  lastname
-  avatar
-  role
-`;
+import MEMBER_FIELDS from '../fields/member';
 
 export const COMMENTS = gql`
   query CheckInResponseComments($checkInResponseId: ID!) {
     checkInResponseComments(checkInResponseId: $checkInResponseId) {
       id
       author {
-        id
-        firstname
-        lastname
-        email
-        avatar
+        ${MEMBER_FIELDS}
       }
       mentions {
         ${MEMBER_FIELDS}

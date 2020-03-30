@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from './userUtils';
 
 const REGEX_PATTERN = /@\[(.*?)\]\((.*?)\)/gm; // mention format @[__email__](__id__)

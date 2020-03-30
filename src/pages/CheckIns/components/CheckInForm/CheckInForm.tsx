@@ -3,7 +3,7 @@ import moment from 'moment';
 import { withFormik, FormikProps } from 'formik';
 import { Form, Input, Row, Col } from 'antd';
 
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { checkInFormSchema } from './validation';
 import CheckInFormTabs from './components/CheckInFormTabs';
 import { IFinalValues } from './components/CheckInFormTabs/CheckInFormTabs';
@@ -25,10 +25,10 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
     watchers: data?.watchers.map(({ id }) => id) || [],
     questions: data?.questions || [],
     slackChannelId: data?.slackChannel.id || '',
-    goalsEnabled: data?.goalsEnabled || true,
-    moodsEnabled: data?.moodsEnabled || true,
-    blockersEnabled: data?.blockersEnabled || true,
-    isPrivate: data?.isPrivate || false,
+    goalsEnabled: data ? data.goalsEnabled : true,
+    moodsEnabled: data ? data.moodsEnabled : true,
+    blockersEnabled: data ? data.blockersEnabled : true,
+    isPrivate: data ? data.isPrivate : false,
     timings: {
       frequency: data?.frequency || 'WORKDAYS',
       days: data?.days || WORKDAYS_VALUE,
@@ -84,7 +84,7 @@ const CheckInForm: React.FC<IExternalProps & FormikProps<{ name: string }>> = ({
 
 export default withFormik<IExternalProps, { name: string }>({
   validationSchema: checkInFormSchema,
-  isInitialValid: ({ data }) => !!data,
+  isInitialValid: ({ data }) => Boolean(data),
   mapPropsToValues: ({ data }) => ({
     name: data?.name || '',
   }),

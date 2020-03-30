@@ -1,35 +1,23 @@
 import { gql } from 'apollo-boost';
 
+import MEMBER_FIELDS from '../fields/member';
+
 export const ACCOUNT = gql`
-  query me {
+  query Me {
     me {
-      id
-      email
-      firstname
-      lastname
-      role
+      ${MEMBER_FIELDS}
       location
-      avatar
       timezone
       onboarded
-      # invited
       isOwner
+      # invited
       activeCompany {
         id
         name
         slackEnabled
         owner {
-          id
-          email
-          firstname
-          lastname
-          access
-          status
+          ${MEMBER_FIELDS}
         }
-      }
-      memberInfo {
-        memberId
-        isOwner
       }
     }
   }
@@ -50,15 +38,7 @@ export const VERIFY_INVITE_TOKEN = gql`
 export const AVAILABE_DIRECT_REPORTS = gql`
   query AvailableDirectReports($managerId: ID!) {
     availableDirectReports(managerId: $managerId) {
-      id
-      email
-      firstname
-      lastname
-      access
-      status
-      role
-      avatar
-      isGuest
+      ${MEMBER_FIELDS}
     }
   }
 `;

@@ -7,14 +7,14 @@ import CheckInDetails from './pages/CheckInDetails';
 import EditCheckIn from './pages/EditCheckIn';
 import FourOhFour from 'pages/FourOhFour';
 
-import { PastCheckInProvider } from 'contexts/PastCheckInContext';
 import { CheckInScheduleProvider } from 'contexts/CheckInScheduleContext';
 import { MentionSourceProvider } from 'contexts/MentionSourceContext';
+import { ReactionProvider } from 'contexts/ReactionContext';
 
 export default () => (
-  <MentionSourceProvider>
-    <CheckInScheduleProvider>
-      <PastCheckInProvider>
+  <ReactionProvider>
+    <MentionSourceProvider>
+      <CheckInScheduleProvider>
         <Switch>
           <Route exact path="/checkins" component={CheckIns} />
           <Route exact path="/checkins/new" component={NewCheckIn} />
@@ -23,7 +23,7 @@ export default () => (
           <Route exact path="/checkins/:checkin_id/:past_checkin_id" component={CheckInDetails} />
           <Route component={FourOhFour} />
         </Switch>
-      </PastCheckInProvider>
-    </CheckInScheduleProvider>
-  </MentionSourceProvider>
+      </CheckInScheduleProvider>
+    </MentionSourceProvider>
+  </ReactionProvider>
 );

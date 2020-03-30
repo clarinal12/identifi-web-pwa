@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Avatar } from 'antd';
 
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 
 const { Title, Text } = Typography;

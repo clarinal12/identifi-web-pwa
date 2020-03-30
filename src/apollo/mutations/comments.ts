@@ -1,9 +1,11 @@
 import gql from 'graphql-tag';
 
+import COMMENT_FIELDS from '../fields/comment';
+
 export const ADD_COMMENT = gql`
   mutation AddCheckInResponseComment($input: AddCheckInResponseCommentInput!) {
     addCheckInResponseComment(input: $input) {
-      id
+      ${COMMENT_FIELDS}
     }
   }
 `;
@@ -11,7 +13,7 @@ export const ADD_COMMENT = gql`
 export const UPDATE_COMMENT = gql`
   mutation UpdateCheckInResponseComment($id: ID!, $input: UpdateCheckInResponseCommentInput!) {
     updateCheckInResponseComment(id: $id, input: $input) {
-      id
+      ${COMMENT_FIELDS}
     }
   }
 `;

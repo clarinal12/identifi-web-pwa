@@ -6,7 +6,7 @@ import { Form, Select, Button, Switch, Typography } from 'antd';
 import { MEMBERS } from 'apollo/queries/member';
 import { useUserContextValue } from 'contexts/UserContext';
 import { respondentFormSchema } from './validation';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 const { Text } = Typography;
 

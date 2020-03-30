@@ -7,16 +7,16 @@ import { Tooltip, Button, Typography } from 'antd';
 
 import { getDisplayName } from 'utils/userUtils';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
-import { TReaction, IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
+import { TReaction, TEmoji } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 
 interface IReactionButton {
-  loadingState: boolean,
   reaction: TReaction,
   responseId: string,
-  addCheckInReaction: (emojiId: number) => void,
-  removeCheckInReaction: (emojiId: number) => void,
+  addCheckInReaction: (emoji: TEmoji) => void,
+  removeCheckInReaction: (emoji: TEmoji) => void,
 }
 
 const StyledButton = styled(Button)`
@@ -28,7 +28,7 @@ const StyledButton = styled(Button)`
 `;
 
 const ReactionButton: React.FC<IReactionButton> = ({
-  loadingState, addCheckInReaction, removeCheckInReaction, reaction, responseId,
+  addCheckInReaction, removeCheckInReaction, reaction, responseId,
 }) => {
   const [tooltipVisibility, setTooltipVisibility] = useState(false);
   const { emoji, hasReacted, count } = reaction;
@@ -66,14 +66,13 @@ const ReactionButton: React.FC<IReactionButton> = ({
       onVisibleChange={visibility => setTooltipVisibility(visibility)}
     >
       <StyledButton
-        disabled={loadingState}
         size="small"
         className={cx({
           'mr-1': true,
           'has-reacted': hasReacted,
         })}
         onClick={() => {
-          hasReacted ? removeCheckInReaction(emoji.id) : addCheckInReaction(emoji.id);
+          hasReacted ? removeCheckInReaction(emoji) : addCheckInReaction(emoji);
         }}
       >
         {emojify(emoji.web)} {count}

@@ -5,6 +5,14 @@ import { MentionsInput, Mention } from 'react-mentions';
 
 import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
 import { getDisplayName } from 'utils/userUtils';
+import { IAccount } from 'apollo/types/user';
+
+declare module "react-mentions" {
+  export interface SuggestionDataItem {
+    avatar: any,
+    position: any,
+  }
+}
 
 const StyledMentionInput = styled(MentionsInput)`
   div[class$="__highlighter"], textarea {
@@ -37,14 +45,13 @@ interface IMentionBox {
   id: string,
   comment: string,
   isUpdating: boolean,
-  loadingState: boolean,
   setComment: (comment: string) => void,
-  setMentions: (mentions: string[]) => void,
+  setMentions: (mentions: IAccount[]) => void,
   commentAction: () => void,
 }
 
 const MentionBox: React.FC<IMentionBox> = ({
-  comment, isUpdating, loadingState, setComment, commentAction, id, setMentions,
+  comment, isUpdating, setComment, commentAction, id, setMentions,
 }) => {
   const { mentionSource } = useMentionSourceContextValue();
   const mentionableUsers = mentionSource.map((user) => ({
@@ -61,11 +68,15 @@ const MentionBox: React.FC<IMentionBox> = ({
       allowSuggestionsAboveCursor
       placeholder="Add a comment"
       onChange={(e, _newValue, _newPlainTextValue, mentions) => {
+        const newSetOfMentions: IAccount[] = [];
+        mentions.forEach((mention) => {
+          const user = mentionSource.find((source) => source.id === mention.id);
+          if (user) newSetOfMentions.push(user);
+        })
         setComment(e.target.value);
-        setMentions(mentions.map((mention) => mention.id));
+        setMentions(newSetOfMentions);
       }}
       value={comment}
-      disabled={loadingState}
       autoFocus={isUpdating}
       {...(isUpdating && {
         onFocus: (e) => {
@@ -87,12 +98,12 @@ const MentionBox: React.FC<IMentionBox> = ({
       <Mention
         trigger="@"
         data={mentionableUsers}
-        renderSuggestion={({ display }, _search, _highlightedDisplay, index) => (
+        renderSuggestion={({ display, avatar, position }, _search, _highlightedDisplay) => (
           <List.Item.Meta
             className="align-items-center"
-            avatar={<Avatar className="rounded-0" src={mentionableUsers[index].avatar || undefined} />}
+            avatar={<Avatar className="rounded-0" src={avatar || undefined} />}
             title={display}
-            description={mentionableUsers[index].position}
+            description={position}
           />
         )}
       />

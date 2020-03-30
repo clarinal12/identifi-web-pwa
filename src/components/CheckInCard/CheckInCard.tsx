@@ -6,7 +6,7 @@ import { Card, Icon, Tag, Typography, Row, Col, Spin } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import CardActions from './components/CardActions';
-import { ICheckinData } from 'apollo/types/graphql-types';
+import { ICheckinData } from 'apollo/types/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { COLOR_MAP } from 'utils/colorUtils';
 
@@ -52,21 +52,19 @@ const StyledCard = styled(Card)`
 `;
 
 const CheckInCard: React.FC<ICheckinCard> = ({
-  item: { scheduleId, status, name, frequency, nextCheckInDate, replies, timezone },
+  item: { scheduleId, status, name, frequency, nextCheckInDate, replies },
   isLastItem, history,
 }) => {
   const { account } = useUserContextValue();
   const [cardLoadingState, setCardLoadingState] = useState(false);
-  const derivedTimezone = account?.timezone || timezone;
+  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   return (
     <Spin spinning={cardLoadingState} indicator={LoadingIcon}>
       <StyledCard
         hoverable
         onClick={() => history.push({
           pathname: `/checkins/${scheduleId}`,
-          state: {
-            checkin_id_alias: name,
-          },
+          state: { checkin_id_alias: name },
         })}
         className="d-flex"
         title={<Tag style={{ color: '#595959' }} color={COLOR_MAP[status]}>{status}</Tag>}

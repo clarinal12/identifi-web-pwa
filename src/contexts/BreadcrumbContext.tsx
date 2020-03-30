@@ -33,6 +33,10 @@ const BreadcrumbProvider: React.FC<
       return routeSegment === segment;
     });
 
+    const willIgnoreBreadcrumbLink = location.state && location.state.ignore_breadcrumb_link ?
+      location.state.ignore_breadcrumb_link.includes(formatSegment) :
+      false;
+
     restorableStates = {
       ...restorableStates,
       ...((location.state && location.state[formatSegment]) && {
@@ -41,7 +45,7 @@ const BreadcrumbProvider: React.FC<
     };
     return {
       label: location.state ? (location.state[formatSegment] || segment) : segment,
-      ...(pathSegments.length !== (idx + 1) && {
+      ...((pathSegments.length !== (idx + 1) && !willIgnoreBreadcrumbLink) && {
         path: [...urlSegments].splice(0, idx + 2).join("/"),
         restorableStates,
       }),

@@ -18,8 +18,8 @@ export const UPDATE_CHECKIN_SCHEDULE = gql`
 `;
 
 export const DELETE_CHECKIN_SCHEDULE = gql`
-  mutation DeleteSchedule($id: ID!) {
-    deleteSchedule(id: $id)
+  mutation DeleteCheckInSchedule($id: ID!) {
+    deleteCheckInSchedule(id: $id)
   }
 `;
 

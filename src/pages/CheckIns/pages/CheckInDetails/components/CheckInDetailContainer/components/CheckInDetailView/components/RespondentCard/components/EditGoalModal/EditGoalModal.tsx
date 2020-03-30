@@ -7,7 +7,7 @@ import EditGoalForm from './components/EditGoalForm';
 import { IExternalProps } from './components/EditGoalForm/EditGoalForm';
 import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_GOAL } from 'apollo/mutations/checkin';
-import { TCheckInGoal } from 'apollo/types/graphql-types';
+import { TCheckInGoal } from 'apollo/types/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
 
 interface IEditGoalModal extends Partial<IExternalProps>, RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {}

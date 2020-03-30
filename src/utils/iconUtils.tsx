@@ -108,3 +108,14 @@ export const CollapsedUpIcon = () => (
     />
   </svg>
 );
+
+export const NoFeedbackIcon = () => (
+  <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M35.833 3.5835H7.16634C5.19551 3.5835 3.60092 5.196 3.60092 7.16683L3.58301 39.4168L10.7497 32.2502H35.833C37.8038 32.2502 39.4163 30.6377 39.4163 28.6668V7.16683C39.4163 5.196 37.8038 3.5835 35.833 3.5835ZM23.2913 25.0835H19.708V21.5002H23.2913V25.0835ZM23.2913 17.9168H19.708V10.7502H23.2913V17.9168Z"
+      fill="#BFBFBF"
+    />
+  </svg>
+)

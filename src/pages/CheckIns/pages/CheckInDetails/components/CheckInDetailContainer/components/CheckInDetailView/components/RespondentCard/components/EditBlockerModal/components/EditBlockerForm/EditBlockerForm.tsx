@@ -4,7 +4,7 @@ import { Modal, Form, Input, Typography, Switch, Icon } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
 import { editBlockerFormSchema } from './validation';
-import { TBlocker } from 'apollo/types/graphql-types';
+import { TBlocker } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -25,9 +25,6 @@ export interface IExternalProps {
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
-    .ant-modal-close {
-      display: none;
-    }
     .ant-modal-footer {
       border: none;
       padding: 0 24px 24px;
@@ -42,6 +39,7 @@ const EditBlockerForm: React.FC<IExternalProps & FormikProps<Partial<TBlocker> &
   isSubmitting, isValid, resetForm,
 }) => (
   <StyledModal
+    closable={false}
     visible={modalState}
     okText="Save changes"
     okButtonProps={{
@@ -54,12 +52,11 @@ const EditBlockerForm: React.FC<IExternalProps & FormikProps<Partial<TBlocker> &
       size: "large"
     }}
     onOk={() => handleSubmit()}
-    {...(!isSubmitting && {
-      onCancel: () => {
-        resetForm();
-        setModalState(!modalState);
-      },
-    })}
+    onCancel={() => {
+      resetForm();
+      setModalState(!modalState);
+    }}
+    maskClosable={false}
   >
     <Form.Item className="mb-0">
       <Text strong className="text-muted">BLOCKER:</Text>

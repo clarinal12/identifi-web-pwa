@@ -3,7 +3,7 @@ import { useQuery } from 'react-apollo';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { isLoggedIn, getAuthToken } from 'utils/userUtils';
 import { ACCOUNT } from 'apollo/queries/user';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 
 import { UserProvider } from 'contexts/UserContext';
 import PageSpinner from 'components/PageSpinner';
@@ -69,7 +69,7 @@ export default <P extends object>(
       newProps = {
         ...props,
         requireAuth, account: data.me, token,
-        authenticated: !!(data.me && token),
+        authenticated: Boolean(data.me && token),
       };
     }
 

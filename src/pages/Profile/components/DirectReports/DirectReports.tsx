@@ -7,11 +7,12 @@ import { Typography, Button, Icon, Popover, Input, List, Spin, Avatar, Badge } f
 import RemoveDirectReport from './components/RemoveDirectReport';
 import { LoadingIcon } from 'components/PageSpinner';
 import { AVAILABE_DIRECT_REPORTS } from 'apollo/queries/user';
-import { MEMBER } from 'apollo/queries/member';
 import { ADD_DIRECT_REPORT } from 'apollo/mutations/user';
-import { IAccount } from 'apollo/types/graphql-types';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useUserContextValue } from 'contexts/UserContext';
+import addDirectReportCacheHandler from './cache-handler/addDirectReport';
 
 const { Text } = Typography;
 const { Search } = Input;
@@ -141,41 +142,10 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
           managerId,
           directReportId: directReport.id,
         },
-        update: (store, { data: { addDirectReport: result } }) => {
-          const directReportsCacheData: { availableDirectReports: IAccount[] } | null = store.readQuery({
-            query: AVAILABE_DIRECT_REPORTS,
-            variables: { managerId },
-          });
-          const memberCacheData: { member: IAccount } | null = store.readQuery({
-            query: MEMBER,
-            variables: { memberId: managerId },
-          });
-          
-          if (directReportsCacheData && result) {
-            const { availableDirectReports } = directReportsCacheData;
-            store.writeQuery({
-              query: AVAILABE_DIRECT_REPORTS,
-              variables: { managerId },
-              data: { availableDirectReports: availableDirectReports.filter(dr => dr.id !== result.id) },
-            });
-          }
-
-          if (memberCacheData && result) {
-            const newMember = { ...memberCacheData.member };
-            newMember.directReports.push(result);
-            store.writeQuery({
-              query: MEMBER,
-              variables: { managerId },
-              data: { member: newMember },
-            });
-          }
-        },
-        optimisticResponse: {
-          addDirectReport: {
-            ...directReport,
-            id: `optimistic-response-${Date.now()}`,
-          },
-        },
+        ...addDirectReportCacheHandler({
+          managerId,
+          directReport,
+        }),
       });
       setVisibility(false);
     } catch(error) {
@@ -218,11 +188,12 @@ const PopoverContent: React.FC<IPopoverContent> = ({ setVisibility, managerId })
 }
 
 const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
+  const { account } = useUserContextValue();
   const [visibility, setVisibility] = useState(false);
   return (
     <div className="mb-3">
       <Text className="d-block text-muted mb-3">Direct reports</Text>
-      <StyledAvatarWrapper className="d-flex">
+      <StyledAvatarWrapper className="d-flex flex-wrap">
         {memberInfo.directReports.map((directReport) => {
           const { id, avatar } = directReport;
           return (
@@ -230,35 +201,39 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
               <div title={getDisplayName(directReport)}>
                 <Avatar size="large" {...(avatar && { src : avatar })} />
               </div>
-              <Badge
-                className="position-absolute"
-                {...(!id.includes('optimistic-response') && {
-                  count: <RemoveDirectReport directReport={directReport} managerId={memberInfo.id} />,
-                })}
-              />
+              {account?.isOwner && (
+                <Badge
+                  className="position-absolute"
+                  {...(!id.includes('optimistic-response') && {
+                    count: <RemoveDirectReport directReport={directReport} managerId={memberInfo.id} />,
+                  })}
+                />
+              )}
             </div>
           );
         })}
-        <StyledPopover
-          getPopupContainer={() => document.getElementById('popover-container') || document.body}
-          placement="rightBottom"
-          content={<PopoverContent managerId={memberInfo.id} setVisibility={setVisibility} />}
-          title={(
-            <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
-              <Text className="ant-typography mr-5">Add a direct report</Text>
-              <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
-                <Icon className="fs-16" type="plus" />
-              </Button>
-            </StyledPopoverTitleWrapper>
-          )}
-          trigger="click"
-          visible={visibility}
-          onVisibleChange={v => setVisibility(v)}
-        >
-          <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
-            <Icon className={cx({ 'closable': visibility })} type="plus" />
-          </Button>
-        </StyledPopover>
+        {account?.isOwner && (
+          <StyledPopover
+            getPopupContainer={() => document.getElementById('popover-container') || document.body}
+            placement="rightBottom"
+            content={<PopoverContent managerId={memberInfo.id} setVisibility={setVisibility} />}
+            title={(
+              <StyledPopoverTitleWrapper className="d-flex justify-content-between align-items-center">
+                <Text className="ant-typography mr-5">Add a direct report</Text>
+                <Button className="p-0" type="link" onClick={() => setVisibility(false)}>
+                  <Icon className="fs-16" type="plus" />
+                </Button>
+              </StyledPopoverTitleWrapper>
+            )}
+            trigger="click"
+            visible={visibility}
+            onVisibleChange={v => setVisibility(v)}
+          >
+            <Button shape="circle" size="large" className="d-flex justify-content-center floating" onClick={e => e.preventDefault()}>
+              <Icon className={cx({ 'closable': visibility })} type="plus" />
+            </Button>
+          </StyledPopover>
+        )}
       </StyledAvatarWrapper>
     </div>
   );

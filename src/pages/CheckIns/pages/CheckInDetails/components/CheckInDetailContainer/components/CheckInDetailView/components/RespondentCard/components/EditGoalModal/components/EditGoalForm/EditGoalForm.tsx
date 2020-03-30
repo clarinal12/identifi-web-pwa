@@ -5,7 +5,7 @@ import { Modal, Form, Input, Typography, Switch, Icon } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
 import { editGoalFormSchema } from './validation';
-import { TCheckInGoal } from 'apollo/types/graphql-types';
+import { TCheckInGoal } from 'apollo/types/checkin';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -43,6 +43,7 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
   const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
   return (
     <StyledModal
+      closable={false}
       visible={modalState}
       okText="Save changes"
       okButtonProps={{
@@ -55,12 +56,11 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
         size: "large"
       }}
       onOk={() => handleSubmit()}
-      {...(!isSubmitting && {
-        onCancel: () => {
-          resetForm();
-          setModalState(!modalState);
-        },
-      })}
+      onCancel={() => {
+        resetForm();
+        setModalState(!modalState);
+      }}
+      maskClosable={false}
     >
       <Form.Item className="mb-0">
         <Text strong className="text-muted">{showSwitch ? dateString : 'TODAY:'}</Text>

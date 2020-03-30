@@ -1,20 +1,11 @@
 import gql from 'graphql-tag';
 
-export const MEMBER_FIELDS = `
-  id
-  email
-  firstname
-  lastname
-  access
-  status
-  role
-  avatar
-  isGuest
-`;
+import MEMBER_FIELDS from '../fields/member';
 
 export const MEMBERS = gql`
   query Members($companyId: ID!) {
     members(companyId: $companyId) {
+      isManager
       ${MEMBER_FIELDS}
     }
   }
@@ -23,6 +14,7 @@ export const MEMBERS = gql`
 export const MEMBER = gql`
   query Member($memberId: ID!) {
     member(memberId: $memberId) {
+      isManager
       ${MEMBER_FIELDS}
       directReports {
         ${MEMBER_FIELDS}
@@ -43,6 +35,7 @@ export const MEMBER_CHECKINS = gql`
         expected
         total
       }
+      currentCheckInDate
       nextCheckInDate
       frequency
       status

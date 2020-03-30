@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card, Avatar, Typography } from 'antd';
 
-import { IStoredLink } from 'apollo/types/graphql-types';
+import { IStoredLink } from 'apollo/types/link';
 import { getDisplayName } from 'utils/userUtils';
 import { MiddledotIcon } from 'utils/iconUtils';
 

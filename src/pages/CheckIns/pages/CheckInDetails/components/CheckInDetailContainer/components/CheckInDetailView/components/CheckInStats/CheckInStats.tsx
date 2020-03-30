@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card, Row, Col, Typography, Avatar, Tooltip } from 'antd';
 
-import { IAccount, TCheckInStats } from 'apollo/types/graphql-types';
+import { TCheckInStats } from 'apollo/types/checkin';
+import { IAccount } from 'apollo/types/user';
 import { getDisplayName } from 'utils/userUtils';
 
 const { Title, Text } = Typography;

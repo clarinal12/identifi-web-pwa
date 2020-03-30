@@ -3,12 +3,12 @@ import { emojify } from 'node-emoji';
 import styled from 'styled-components';
 import { Popover, Typography, Badge, Avatar } from 'antd';
 
-import { TCheckInGoal, TEmoji } from 'apollo/types/graphql-types';
+import { TCheckInGoal, TEmoji } from 'apollo/types/checkin';
 import { GoalCompletedIcon, IconBlocked } from 'utils/iconUtils';
 
 const { Text } = Typography;
 
-interface IRespondentAvatar {
+interface IUserStatusAvatar {
   previousGoal: TCheckInGoal,
   mood: TEmoji,
   block?: {
@@ -83,7 +83,7 @@ const StreakIcon = (streak: number) => {
   return streakType;
 }
 
-const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, block, avatar, name, streak }) => {
+const UserStatusAvatar: React.FC<IUserStatusAvatar> = ({ previousGoal, mood, block, avatar, name, streak }) => {
   const hasHoverInfo = mood || block || previousGoal || (streak > 1);
   const AvatarWrapper: React.FC<any> = ({ children }) => {
     return hasHoverInfo ? (
@@ -165,4 +165,4 @@ const RespondentAvatar: React.FC<IRespondentAvatar> = ({ previousGoal, mood, blo
   );
 }
 
-export default RespondentAvatar;
+export default UserStatusAvatar;
