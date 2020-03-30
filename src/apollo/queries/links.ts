@@ -3,8 +3,8 @@ import gql from 'graphql-tag';
 import MEMBER_FIELDS from '../fields/member';
 
 export const STORED_LINKS = gql`
-  query StoredLinks($companyId: ID!, $filter: StoredLinksFilterInput) {
-    storedLinks(companyId: $companyId, filter: $filter) {
+  query StoredLinks($companyId: ID!, $filter: StoredLinksFilterInput, $pagination: PaginationInput ) {
+    storedLinks(companyId: $companyId, filter: $filter, pagination: $pagination) {
       edges {
         cursor
         node {

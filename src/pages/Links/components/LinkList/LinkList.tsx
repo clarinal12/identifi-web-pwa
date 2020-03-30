@@ -96,10 +96,14 @@ const LinkList = () => {
     const { data: refetchResult } = await refetch({
       companyId,
       filter: {
-        after: state.endCursor,
         categoryId: filterState.categoryId,
         memberId: filterState.memberId,
       },
+      ...(state.endCursor && {
+        pagination: {
+          after: state.endCursor,
+        }
+      }),
     });
     setState({
       ...state,
