@@ -74,6 +74,12 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
             label="Starting date"
           >
             <DatePicker
+              disabledDate={(current) => {
+                if (!current) return false;
+                const currentDateTime = moment().startOf('day');
+                const hoursDiffFromToday = currentDateTime.diff(current.startOf('day'), 'hours', true);
+                return hoursDiffFromToday > 0;
+              }}
               allowClear={false}
               style={{ width: '100%' }}
               value={values.time}
@@ -147,7 +153,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
 export default withFormik<IExternalProps, IScheduleFormValues>({
   mapPropsToValues: ({ data }) => {
     return {
-      duration: data?.duration || 1,
+      duration: data?.duration || 30,
       frequency: data?.frequency || 'WEEKLY',
       time: data ? moment(data.upcomingSessionDate) : moment(),
     };
