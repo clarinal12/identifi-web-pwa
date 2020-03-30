@@ -19,9 +19,10 @@ interface IAppTextEditor {
   value: string,
   disabled?: boolean,
   onChange: (content: string) => void,
+  placeholder?: string,
 }
 
-const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange, disabled }) => {
+const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange, disabled, placeholder = "Write something here..." }) => {
   const [editorState, setEditorState] = useState<EditorState | null>(BraftEditor.createEditorState(value));
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange, disabled }) 
         }
       }}
       controls={['bold', 'italic', 'underline', 'strike-through', 'list-ol']}
-      placeholder="Write something here..."
+      placeholder={placeholder}
       fixPlaceholder={true}
     />
   );

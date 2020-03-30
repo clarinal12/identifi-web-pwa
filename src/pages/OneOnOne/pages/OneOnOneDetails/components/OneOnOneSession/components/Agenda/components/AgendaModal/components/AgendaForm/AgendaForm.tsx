@@ -46,13 +46,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
           </Form.Item>
         </Col>
         <Col>
-          <Form.Item
-            className="m-0"
-            {...((touched.content && errors.content) && {
-              validateStatus: "error",
-              help: errors.content,
-            })}
-          >
+          <Form.Item className="m-0">
             <AppTextEditor
               disabled={isSubmitting}
               value={values.content}
