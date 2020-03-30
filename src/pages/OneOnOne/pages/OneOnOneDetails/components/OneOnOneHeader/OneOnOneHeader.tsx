@@ -9,7 +9,7 @@ import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
 import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
 import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION, ONE_ON_ONES } from 'apollo/queries/oneOnOne';
+import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION, ONE_ON_ONES, ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
@@ -28,7 +28,7 @@ interface IQueryResult {
   oneOnOneHeader: IOneOnOneHeader
 }
 
-interface IOneOnOneHeaderComponent extends RouteComponentProps {
+interface IOneOnOneHeaderComponent extends RouteComponentProps<{ scheduleId: string }> {
   sessionId: string | undefined
 }
 
@@ -42,7 +42,7 @@ const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boole
   ) : children;
 };
 
-const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history }) => {
+const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history, match }) => {
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [loadingState, setLoadingState] = useState(false);
@@ -72,6 +72,9 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
         }, {
           query: ONE_ON_ONE_SESSION,
           variables: { sessionId },
+        }, {
+          query: ONE_ON_ONE_SESSIONS,
+          variables: { scheduleId: match.params.scheduleId },
         }, {
           query: ONE_ON_ONES,
         }],
