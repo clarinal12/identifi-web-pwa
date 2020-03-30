@@ -5,6 +5,7 @@ import { withFormik, FormikProps } from 'formik';
 import { Row, Col, Form, Select, InputNumber, TimePicker, DatePicker, Button } from 'antd';
 
 import { TOneOnOneInfo } from 'apollo/types/oneOnOne';
+import { scheduleFormSchema } from './validation';
 
 const { Option } = Select;
 
@@ -22,7 +23,7 @@ export interface IScheduleFormValues {
 
 const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit,
-  setVisibility, data,
+  setVisibility, data, touched, errors,
 }) => {
   return (
     <Form colon={false} onSubmit={handleSubmit}>
@@ -103,6 +104,10 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
           <Form.Item
             className="m-0"
             label="Time"
+            {...((touched.time && errors.time) && {
+              validateStatus: "error",
+              help: errors.time,
+            })}
           >
             <TimePicker
               allowClear={false}
@@ -139,6 +144,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
         <Button
           style={{ minWidth: 140 }}
           loading={isSubmitting}
+          disabled={Boolean(Object.keys(errors).length)}
           type="primary"
           size="large"
           htmlType="submit"
@@ -151,11 +157,19 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
 }
 
 export default withFormik<IExternalProps, IScheduleFormValues>({
+  validationSchema: scheduleFormSchema,
+  isInitialValid: ({ data }) => {
+    return scheduleFormSchema.isValidSync({
+      duration: data?.duration || 30,
+      frequency: data?.frequency || 'WEEKLY',
+      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+    });
+  },
   mapPropsToValues: ({ data }) => {
     return {
       duration: data?.duration || 30,
       frequency: data?.frequency || 'WEEKLY',
-      time: data ? moment(data.upcomingSessionDate) : moment(),
+      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
     };
   },
   handleSubmit: (values, { props, setSubmitting }) => {

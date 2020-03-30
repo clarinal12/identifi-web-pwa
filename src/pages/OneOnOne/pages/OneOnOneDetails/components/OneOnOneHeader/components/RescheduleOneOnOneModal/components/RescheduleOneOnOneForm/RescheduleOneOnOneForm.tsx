@@ -5,6 +5,7 @@ import { withFormik, FormikProps } from 'formik';
 import { Row, Col, Form, Typography, TimePicker, DatePicker, Button } from 'antd';
 
 import { TOneOnOneInfo } from 'apollo/types/oneOnOne';
+import { rescheduleOneOnOneFormSchema } from './validation';
 
 const { Text } = Typography;
 
@@ -28,7 +29,7 @@ export interface IRescheduleOneOnOneFormValues {
 
 const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
-  onSkipAction, skippingState, maxRescheduleDate, canSkipSession,
+  onSkipAction, skippingState, maxRescheduleDate, canSkipSession, touched, errors,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -70,6 +71,10 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           <Form.Item
             className="m-0"
             label="New time"
+            {...((touched.time && errors.time) && {
+              validateStatus: "error",
+              help: errors.time,
+            })}
           >
             <TimePicker
               allowClear={false}
@@ -120,7 +125,7 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           </Button>
           <Button
             style={{ minWidth: 140 }}
-            disabled={skippingState}
+            disabled={Boolean(Object.keys(errors).length) || skippingState}
             loading={isSubmitting}
             type="primary"
             size="large"
@@ -135,9 +140,15 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
 }
 
 export default withFormik<IExternalProps, IRescheduleOneOnOneFormValues>({
+  validationSchema: rescheduleOneOnOneFormSchema,
+  isInitialValid: ({ data }) => {
+    return rescheduleOneOnOneFormSchema.isValidSync({
+      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+    });
+  },
   mapPropsToValues: ({ data }) => {
     return {
-      time: data ? moment(data.upcomingSessionDate) : moment(),
+      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
     };
   },
   handleSubmit: (values, { props, setSubmitting, resetForm }) => {
