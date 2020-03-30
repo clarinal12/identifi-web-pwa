@@ -28,7 +28,7 @@ interface IQueryResult {
   oneOnOneHeader: IOneOnOneHeader
 }
 
-interface IOneOnOneHeaderComponent extends RouteComponentProps<{ scheduleId: string }> {
+interface IOneOnOneHeaderComponent extends RouteComponentProps<{ schedule_id: string }> {
   sessionId: string | undefined
 }
 
@@ -74,7 +74,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
           variables: { sessionId },
         }, {
           query: ONE_ON_ONE_SESSIONS,
-          variables: { scheduleId: match.params.scheduleId },
+          variables: { scheduleId: match.params.schedule_id },
         }, {
           query: ONE_ON_ONES,
         }],
