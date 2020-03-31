@@ -16,38 +16,55 @@ export interface IRefObject {
 
 interface IAppTextEditor {
   value: string,
-  ref: Ref<IRefObject>,
+  ref?: Ref<IRefObject>,
   disabled?: boolean,
   onChange: (content: string) => void,
   placeholder?: string,
 }
 
 const StyledEditorWrapper = styled.div`
-  .identifi-toolbar {
-    border: none;
-    padding: 6px !important;
-    margin-bottom: 0;
-    .toolbar-button {
-      width: 36px;
-      height: 36px;
-      color: #6a6f7b;
-      border-radius: 4px;
-      &:hover {
-        cursor: pointer;
-        background: #e8e8e880;
+  &.hide-placeholder {
+    ol, ul {
+      &:first-of-type {
+        margin-top: 0;
       }
     }
+    .public-DraftEditorPlaceholder-root {
+      display: none;
+    }
   }
-  .identifi-editor {
-    font-size: 16px;
+  .identifi-editor-wrapper {
     border: 1px solid #D9D9D9;
     border-radius: 4px;
-    padding: 12px;
-    min-height: 165px;
-    line-height: 1.5;
-    height: auto;
-    .public-DraftStyleDefault-block {
-      margin: 0;
+    .identifi-toolbar {
+      background: #e8e8e840;
+      border-radius: 4px 4px 0 0;
+      border: none;
+      padding: 6px !important;
+      margin-bottom: 0;
+      .toolbar-button {
+        width: 32px;
+        height: 32px;
+        color: #6a6f7b;
+        border-radius: 4px;
+        .anticon {
+          font-size: 12px;
+        }
+        &:hover {
+          cursor: pointer;
+          background: #e8e8e880;
+        }
+      }
+    }
+    .identifi-editor {
+      font-size: 16px;
+      padding: 12px;
+      min-height: 165px;
+      line-height: 1.5;
+      height: auto;
+      .public-DraftStyleDefault-block {
+        margin: 0;
+      }
     }
   }
 `;
@@ -105,8 +122,16 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let placeholderHidden = false;
+  var contentState = editorState.getCurrentContent();
+  if (!contentState.hasText()) {
+    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+      placeholderHidden = true;
+    }
+  }
+
   return (
-    <StyledEditorWrapper>
+    <StyledEditorWrapper className={cx({ 'hide-placeholder': placeholderHidden })}>
       <Editor
         readOnly={disabled}
         placeholder={placeholder}
@@ -128,7 +153,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
           list: {
             options: ['unordered', 'ordered'],
             component: ToolbarComponent,
-          }
+          },
         }}
       />
     </StyledEditorWrapper>

@@ -29,7 +29,6 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
       <Row gutter={24}>
         <Col>
           <Form.Item
-            className="m-0"
             label="Topic name"
             {...((touched.topic && errors.topic) && {
               validateStatus: "error",
@@ -46,8 +45,6 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
               disabled={isSubmitting}
             />
           </Form.Item>
-        </Col>
-        <Col>
           <Form.Item className="m-0">
             <AppTextEditor
               ref={editorRef}
