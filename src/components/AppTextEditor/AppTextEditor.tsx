@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef, useEffect, Ref } from 'react';
 import cx from 'classnames';
 import styled from 'styled-components';
 import { Icon, Tooltip, Typography } from 'antd';
@@ -9,6 +9,18 @@ import htmlToDraft from 'html-to-draftjs';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const { Text } = Typography;
+
+export interface IRefObject {
+  resetEditor: (content: string) => void
+}
+
+interface IAppTextEditor {
+  value: string,
+  ref: Ref<IRefObject>,
+  disabled?: boolean,
+  onChange: (content: string) => void,
+  placeholder?: string,
+}
 
 const StyledEditorWrapper = styled.div`
   .identifi-toolbar {
@@ -71,21 +83,27 @@ const ToolbarComponent: React.FC<any> = (props) => {
   ))
 }
 
-interface IAppTextEditor {
-  value: string,
-  disabled?: boolean,
-  onChange: (content: string) => void,
-  placeholder?: string,
-}
+const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
+  { value, disabled, onChange, placeholder = "Write something here..." }, ref,
+) => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-const AppTextEditor: React.FC<IAppTextEditor> = ({
-  value, disabled, onChange, placeholder = "Write something here...",
-}) => {
-  const initialValue = htmlToDraft(value);
-  const contentState = ContentState.createFromBlockArray(initialValue.contentBlocks);
-  const editorInitialState = EditorState.createWithContent(contentState);
+  useImperativeHandle(ref, () => ({
+    resetEditor: (defaultValue: string) => {
+      const initialValue = htmlToDraft(defaultValue);
+      const contentState = ContentState.createFromBlockArray(initialValue.contentBlocks);
+      const editorInitialState = EditorState.createWithContent(contentState);
+      setEditorState(editorInitialState);
+    }
+  }));
 
-  const [editorState, setEditorState] = useState(editorInitialState);
+  useEffect(() => {
+    const initialValue = htmlToDraft(value);
+    const contentState = ContentState.createFromBlockArray(initialValue.contentBlocks);
+    const editorInitialState = EditorState.createWithContent(contentState);
+    setEditorState(editorInitialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <StyledEditorWrapper>
@@ -97,7 +115,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = ({
         toolbarClassName="identifi-toolbar"
         editorState={editorState}
         onEditorStateChange={newEditorState => {
-          const htmlString = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+          const htmlString = draftToHtml(convertToRaw(newEditorState.getCurrentContent()));
           setEditorState(newEditorState);
           onChange(htmlString);
         }}
@@ -115,6 +133,6 @@ const AppTextEditor: React.FC<IAppTextEditor> = ({
       />
     </StyledEditorWrapper>
   );
-}
+});
 
 export default AppTextEditor;

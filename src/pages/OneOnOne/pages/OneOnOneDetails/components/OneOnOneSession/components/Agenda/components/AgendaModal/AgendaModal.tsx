@@ -84,7 +84,6 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
           values,
         }),
       });
-      setVisibility(false);
     } catch (error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
@@ -121,7 +120,6 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
         maskClosable={false}
         visible={visiblity}
         title={<Title level={3}>{agenda ? 'Edit' : 'Add'} agenda item</Title>}
-        onCancel={() => setVisibility(false)}
       >
         <AgendaForm
           data={agenda}
