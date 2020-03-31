@@ -26,9 +26,6 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   const activeCompany = account?.activeCompany;
 
   const { loading, data } = useQuery<ICheckInScheduleContext>(CHECKIN_CARDS, {
-    variables: {
-      companyId: activeCompany?.id,
-    },
     skip: !(activeCompany?.slackEnabled),
   });
 

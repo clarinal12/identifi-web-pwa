@@ -133,8 +133,8 @@ const CHECKIN_CARD = `
 `;
 
 export const CHECKIN_CARDS = gql`
-  query CheckInCards($companyId: ID!) {
-    checkInCards(companyId: $companyId) {
+  query CheckInCards {
+    checkInCards {
       myCheckIns {
         ${CHECKIN_CARD}
       }

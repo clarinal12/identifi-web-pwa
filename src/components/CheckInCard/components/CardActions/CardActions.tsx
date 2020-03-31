@@ -5,7 +5,6 @@ import { Dropdown, Menu, Popconfirm, Typography, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 
 import { MoreVertIcon } from 'utils/iconUtils';
-import { useUserContextValue } from 'contexts/UserContext';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 import { DELETE_CHECKIN_SCHEDULE, TOGGLE_CHECKIN_STATUS } from 'apollo/mutations/checkin';
@@ -86,8 +85,6 @@ const CardActions: React.FC<ICardActions> = ({
   const [deleteCheckInSchedule] = useMutation(DELETE_CHECKIN_SCHEDULE);
   const [toggleCheckInScheduleStatus] = useMutation(TOGGLE_CHECKIN_STATUS);
   const { alertError, alertWarning, alertSuccess } = useMessageContextValue();
-  const { account } = useUserContextValue();
-  const activeCompany = account?.activeCompany;
 
   const [visible, setVisible] = useState(false);
 
@@ -97,12 +94,7 @@ const CardActions: React.FC<ICardActions> = ({
     try {
       await deleteCheckInSchedule({
         variables: { id },
-        refetchQueries: [{
-          query: CHECKIN_CARDS,
-          variables: {
-            companyId: activeCompany?.id,
-          }
-        }],
+        refetchQueries: [{ query: CHECKIN_CARDS }],
         awaitRefetchQueries: true,
       });
       alertWarning("A check-in has been deleted");
@@ -128,12 +120,7 @@ const CardActions: React.FC<ICardActions> = ({
             active: !active,
           },
         },
-        refetchQueries: [{
-          query: CHECKIN_CARDS,
-          variables: {
-            companyId: activeCompany?.id,
-          }
-        }],
+        refetchQueries: [{ query: CHECKIN_CARDS }],
         awaitRefetchQueries: true,
       });
       const alertMethod = active ? alertWarning : alertSuccess;
