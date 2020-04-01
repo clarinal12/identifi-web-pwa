@@ -22,59 +22,6 @@ interface IAppTextEditor {
   placeholder?: string,
 }
 
-const StyledEditorWrapper = styled.div`
-  &.hide-placeholder {
-    .public-DraftEditorPlaceholder-root {
-      display: none;
-    }
-  }
-  .identifi-editor-wrapper {
-    border: 1px solid #D9D9D9;
-    border-radius: 4px;
-    .identifi-toolbar {
-      background: #e8e8e840;
-      border-radius: 4px 4px 0 0;
-      border: none;
-      padding: 6px !important;
-      margin-bottom: 0;
-      .toolbar-button {
-        width: 32px;
-        height: 32px;
-        color: #6a6f7b;
-        border-radius: 4px;
-        .anticon {
-          font-size: 12px;
-        }
-        &.emoji {
-          position: absolute;
-          right: 6px;
-        }
-        &:hover {
-          cursor: pointer;
-          background: #e8e8e880;
-        }
-      }
-    }
-    .identifi-editor {
-      font-size: 16px;
-      padding: 12px;
-      min-height: 165px;
-      line-height: 1.5;
-      height: auto;
-      p {
-        margin-bottom: 1rem;
-      }
-      ol, ul {
-        margin-top: 0;
-        padding-inline-start: 40px;
-      }
-      .public-DraftStyleDefault-block {
-        margin: 0;
-      }
-    }
-  }
-`;
-
 const StyledPopoverContentWrapper = styled.div`
   max-width: 230px;
   max-height: 214px;
@@ -121,15 +68,74 @@ const StyledPopoverContentWrapper = styled.div`
   }
 `;
 
+const StyledEditorWrapper = styled.div`
+  &.hide-placeholder {
+    .public-DraftEditorPlaceholder-root {
+      display: none;
+    }
+  }
+  .identifi-editor-wrapper {
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    .identifi-toolbar {
+      background: #e8e8e840;
+      border-radius: 4px 4px 0 0;
+      border: none;
+      padding: 6px !important;
+      margin-bottom: 0;
+      .toolbar-button {
+        width: 32px;
+        height: 32px;
+        color: #6a6f7b;
+        border-radius: 4px;
+        .anticon {
+          font-size: 12px;
+        }
+        &.emoji {
+          position: absolute;
+          right: 6px;
+        }
+        &:hover {
+          cursor: pointer;
+          background: #e8e8e880;
+        }
+      }
+    }
+    .identifi-editor {
+      padding: 12px;
+      line-height: 22px;
+      min-height: 165px;
+      height: auto;
+      ol, ul {
+        margin: 0;
+        padding-inline-start: 30px;
+        li {
+          margin: 0;
+        }
+      }
+      .public-DraftStyleDefault-block {
+        margin: 0;
+      }
+    }
+  }
+`;
+
 const StyledHTMLRenderer = styled.div`
   p {
+    min-height: 20.8px;
     margin: 0;
   }
-  font-size: 16px;
+  strong {
+    font-weight: 500;
+  }
   ul {
     li {
       list-style-type: disc !important;
     }
+  }
+  ul, ol {
+    margin: 0;
+    padding-inline-start: 30px;
   }
 `;
 
@@ -139,7 +145,7 @@ const TOOLBAR_ALIAS: { [key: string]: string | undefined } = {
 };
 
 export const HTMLRenderer: React.FC<{ content: string }> = ({ content }) => (
-  <StyledHTMLRenderer dangerouslySetInnerHTML={{ __html: content }} />
+  <StyledHTMLRenderer className="html-renderer" dangerouslySetInnerHTML={{ __html: content }} />
 );
 
 const ToolbarComponent: React.FC<any> = (props) => {
