@@ -53,7 +53,6 @@ const StyledCard = styled(Card)`
         border-left: 4px solid #e8e8e8;
         .html-renderer {
           color: #595959;
-          font-size: 16px;
         }
       }
     }

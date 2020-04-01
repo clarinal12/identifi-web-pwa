@@ -83,7 +83,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessio
       <div className="bordered-div d-flex py-3 align-items-center last">
         {currentUser?.feedback ? (
           <div className="w-100 feedback-container">
-            <div className="d-flex justify-content-between mb-3">
+            <div className="d-flex justify-content-between mb-3" style={{ minHeight: 30 }}>
               <HTMLRenderer content={currentUser?.feedback.content} />
               {canModifyFeedback && (
                 <FeedbackModal sessionId={sessionId} feedback={currentUser?.feedback} isEditing />

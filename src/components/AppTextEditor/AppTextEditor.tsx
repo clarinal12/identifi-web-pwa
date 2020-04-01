@@ -103,9 +103,12 @@ const StyledEditorWrapper = styled.div`
     }
     .identifi-editor {
       padding: 12px;
-      line-height: 22px;
+      line-height: 1.5;
       min-height: 165px;
       height: auto;
+      p, span, ul, ol {
+        font-size: 16px !important;
+      }
       ol, ul {
         margin: 0;
         padding-inline-start: 30px;
@@ -121,6 +124,9 @@ const StyledEditorWrapper = styled.div`
 `;
 
 const StyledHTMLRenderer = styled.div`
+  p, span, ul, ol {
+    font-size: 16px !important;
+  }
   p {
     min-height: 20.8px;
     margin: 0;
