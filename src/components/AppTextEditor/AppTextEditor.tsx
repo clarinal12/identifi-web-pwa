@@ -1,7 +1,7 @@
 import React, { useState, useImperativeHandle, forwardRef, useEffect, Ref } from 'react';
 import cx from 'classnames';
 import styled from 'styled-components';
-import { Icon, Tooltip, Typography } from 'antd';
+import { Icon, Tooltip, Typography, Popover } from 'antd';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -24,11 +24,6 @@ interface IAppTextEditor {
 
 const StyledEditorWrapper = styled.div`
   &.hide-placeholder {
-    ol, ul {
-      &:first-of-type {
-        margin-top: 0;
-      }
-    }
     .public-DraftEditorPlaceholder-root {
       display: none;
     }
@@ -50,6 +45,10 @@ const StyledEditorWrapper = styled.div`
         .anticon {
           font-size: 12px;
         }
+        &.emoji {
+          position: absolute;
+          right: 6px;
+        }
         &:hover {
           cursor: pointer;
           background: #e8e8e880;
@@ -62,9 +61,74 @@ const StyledEditorWrapper = styled.div`
       min-height: 165px;
       line-height: 1.5;
       height: auto;
+      p {
+        margin-bottom: 1rem;
+      }
+      ol, ul {
+        margin-top: 0;
+        padding-inline-start: 40px;
+      }
       .public-DraftStyleDefault-block {
         margin: 0;
       }
+    }
+  }
+`;
+
+const StyledPopoverContentWrapper = styled.div`
+  max-width: 230px;
+  max-height: 214px;
+  overflow: hidden;
+  &:hover {
+    overflow: auto;
+    &::-webkit-scrollbar-thumb {
+      display: block;
+    }
+    .ant-list-item {
+      width: calc(100% - 1px);
+    }
+  }
+
+  /* total width */
+  &::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  /* scrollbar itself */
+  &::-webkit-scrollbar-thumb {
+    background-color: #babac0 !important;
+    border-radius: 12px !important;
+    border: none !important;
+  }
+
+  /* set button(top and bottom of the scrollbar) */
+  &::-webkit-scrollbar-button {
+    display: none !important;
+  }
+  ul {
+    list-style-type: none;
+    padding-inline-start: 0;
+    li {
+      width: 36px;
+      height: 36px;
+      padding: 6px;
+      border-radius: 4px;
+      &:hover {
+        cursor: pointer;
+        background: #e8e8e880;
+      }
+    }
+  }
+`;
+
+const StyledHTMLRenderer = styled.div`
+  p {
+    margin: 0;
+  }
+  font-size: 16px;
+  ul {
+    li {
+      list-style-type: disc !important;
     }
   }
 `;
@@ -74,6 +138,10 @@ const TOOLBAR_ALIAS: { [key: string]: string | undefined } = {
   'ordered': 'ordered-list',
 };
 
+export const HTMLRenderer: React.FC<{ content: string }> = ({ content }) => (
+  <StyledHTMLRenderer dangerouslySetInnerHTML={{ __html: content }} />
+);
+
 const ToolbarComponent: React.FC<any> = (props) => {
   const { config, onChange, currentState } = props;
   return config.options.map((option: string, idx: number) => (
@@ -81,7 +149,7 @@ const ToolbarComponent: React.FC<any> = (props) => {
       key={`${option}-${idx}`}
       placement="bottom"
       title={(
-        <Text className="text-capitalize text-white">
+        <Text style={{ fontSize: 12 }} className="text-capitalize text-white">
           {TOOLBAR_ALIAS[option]?.split('-').join(' ') || option}
         </Text>
       )}
@@ -98,6 +166,51 @@ const ToolbarComponent: React.FC<any> = (props) => {
       </div>
     </Tooltip>
   ))
+}
+
+const EmojiComponent: React.FC<any> = (props) => {
+  const { config, onChange } = props;
+  const [visibility, setVisibility] = useState(false);
+  return (
+    <Tooltip
+      placement="top"
+      title={(
+        <Text style={{ fontSize: 12 }} className="text-capitalize text-white">
+          Emoji
+        </Text>
+      )}
+    >
+      <Popover
+        placement="bottom"
+        visible={visibility}
+        onVisibleChange={value => setVisibility(value)}
+        overlayClassName="toolbar-emoji-popover"
+        content={(
+          <StyledPopoverContentWrapper>
+            <ul className="d-flex flex-wrap m-0">
+              {config.emojis.map((emoji: string, idx: number) => (
+                <li
+                  className="fs-16"
+                  key={idx}
+                  onClick={() => {
+                    onChange(emoji);
+                    setVisibility(false);
+                  }}
+                >
+                  {emoji}
+                </li>
+              ))}
+            </ul>
+          </StyledPopoverContentWrapper>
+        )}
+        trigger="click"
+      >
+        <div className="toolbar-button emoji d-flex align-items-center justify-content-center">
+          <span role="img" aria-label="emoji-hovered">😀</span>
+        </div>
+      </Popover>
+    </Tooltip>
+  )
 }
 
 const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
@@ -122,13 +235,8 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let placeholderHidden = false;
-  var contentState = editorState.getCurrentContent();
-  if (!contentState.hasText()) {
-    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-      placeholderHidden = true;
-    }
-  }
+  const contentState = editorState.getCurrentContent();
+  let placeholderHidden = (!contentState.hasText() && contentState.getBlockMap().first().getType() !== 'unstyled');
 
   return (
     <StyledEditorWrapper className={cx({ 'hide-placeholder': placeholderHidden })}>
@@ -137,7 +245,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
         placeholder={placeholder}
         wrapperClassName="identifi-editor-wrapper"
         editorClassName="identifi-editor"
-        toolbarClassName="identifi-toolbar"
+        toolbarClassName="identifi-toolbar position-relative"
         editorState={editorState}
         onEditorStateChange={newEditorState => {
           const htmlString = draftToHtml(convertToRaw(newEditorState.getCurrentContent()));
@@ -145,7 +253,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
           onChange(htmlString);
         }}
         toolbar={{
-          options: ['inline', 'list'],
+          options: ['inline', 'list', 'emoji'],
           inline: {
             options: ['bold', 'italic', 'underline', 'strikethrough'],
             component: ToolbarComponent,
@@ -154,6 +262,20 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
             options: ['unordered', 'ordered'],
             component: ToolbarComponent,
           },
+          emoji: {
+            component: EmojiComponent,
+            emojis: [
+              '😀', '😁', '😂', '😃', '😉', '😋', '😎', '😍', '😗', '🤗', '🤔', '😣', '😫', '😴', '😌', '🤓',
+              '😛', '😜', '😠', '😇', '😷', '😈', '👻', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '🙈',
+              '🙉', '🙊', '👼', '👮', '🕵', '💂', '👳', '🎅', '👸', '👰', '👲', '🙍', '🙇', '🚶', '🏃', '💃',
+              '⛷', '🏂', '🏌', '🏄', '🚣', '🏊', '⛹', '🏋', '🚴', '👫', '💪', '👈', '👉', '👉', '👆', '🖕',
+              '👇', '🖖', '🤘', '🖐', '👌', '👍', '👎', '✊', '👊', '👏', '🙌', '🙏', '🐵', '🐶', '🐇', '🐥',
+              '🐸', '🐌', '🐛', '🐜', '🐝', '🍉', '🍄', '🍔', '🍤', '🍨', '🍪', '🎂', '🍰', '🍾', '🍷', '🍸',
+              '🍺', '🌍', '🚑', '⏰', '🌙', '🌝', '🌞', '⭐', '🌟', '🌠', '🌨', '🌩', '⛄', '🔥', '🎄', '🎈',
+              '🎉', '🎊', '🎁', '🎗', '🏀', '🏈', '🎲', '🔇', '🔈', '📣', '🔔', '🎵', '🎷', '💰', '🖊', '📅',
+              '✅', '❎', '💯'
+            ],
+          }
         }}
       />
     </StyledEditorWrapper>

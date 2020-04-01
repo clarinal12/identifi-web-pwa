@@ -1,1 +1,1 @@
-export { default } from './AppTextEditor';
+export { default, HTMLRenderer } from './AppTextEditor';

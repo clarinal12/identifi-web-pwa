@@ -4,6 +4,7 @@ import { Typography, Avatar } from 'antd';
 
 import FeedbackModal from './components/FeedbackModal';
 import { useUserContextValue } from 'contexts/UserContext';
+import { HTMLRenderer } from 'components/AppTextEditor';
 import { NoFeedbackIcon } from 'utils/iconUtils';
 import { getDisplayName } from 'utils/userUtils';
 import { TFeedbackInfo } from 'apollo/types/oneOnOne';
@@ -57,9 +58,7 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessio
         {otherUser?.feedback ? (
           <div className="w-100 feedback-container">
             <div className="d-flex justify-content-between">
-              <Text type="secondary" className="fs-16 d-block">
-                <div dangerouslySetInnerHTML={{ __html: otherUser?.feedback.content }} />
-              </Text>
+              <HTMLRenderer content={otherUser?.feedback.content} />
             </div>
             {otherUser?.author.avatar && (
               <div>
@@ -84,10 +83,8 @@ const Feedback: React.FC<IFeedback> = ({ feedbackInfo, canModifyFeedback, sessio
       <div className="bordered-div d-flex py-3 align-items-center last">
         {currentUser?.feedback ? (
           <div className="w-100 feedback-container">
-            <div className="d-flex justify-content-between">
-              <Text type="secondary" className="fs-16 d-block">
-                <div dangerouslySetInnerHTML={{ __html: currentUser?.feedback.content }} />
-              </Text>
+            <div className="d-flex justify-content-between mb-3">
+              <HTMLRenderer content={currentUser?.feedback.content} />
               {canModifyFeedback && (
                 <FeedbackModal sessionId={sessionId} feedback={currentUser?.feedback} isEditing />
               )}              
