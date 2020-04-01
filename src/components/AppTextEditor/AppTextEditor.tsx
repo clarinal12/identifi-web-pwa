@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, forwardRef, useEffect, Ref } from 'react';
+import React, { useState, useImperativeHandle, forwardRef, useEffect, Ref, useRef } from 'react';
 import cx from 'classnames';
 import styled from 'styled-components';
 import { Icon, Tooltip, Typography, Popover } from 'antd';
@@ -23,7 +23,7 @@ interface IAppTextEditor {
 }
 
 const StyledPopoverContentWrapper = styled.div`
-  max-width: 230px;
+  max-width: 228px;
   max-height: 214px;
   overflow: hidden;
   &:hover {
@@ -222,6 +222,7 @@ const EmojiComponent: React.FC<any> = (props) => {
 const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
   { value, disabled, onChange, placeholder = "Write something here..." }, ref,
 ) => {
+  const editorRef = useRef<any>(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   useImperativeHandle(ref, () => ({
@@ -247,6 +248,7 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
   return (
     <StyledEditorWrapper className={cx({ 'hide-placeholder': placeholderHidden })}>
       <Editor
+        ref={editorRef}
         readOnly={disabled}
         placeholder={placeholder}
         wrapperClassName="identifi-editor-wrapper"

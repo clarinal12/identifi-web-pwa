@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Modal, Form, Input, Typography, Switch, Icon } from 'antd';
+import { Modal, Form, Typography, Switch, Icon } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
+import AppTextEditor from 'components/AppTextEditor';
+import { IRefObject } from 'components/AppTextEditor/AppTextEditor';
 import { editGoalFormSchema } from './validation';
 import { TCheckInGoal } from 'apollo/types/checkin';
 
 const { Text } = Typography;
-const { TextArea } = Input;
 
 export interface IExternalProps {
   onSubmitAction: (
@@ -39,6 +40,7 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
   setFieldTouched, setFieldValue, handleSubmit,
   isSubmitting, isValid, resetForm,
 }) => {
+  const editorRef = useRef<IRefObject>(null);
   const timeAgo = moment(data.createdAt).calendar().toUpperCase().split(' AT');
   const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
   return (
@@ -60,6 +62,7 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
         resetForm();
         setModalState(!modalState);
       }}
+      afterClose={() => editorRef.current?.resetEditor(data?.goal || '')}
       maskClosable={false}
     >
       <Form.Item className="mb-0">
@@ -88,21 +91,15 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
           help: errors.goal,
         })}
       >
-        <TextArea
-          autoFocus
-          onFocus={(e) => {
-            const tempValue = e.target.value;
-            e.target.value = '';
-            e.target.value = tempValue;
-          }}
+        <AppTextEditor
+          ref={editorRef}
           disabled={isSubmitting}
-          value={values.goal}
-          onChange={e => {
-            setFieldTouched('goal');
-            setFieldValue('goal', e.target.value);
-          }}
+          value={values.goal || ''}
           placeholder="Enter your goal"
-          autoSize={{ minRows: 1 }}
+          onChange={content => {
+            setFieldTouched('goal');
+            setFieldValue('goal', content);
+          }}
         />
       </Form.Item>
     </StyledModal>

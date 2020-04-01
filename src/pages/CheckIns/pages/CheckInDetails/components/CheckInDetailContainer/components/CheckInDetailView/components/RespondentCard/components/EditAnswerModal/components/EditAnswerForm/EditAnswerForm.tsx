@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { Modal, Form, Input, Typography } from 'antd';
+import { Modal, Form, Typography } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
+import AppTextEditor from 'components/AppTextEditor';
+import { IRefObject } from 'components/AppTextEditor/AppTextEditor';
 import { editAnswerFormSchema } from './validation';
 
 const { Text } = Typography;
-const { TextArea } = Input;
 
 export interface IExternalProps {
   onSubmitAction: (
@@ -38,56 +39,54 @@ const EditAnswerForm: React.FC<IExternalProps & FormikProps<{ answer: string }>>
   data, setModalState, modalState,
   setFieldTouched, setFieldValue, handleSubmit,
   isSubmitting, isValid, resetForm,
-}) => (
-  <StyledModal
-    closable={false}
-    visible={modalState}
-    okText="Save changes"
-    okButtonProps={{
-      disabled: !isValid,
-      loading: isSubmitting,
-      size: "large"
-    }}
-    cancelButtonProps={{
-      disabled: isSubmitting,
-      size: "large"
-    }}
-    onOk={() => handleSubmit()}
-    onCancel={() => {
-      resetForm();
-      setModalState(!modalState);
-    }}
-    maskClosable={false}
-  >
-    <Form.Item className="mb-0">
-      <Text strong className="text-muted">{data.question}</Text>
-    </Form.Item>
-    <Form.Item
-      className="mb-0"
-      {...((touched.answer && errors.answer) && {
-        validateStatus: "error",
-        help: errors.answer,
-      })}
+}) => {
+  const editorRef = useRef<IRefObject>(null);
+  return (
+    <StyledModal
+      closable={false}
+      visible={modalState}
+      okText="Save changes"
+      okButtonProps={{
+        disabled: !isValid,
+        loading: isSubmitting,
+        size: "large"
+      }}
+      cancelButtonProps={{
+        disabled: isSubmitting,
+        size: "large"
+      }}
+      onOk={() => handleSubmit()}
+      onCancel={() => {
+        resetForm();
+        setModalState(!modalState);
+      }}
+      afterClose={() => editorRef.current?.resetEditor(data?.answer || '')}
+      maskClosable={false}
     >
-      <TextArea
-        autoFocus
-        onFocus={(e) => {
-          const tempValue = e.target.value;
-          e.target.value = '';
-          e.target.value = tempValue;
-        }}
-        disabled={isSubmitting}
-        value={values.answer}
-        onChange={e => {
-          setFieldTouched('answer');
-          setFieldValue('answer', e.target.value);
-        }}
-        placeholder="Enter your answer"
-        autoSize={{ minRows: 1 }}
-      />
-    </Form.Item>
-  </StyledModal>
-);
+      <Form.Item className="mb-0">
+        <Text strong className="text-muted">{data.question}</Text>
+      </Form.Item>
+      <Form.Item
+        className="mb-0"
+        {...((touched.answer && errors.answer) && {
+          validateStatus: "error",
+          help: errors.answer,
+        })}
+      >
+        <AppTextEditor
+          ref={editorRef}
+          disabled={isSubmitting}
+          value={values.answer || ''}
+          placeholder="Enter your answer"
+          onChange={content => {
+            setFieldTouched('answer');
+            setFieldValue('answer', content);
+          }}
+        />
+      </Form.Item>
+    </StyledModal>
+  );
+}
 
 export default withFormik<IExternalProps, { answer: string }>({
   validationSchema: editAnswerFormSchema,
