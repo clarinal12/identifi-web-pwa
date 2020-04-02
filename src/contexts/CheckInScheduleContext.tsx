@@ -1,9 +1,10 @@
 import React, { createContext, useContext, PropsWithChildren } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { useUserContextValue } from 'contexts/UserContext';
 import { ICheckinData } from 'apollo/types/checkin';
 import { CHECKIN_CARDS } from 'apollo/queries/checkin';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInFilterContextValue } from 'contexts/CheckInFilterContext';
 
 interface ICheckInScheduleContext {
   checkInCards: {
@@ -22,6 +23,7 @@ const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
 });
 
 const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
+  const { selectedStates } = useCheckInFilterContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account?.activeCompany;
 
@@ -29,13 +31,19 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
     skip: !(activeCompany?.slackEnabled),
   });
 
+  const checkInCardsSource = data
+  ? {
+    myCheckIns: data.checkInCards.myCheckIns.filter(({ status }) => selectedStates.includes(status)),
+    allCheckIns: data.checkInCards.allCheckIns.filter(({ status }) => selectedStates.includes(status)),
+  } : {
+    myCheckIns: [],
+    allCheckIns: [],
+  };
+
   return (
     <CheckInScheduleContext.Provider
       value={{
-        checkInCards: data?.checkInCards || {
-          myCheckIns: [],
-          allCheckIns: [],
-        },
+        checkInCards: checkInCardsSource,
         loading,
       }}
     >

@@ -116,7 +116,6 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ feedback, isEditing, sessionI
         maskClosable={false}
         visible={visiblity}
         title={<Title level={3}>{feedback ? 'Edit' : 'Write'} your feedback</Title>}
-        onCancel={() => setVisibility(false)}
       >
         <FeedbackForm
           data={feedback}

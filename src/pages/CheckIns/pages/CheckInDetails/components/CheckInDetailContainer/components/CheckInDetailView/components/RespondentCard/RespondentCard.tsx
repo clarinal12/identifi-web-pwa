@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Card, Typography, Icon } from 'antd';
 
 import Comments from 'components/Comments';
+import { HTMLRenderer } from 'components/AppTextEditor';
 import UserStatusAvatar from 'components/UserStatusAvatar';
 import EditGoalModal from './components/EditGoalModal';
 import EditBlockerModal from './components/EditBlockerModal';
@@ -12,9 +13,8 @@ import EditAnswerModal from './components/EditAnswerModal';
 import { TResponse } from 'apollo/types/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
-import { getMultipleLines } from 'utils/textUtils';
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Title } = Typography;
 
 interface IRespondentCard {
   response: TResponse,
@@ -51,6 +51,9 @@ const StyledCard = styled(Card)`
       }
       .grey-border-left {
         border-left: 4px solid #e8e8e8;
+        .html-renderer {
+          color: #595959;
+        }
       }
     }
     .ant-btn-icon-only {
@@ -107,11 +110,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
             <Text strong>TODAY:</Text>
             <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
-                {getMultipleLines(currentGoal.goal).map((line, idx) => (
-                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
-                    {line}
-                  </Paragraph>
-                ))}
+                <HTMLRenderer content={currentGoal.goal} />
               </div>
               {isCheckInEditable && (
                 <EditGoalModal data={currentGoal} />
@@ -135,11 +134,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
             </Text>
             <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
-                {getMultipleLines(previousGoal.goal).map((line, idx) => (
-                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
-                    {line}
-                  </Paragraph>
-                ))}
+                <HTMLRenderer content={previousGoal.goal} />
               </div>
               {isCheckInEditable && (
                 <EditGoalModal showSwitch data={previousGoal} />
@@ -154,11 +149,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
             </Text>
             <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
-                {getMultipleLines(block.blocker).map((line, idx) => (
-                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
-                    {line}
-                  </Paragraph>
-                ))}
+                <HTMLRenderer content={block.blocker} />
               </div>
               {isCheckInEditable && (
                 <EditBlockerModal data={block} />
@@ -176,11 +167,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
             <Text strong>{question}</Text>
             <div className="d-flex pl-2 mt-2 grey-border-left">
               <div className="flex-grow-1">
-                {getMultipleLines(answer).map((line, idx) => (
-                  <Paragraph type="secondary" key={idx} className="mb-0 fs-16 font-weight-normal">
-                    {line}
-                  </Paragraph>
-                ))}
+                <HTMLRenderer content={answer} />
               </div>
               {isCheckInEditable && (
                 <EditAnswerModal data={{ id, question, answer }} />

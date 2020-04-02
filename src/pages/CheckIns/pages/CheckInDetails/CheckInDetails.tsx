@@ -11,6 +11,8 @@ import CheckInNavigation from './components/CheckInNavigation';
 import CheckInDetailContainer from './components/CheckInDetailContainer';
 import { CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
+import { ReactionProvider } from 'contexts/ReactionContext';
+import { CheckInScheduleProvider } from 'contexts/CheckInScheduleContext';
 
 const { Title } = Typography;
 
@@ -92,9 +94,13 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
   );
 
   return (
-    <AppLayout>
-      {contentBody}
-    </AppLayout>
+    <CheckInScheduleProvider>
+      <ReactionProvider>
+        <AppLayout>
+          {contentBody}
+        </AppLayout>
+      </ReactionProvider>
+    </CheckInScheduleProvider>
   );
 };
 

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Form, Input, Button, Row, Col } from 'antd';
 import { withFormik, FormikProps } from 'formik';
 
 import AppTextEditor from 'components/AppTextEditor';
+import { IRefObject } from 'components/AppTextEditor/AppTextEditor';
 import { agendaFormSchema } from './validation';
 import { TAgenda } from 'apollo/types/oneOnOne';
 
@@ -22,12 +23,12 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
   values, handleBlur, handleChange, isSubmitting, errors, touched, deleteAction,
   setVisibility, setFieldValue, isValid, resetForm, handleSubmit, data,
 }) => {
+  const editorRef = useRef<IRefObject>(null);
   return (
     <Form colon={false} onSubmit={handleSubmit}>
       <Row gutter={24}>
         <Col>
           <Form.Item
-            className="m-0"
             label="Topic name"
             {...((touched.topic && errors.topic) && {
               validateStatus: "error",
@@ -44,10 +45,9 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
               disabled={isSubmitting}
             />
           </Form.Item>
-        </Col>
-        <Col>
           <Form.Item className="m-0">
             <AppTextEditor
+              ref={editorRef}
               disabled={isSubmitting}
               value={values.content}
               onChange={content => setFieldValue('content', content)}
@@ -77,6 +77,7 @@ const AgendaForm: React.FC<FormikProps<IAgendaFormValues> & IExternalProps> = ({
             size="large"
             onClick={() => {
               resetForm();
+              editorRef.current?.resetEditor(data?.content || '');
               setVisibility(false);
             }}
           >
