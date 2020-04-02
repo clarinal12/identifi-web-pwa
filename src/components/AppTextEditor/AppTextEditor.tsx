@@ -248,8 +248,8 @@ const AppTextEditor: React.FC<IAppTextEditor> = forwardRef((
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const contentState = editorState.getCurrentContent();
-  let placeholderHidden = (!contentState.hasText() && contentState.getBlockMap().first().getType() !== 'unstyled');
+  const currentContentState = editorState.getCurrentContent();
+  let placeholderHidden = (!currentContentState.hasText() && currentContentState.getBlockMap().first().getType() !== 'unstyled');
 
   return (
     <StyledEditorWrapper className={cx({ 'hide-placeholder': placeholderHidden })}>
