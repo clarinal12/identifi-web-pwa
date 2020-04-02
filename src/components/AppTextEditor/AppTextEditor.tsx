@@ -22,7 +22,7 @@ interface IAppTextEditor {
 }
 
 const AppTextEditor: React.FC<IAppTextEditor> = ({ value, onChange, disabled }) => {
-  const [editorState, setEditorState] = useState<EditorState | null>(BraftEditor.createEditorState(value));
+  const [editorState, setEditorState] = useState<EditorState>(BraftEditor.createEditorState(value));
 
   useEffect(() => {
     if (!value && !editorState.isEmpty()) {
