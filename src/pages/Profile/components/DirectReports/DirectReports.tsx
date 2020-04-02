@@ -192,7 +192,9 @@ const DirectReports: React.FC<{ memberInfo: IAccount }> = ({ memberInfo }) => {
   const [visibility, setVisibility] = useState(false);
   return (
     <div className="mb-3">
-      <Text className="d-block text-muted mb-3">Direct reports</Text>
+      {((!account?.isOwner && Boolean(memberInfo.directReports.length)) || account?.isOwner) && (
+        <Text className="d-block text-muted mb-3">Direct reports</Text>
+      )}
       <StyledAvatarWrapper className="d-flex flex-wrap">
         {memberInfo.directReports.map((directReport) => {
           const { id, avatar } = directReport;

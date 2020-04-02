@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
-import { Card, Typography } from 'antd';
+import { Card, Typography, Alert } from 'antd';
 
 import { Spinner } from 'components/PageSpinner';
 import Feedback from './components/Feedback';
@@ -29,28 +29,46 @@ const StyledCard = styled(Card)`
 `;
 
 const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
-  const { data, loading } = useQuery<IOneOnOneSessionQuery>(ONE_ON_ONE_SESSION, {
+  const { data, loading, error } = useQuery<IOneOnOneSessionQuery>(ONE_ON_ONE_SESSION, {
     variables: { sessionId },
   });
+
   return (loading && !data) ? (
     <Spinner label="Loading session details" />
   ) : (
     <>
-      {data?.oneOnOneSession?.showFeedback && (
-        <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
-          <Feedback
-            sessionId={sessionId}
-            canModifyFeedback={data?.oneOnOneSession?.canModifyFeedback}
-            feedbackInfo={data?.oneOnOneSession?.feedbackInfo}
-          />
-        </StyledCard>
-      )}
-      <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
-        <Agenda
-          canModifyAgenda={data?.oneOnOneSession?.canModifyAgenda}
-          agenda={data?.oneOnOneSession?.agenda}
+      {error ? (
+        <Alert
+          showIcon
+          type="warning"
+          message={function() {
+            let errorMessage = "Network error";
+            if (error.graphQLErrors[0]) {
+              errorMessage = error.graphQLErrors[0].message;
+            }
+            return errorMessage;
+          }()}
+          description="Could not load session details at the moment"
         />
-      </StyledCard>
+      ) : (
+        <>
+          {data?.oneOnOneSession?.showFeedback && (
+            <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
+              <Feedback
+                sessionId={sessionId}
+                canModifyFeedback={data?.oneOnOneSession?.canModifyFeedback}
+                feedbackInfo={data?.oneOnOneSession?.feedbackInfo}
+              />
+            </StyledCard>
+          )}
+          <StyledCard title={<Title level={4}>Agenda</Title>} className="mb-3">
+            <Agenda
+              canModifyAgenda={data?.oneOnOneSession?.canModifyAgenda}
+              agenda={data?.oneOnOneSession?.agenda}
+            />
+          </StyledCard>
+        </>        
+      )}
     </>
   );
 }

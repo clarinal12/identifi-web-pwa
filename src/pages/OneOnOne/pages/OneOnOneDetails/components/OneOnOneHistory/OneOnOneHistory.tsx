@@ -5,7 +5,9 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Icon, Typography, Row, Col, List, Spin } from 'antd';
+import InfiniteScroll from 'react-infinite-scroller';
 
+import { Spinner } from 'components/PageSpinner';
 import { LoadingIcon } from 'components/PageSpinner';
 import { scrollToTop } from 'utils/scrollUtils';
 import { PastClockIcon } from 'utils/iconUtils';
@@ -63,7 +65,7 @@ const EmptyState = () => (
   </StyledEmptyRow>
 );
 
-const OneOnOneHistory: React.FC<RouteComponentProps<{ schedule_id: string, session_id: string }>> = ({ match, history }) => {
+const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = ({ match, history }) => {
   const { selectedUserSession } = useOneOnOneContextValue();
   const directReport = selectedUserSession?.teammate;
   const scheduleId = selectedUserSession?.info?.scheduleId;
@@ -79,11 +81,24 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ schedule_id: string, sessi
     endCursor: undefined,
   });
 
-  const { data, loading } = useQuery<IOneOnOneHistoryQuery>(ONE_ON_ONE_SESSIONS, {
+  const { data, loading, refetch } = useQuery<IOneOnOneHistoryQuery>(ONE_ON_ONE_SESSIONS, {
     variables: { scheduleId },
     notifyOnNetworkStatusChange: true,
     skip: !Boolean(scheduleId),
   });
+
+  useEffect(() => {
+    if (data) {
+      const { oneOnOneSessions } = data;
+      setState({
+        dataSource: oneOnOneSessions.edges.map(({ node }) => node),
+        loading: false,
+        hasMore: oneOnOneSessions.pageInfo.hasNextPage,
+        endCursor: oneOnOneSessions.pageInfo.endCursor,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scheduleId, loading]);
 
   useEffect(() => {
     if (!loading && data && !state.endCursor) {
@@ -98,7 +113,26 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ schedule_id: string, sessi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, loading]);
 
-  if ((loading || !Boolean(scheduleId)) && !data) {
+  const refetchSessions = async () => {
+    setState({ ...state, loading: true });
+    const { data: refetchResult } = await refetch({
+      scheduleId,
+      ...(state.endCursor && {
+        pagination: {
+          after: state.endCursor,
+        }
+      }),
+    });
+    setState({
+      ...state,
+      loading: false,
+      hasMore: refetchResult.oneOnOneSessions.pageInfo.hasNextPage,
+      endCursor: refetchResult.oneOnOneSessions.pageInfo.endCursor,
+      dataSource: [...state.dataSource].concat(refetchResult.oneOnOneSessions.edges.map(({ node }) => node)),
+    });
+  }
+
+  if (loading) {
     return (
       <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
         <Spin className="py-4" size="small" indicator={LoadingIcon} spinning tip="Fetching 1-on-1 history..." />
@@ -108,45 +142,57 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ schedule_id: string, sessi
 
   return (state.dataSource.length > 0) ? (
     <StyledListWrapper>
-      <List
-        size="large"
-        dataSource={[{
-          id: currentSessionId,
-          status: currentSessionStatus,
-          time: upcomingSessionDate,
-        }].concat(state.dataSource)}
-        renderItem={({ time, id, status }) => {
-          const isActive = (id === derivedSessionId);
-          return (
-            <List.Item
-              className={cx({ active: isActive })}
-              key={id}
-              onClick={() => {
-                scrollToTop();
-                history.push({
-                  pathname: `/1-on-1s/${match.params.schedule_id}/${id || currentSessionId}`,
-                  state: {
-                    schedule_id_alias: getDisplayName(directReport),
-                    session_id_alias: moment(time).format('MMM DD, YYYY'),
-                    ignore_breadcrumb_link: ['schedule_id_alias'],
-                  },
-                });
-              }}
-            >
-              <div className="d-flex list-content-wrapper">
-                <Text
-                  type={isActive ? undefined : 'secondary'}
-                  strong={isActive}
-                >
-                  {SESSION_STATUS_ICON[status]}
-                  {moment(time).format('MMM DD, YYYY hh:mm A')}
-                </Text>
-                <Icon className="float-right" type="right" />
-              </div>
-            </List.Item>
-          );
-        }}
-      />
+      <InfiniteScroll
+        initialLoad={false}
+        pageStart={0}
+        hasMore={!state.loading && state.hasMore}
+        loadMore={refetchSessions}
+      >
+        <List
+          dataSource={[{
+            id: currentSessionId,
+            status: currentSessionStatus,
+            time: upcomingSessionDate,
+          }].concat(state.dataSource)}
+          renderItem={({ time, id, status }) => {
+            const isActive = (id === derivedSessionId);
+            return (
+              <List.Item
+                className={cx({ active: isActive })}
+                key={id}
+                onClick={() => {
+                  scrollToTop();
+                  history.push({
+                    pathname: `/1-on-1s/${scheduleId}/${id || currentSessionId}`,
+                    state: {
+                      schedule_id_alias: getDisplayName(directReport),
+                      session_id_alias: moment(time).format('MMM DD, YYYY'),
+                      ignore_breadcrumb_link: ['schedule_id_alias'],
+                    },
+                  });
+                }}
+              >
+                <div className="d-flex list-content-wrapper">
+                  <Text
+                    type={isActive ? undefined : 'secondary'}
+                    strong={isActive}
+                  >
+                    {SESSION_STATUS_ICON[status]}
+                    {moment(time).format('MMM DD, YYYY hh:mm A')}
+                  </Text>
+                  <Icon className="float-right" type="right" />
+                </div>
+              </List.Item>
+            );
+          }}
+        >
+          {state.loading && (
+            <div>
+              <Spinner label="" />
+            </div>
+          )}
+        </List>
+      </InfiniteScroll>
     </StyledListWrapper>
   ) : (
     <EmptyState />
