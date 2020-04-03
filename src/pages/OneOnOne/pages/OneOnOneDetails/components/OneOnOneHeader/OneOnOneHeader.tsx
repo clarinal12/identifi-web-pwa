@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip } from 'antd';
+import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip, Alert } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
@@ -48,7 +48,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
   const [loadingState, setLoadingState] = useState(false);
   const [completeOneOnOneMutation] = useMutation(COMPLETE_ONE_ON_ONE);
 
-  const { data, loading } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
+  const { data, loading, error } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
     variables: { sessionId },
     onCompleted: ({ oneOnOneHeader }) => {
       history.replace({
@@ -88,6 +88,24 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
       alertError(errorMessage);
     }
     setLoadingState(false);
+  }
+
+  if (error) {
+    return (
+      <Alert
+        className="mb-3"
+        showIcon
+        type="warning"
+        message={function() {
+          let errorMessage = "Network error";
+          if (error.graphQLErrors[0]) {
+            errorMessage = error.graphQLErrors[0].message;
+          }
+          return errorMessage;
+        }()}
+        description="Could not load header details at the moment"
+      />
+    );
   }
 
   return (
