@@ -202,7 +202,7 @@ const EmojiComponent: React.FC<any> = (props) => {
             <ul className="d-flex flex-wrap m-0">
               {config.emojis.map((emoji: string, idx: number) => (
                 <li
-                  className="fs-16"
+                  className="fs-16 text-center"
                   key={idx}
                   onClick={() => {
                     onChange(emoji);

@@ -59,7 +59,7 @@ const EmptyState = () => (
       <PastClockIcon />
       <Title className="mt-4 fs-16">No past 1-on-1s yet</Title>
       <Text type="secondary">
-        Once you had your first cycle of 1-on-1 with your manager, all past 1-on-1s will appear here.
+        Once you had your first cycle of 1-on-1 with your teammate, all past 1-on-1s will appear here.
       </Text>
     </Col>
   </StyledEmptyRow>
