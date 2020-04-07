@@ -12,10 +12,7 @@ const { Text } = Typography;
 interface IExternalProps {
   data?: Partial<TOneOnOneInfo>,
   maxRescheduleDate: string,
-  canSkipSession: boolean,
-  skippingState: boolean,
   setVisibility: (visibility: boolean) => void,
-  onSkipAction: () => void,
   onSubmitAction: (
     values: IRescheduleOneOnOneFormValues,
     setSubmitting: (isSubmitting: boolean) => void,
@@ -29,7 +26,7 @@ export interface IRescheduleOneOnOneFormValues {
 
 const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues> & IExternalProps> = ({
   values, setFieldValue, isSubmitting, setFieldTouched, handleSubmit, setVisibility,
-  onSkipAction, skippingState, maxRescheduleDate, canSkipSession, touched, errors,
+  maxRescheduleDate, touched, errors,
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
@@ -102,38 +99,25 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
       <div style={{ padding: '32px 0 42px 0' }}>
         <Text className="fs-16">None of the dates work for you? You can also entirely skip this 1-1.</Text>
       </div>
-      <div className="d-flex justify-content-between">
+      <div className="d-flex">
         <Button
-          disabled={isSubmitting || skippingState}
+          disabled={isSubmitting}
           className="mr-4"
           size="large"
           onClick={() => setVisibility(false)}
         >
           Cancel
         </Button>
-        <div>
-          <Button
-            ghost
-            type="primary"
-            disabled={isSubmitting || !canSkipSession}
-            loading={skippingState}
-            className="mr-4"
-            size="large"
-            onClick={onSkipAction}
-          >
-            Skip this 1-1
-          </Button>
-          <Button
-            style={{ minWidth: 140 }}
-            disabled={Boolean(Object.keys(errors).length) || skippingState}
-            loading={isSubmitting}
-            type="primary"
-            size="large"
-            htmlType="submit"
-          >
-            Reschedule
-          </Button>
-        </div>
+        <Button
+          style={{ minWidth: 140 }}
+          disabled={Boolean(Object.keys(errors).length)}
+          loading={isSubmitting}
+          type="primary"
+          size="large"
+          htmlType="submit"
+        >
+          Reschedule
+        </Button>
       </div>
     </Form>
   );

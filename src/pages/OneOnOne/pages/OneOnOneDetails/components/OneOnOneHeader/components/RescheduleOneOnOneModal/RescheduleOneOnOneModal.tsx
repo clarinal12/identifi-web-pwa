@@ -120,8 +120,19 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string, canSkipSess
   }
 
   return (
-    <div>
+    <div className="d-flex">
       <Button type="primary" ghost onClick={() => setVisibility(true)}>Reschedule</Button>
+      {canSkipSession && (
+        <Button
+          className="ml-3"
+          type="danger"
+          ghost
+          onClick={skipOneOnOneAction}
+          loading={skippingState}
+        >
+          Skip 1-1
+        </Button>
+      )}
       <StyledModal
         maskClosable={false}
         closable={false}
@@ -137,11 +148,8 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string, canSkipSess
               upcomingSessionDate: selectedUserSession.info.upcomingSessionDate,
             },
           })}
-          canSkipSession={canSkipSession}
           maxRescheduleDate={maxRescheduleDate}
-          skippingState={skippingState}
           setVisibility={setVisibility}
-          onSkipAction={skipOneOnOneAction}
           onSubmitAction={rescheduleOneOnOneAction}
         />
       </StyledModal>
