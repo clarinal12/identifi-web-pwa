@@ -18,28 +18,34 @@ interface IAgenda extends RouteComponentProps<{ session_id: string }> {
 
 const StyledTable = styled(Table)`
   table {
+    display: flex;
+    flex-wrap: wrap;
     border-collapse: collapse !important;
-    .ant-table-row {
-      display: flex;
-      border-bottom: 1px solid #F5F5F5;
-      &:last-of-type {
-        border-bottom: none;
-      }
-      &:hover > td {
-        cursor: pointer;
-        background: #c5dbd8cc !important;
-        .ant-btn {
-          display: block;
+    .ant-table-tbody {
+      width: 100%;
+      .ant-table-row {
+        display: flex;
+        border-bottom: 1px solid #F5F5F5;
+        &:last-of-type {
+          border-bottom: none;
         }
-      }
-      td {
-        border-bottom: none;
-        .ant-btn {
-          display: none;
-          width: auto;
-          height: auto;
-          margin-right: 16px;
-          line-height: 16px;
+        &:hover > td {
+          cursor: pointer;
+          background: #c5dbd8cc !important;
+          .ant-btn {
+            display: block;
+          }
+        }
+        td {
+          border-bottom: none;
+          word-break: break-word;
+          .ant-btn {
+            display: none;
+            width: auto;
+            height: auto;
+            margin-right: 16px;
+            line-height: 16px;
+          }
         }
       }
     }
@@ -85,7 +91,7 @@ const Agenda: React.FC<IAgenda> = ({ agenda, canModifyAgenda, match }) => {
         rowKey="id"
         columns={[
           {
-            className: 'w-100 flex-grow-1',
+            className: 'flex-grow-1',
             onCell: ({ topic, content }: any) => ({
               onClick: () => {
                 setModalContent({ topic, content });
