@@ -15,7 +15,6 @@ import { getDisplayName } from 'utils/userUtils';
 import { SESSION_STATUS_ICON } from 'utils/oneOnOneUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
-import { IOneOnOneSession } from 'apollo/types/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { elemT } from 'utils/typescriptUtils';
 
@@ -23,7 +22,13 @@ const { Title, Text } = Typography;
 
 type TEdge = {
   cursor: string,
-  node: IOneOnOneSession,
+  node: {
+    id: string,
+    time: string,
+    status: 'UPCOMING' | 'HAPPENING' | 'INCOMPLETE' | 'COMPLETED' | 'SKIPPED',
+    __typename: string,
+  },
+  __typename: string,
 }
 
 export interface IOneOnOneHistoryQuery {
