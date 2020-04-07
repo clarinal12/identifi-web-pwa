@@ -17,10 +17,9 @@ interface ILinkFilters {
   companyId?: string,
   filterState: TFilterState,
   setFilterState: (filterState: TFilterState) => void,
-  resetState: () => void,
 }
 
-const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilterState, resetState }) => {
+const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilterState }) => {
   const { loading: membersLoading, members } = useMembersContextValue();
   const { loading, data } = useQuery<{ categories: Array<{ id: string, keyword: string }> }>(LINK_CATEGORIES, {
     variables: { companyId },
@@ -40,7 +39,6 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
           value={filterState.memberId}
           optionFilterProp="label"
           onChange={v => {
-            resetState();
             setFilterState({ ...filterState, memberId: v });
           }}
           allowClear
@@ -60,7 +58,6 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
           value={filterState.categoryId}
           optionFilterProp="label"
           onChange={v => {
-            resetState();
             setFilterState({ ...filterState, categoryId: v });
           }}
           allowClear
@@ -77,7 +74,6 @@ const LinkFilters: React.FC<ILinkFilters> = ({ companyId, filterState, setFilter
             size="large"
             type="link"
             onClick={() => {
-              resetState();
               setFilterState({
                 categoryId: undefined,
                 memberId: undefined,

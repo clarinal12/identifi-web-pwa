@@ -81,7 +81,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
     skip: !Boolean(scheduleId),
   });
 
-  const fetchMoreSessions = async (endCursor?: string) => {
+  const fetchMoreSessions = (endCursor?: string) => {
     fetchMore({
       variables: {
         scheduleId,
@@ -98,6 +98,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
           pageInfo: {
             endCursor: fetchMoreResult?.oneOnOneSessions.pageInfo.endCursor,
             hasNextPage: fetchMoreResult?.oneOnOneSessions.pageInfo.hasNextPage,
+            __typename: "PageInfo",
           },
           edges: [...prevEdges, ...newEdges],
         };
