@@ -99,8 +99,9 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
       <div style={{ padding: '32px 0 42px 0' }}>
         <Text className="fs-16">None of the dates work for you? You can also entirely skip this 1-1.</Text>
       </div>
-      <div className="d-flex">
+      <div className="d-flex justify-content-end">
         <Button
+          style={{ minWidth: 140 }}
           disabled={isSubmitting}
           className="mr-4"
           size="large"
