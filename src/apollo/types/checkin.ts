@@ -44,6 +44,7 @@ export type TResponse = {
   numberOfComments: number,
   reactions: TReaction[],
   streak: number,
+  __typename: string,
 }
 
 export type TCurrentCheckIn = {
@@ -63,6 +64,18 @@ export type TCheckInStats = {
   percentage: number,
   colored: IAccount[],
   faded: IAccount[],
+}
+
+export type TCheckInHeader = {
+  name: string,
+  scheduleId: string,
+  status: 'SCHEDULED' | 'WAITING' | 'FINISHED' | 'DEACTIVATED',
+  date: string,
+  stats: {
+    checkedIn: TCheckInStats,
+    completedGoals: TCheckInStats,
+    blockers: TCheckInStats,
+  }
 }
 
 export type TPastCheckIns = {

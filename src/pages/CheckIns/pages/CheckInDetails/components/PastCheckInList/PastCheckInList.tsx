@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Icon, Typography, Row, Col, List, Spin } from 'antd';
+import { Icon, Typography, Row, Col, List, Spin, Alert } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { LoadingIcon } from 'components/PageSpinner';
@@ -67,7 +67,7 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
 }) => {
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
 
-  const { data, loading, fetchMore, networkStatus } = useQuery<ICheckInHistoryQuery>(PAST_CHECKINS, {
+  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInHistoryQuery>(PAST_CHECKINS, {
     variables: { checkInScheduleId: match.params.checkin_id },
     skip: !Boolean(match.params.checkin_id),
     notifyOnNetworkStatusChange: true,
@@ -97,6 +97,23 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
         return { pastCheckIns: newCheckInHistoryData };
       },
     });
+  }
+
+  if (error) {
+    return (
+      <Alert
+        showIcon
+        type="warning"
+        message={function() {
+          let errorMessage = "Network error";
+          if (error.graphQLErrors[0]) {
+            errorMessage = error.graphQLErrors[0].message;
+          }
+          return errorMessage;
+        }()}
+        description="There was an error fetching check-in history."
+      />
+    );
   }
 
   if (loading && networkStatus === 1) {

@@ -4,6 +4,7 @@ import { Row, Col, Typography, Affix, Icon, Card } from 'antd';
 
 import AppLayout from 'components/AppLayout';
 import CheckInHeader from './components/CheckInHeader';
+import CheckInResponses from './components/CheckInResponses';
 import PastCheckInList from './components/PastCheckInList';
 import CheckInNavigation from './components/CheckInNavigation';
 import { ReactionProvider } from 'contexts/ReactionContext';
@@ -26,6 +27,7 @@ const CheckInDetails = () => {
     <Row className="mx-0" gutter={24}>
       <Col sm={24} md={17} className="pl-0">
         <CheckInHeader />
+        <CheckInResponses />
       </Col>
       <Col sm={24} md={7} className="pr-0">
         <Affix offsetTop={24}>

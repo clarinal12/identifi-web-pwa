@@ -10,22 +10,12 @@ import { Spinner } from 'components/PageSpinner';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 import { CHECKIN_HEADER } from 'apollo/queries/checkin';
-import { TCheckInStats } from 'apollo/types/checkin';
+import { TCheckInHeader } from 'apollo/types/checkin';
 
 const { Title, Text } = Typography;
 
 interface ICheckInHeaderQuery {
-  checkInHeader: {
-    name: string,
-    scheduleId: string,
-    status: 'SCHEDULED' | 'WAITING' | 'FINISHED' | 'DEACTIVATED',
-    date: string,
-    stats: {
-      checkedIn: TCheckInStats,
-      completedGoals: TCheckInStats,
-      blockers: TCheckInStats,
-    }
-  }
+  checkInHeader: TCheckInHeader
 }
 
 const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({ match, history, location }) => {

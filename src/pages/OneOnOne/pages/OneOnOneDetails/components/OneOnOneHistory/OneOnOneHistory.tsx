@@ -108,7 +108,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
     });
   }
 
-  if (loading && networkStatus === 1) {
+  if (loading && [1,2].includes(networkStatus)) {
     return (
       <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
         <Spin className="py-4" size="small" indicator={LoadingIcon} spinning tip="Fetching 1-on-1 history..." />

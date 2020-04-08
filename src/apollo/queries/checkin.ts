@@ -216,3 +216,56 @@ export const CHECKIN_HEADER = gql`
     }
   }
 `;
+
+export const CHECKIN_RESPONSES = gql`
+  query CheckInResponses($checkInId: ID!, $filter: CheckInResponsesFilterInput, $pagination: PaginationInput ) {
+    checkInResponses(checkInId: $checkInId, filter: $filter, pagination: $pagination) {
+      edges {
+        cursor
+        node {
+          id
+          respondent {
+            ${MEMBER_FIELDS}
+          }
+          submitDate
+          answers {
+            id
+            question
+            answer
+          }
+          onTime
+          currentGoal {
+            ${CHECKIN_GOAL}
+          }
+          previousGoal {
+            ${CHECKIN_GOAL}
+          }
+          block {
+            id
+            blocker
+          }
+          mood {
+            ${EMOJI_FIELDS}
+          }
+          numberOfComments
+          reactions {
+            emoji {
+              ${EMOJI_FIELDS}
+            }
+            count
+            hasReacted
+          }
+          streak
+          goalCompleted
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        # startCursor
+        # hasPreviousPage
+      }
+      totalCount
+    }
+  }
+`;

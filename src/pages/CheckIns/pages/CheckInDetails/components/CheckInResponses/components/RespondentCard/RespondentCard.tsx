@@ -18,7 +18,7 @@ const { Text, Title } = Typography;
 
 interface IRespondentCard {
   response: TResponse,
-  isCurrent: boolean,
+  isCurrent?: boolean,
 }
 
 const StyledCard = styled(Card)`
