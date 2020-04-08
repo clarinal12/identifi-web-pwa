@@ -169,3 +169,24 @@ export const CHECKIN = gql`
     }
   }
 `;
+
+export const PAST_CHECKINS = gql`
+  query PastCheckIns($checkInScheduleId: ID!, $pagination: PaginationInput ) {
+    pastCheckIns(checkInScheduleId: $checkInScheduleId, pagination: $pagination) {
+      edges {
+        cursor
+        node {
+          id
+          date
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        # startCursor
+        # hasPreviousPage
+      }
+      totalCount
+    }
+  }
+`;

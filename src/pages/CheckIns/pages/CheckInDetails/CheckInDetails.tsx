@@ -82,7 +82,7 @@ const CheckInDetails: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
                     </div>
                   )}
                 >
-                  <PastCheckInList data={data.checkInSchedule} />
+                  <PastCheckInList />
                 </StyledCard>
                 <CheckInNavigation />
               </div>

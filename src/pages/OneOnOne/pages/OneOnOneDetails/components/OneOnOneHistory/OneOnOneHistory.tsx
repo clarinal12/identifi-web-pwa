@@ -79,6 +79,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
   const { data, loading, fetchMore, networkStatus } = useQuery<IOneOnOneHistoryQuery>(ONE_ON_ONE_SESSIONS, {
     variables: { scheduleId },
     skip: !Boolean(scheduleId),
+    notifyOnNetworkStatusChange: true,
   });
 
   const fetchMoreSessions = (endCursor?: string) => {
@@ -107,7 +108,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
     });
   }
 
-  if (loading) {
+  if (loading && networkStatus === 1) {
     return (
       <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
         <Spin className="py-4" size="small" indicator={LoadingIcon} spinning tip="Fetching 1-on-1 history..." />
@@ -135,6 +136,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
         pageStart={0}
         hasMore={!loading && derivedResult.oneOnOneSessions.pageInfo.hasNextPage}
         loadMore={() => fetchMoreSessions(derivedResult.oneOnOneSessions.pageInfo.endCursor)}
+        useWindow={false}
       >
         <List
           dataSource={[{
@@ -174,7 +176,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
             );
           }}
         >
-          {(networkStatus === 3) && (
+          {(networkStatus === 3 || (loading && networkStatus !== 3)) && (
             <div>
               <Spinner label="" />
             </div>
