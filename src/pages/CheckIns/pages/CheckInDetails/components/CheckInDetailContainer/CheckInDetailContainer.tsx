@@ -39,7 +39,6 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ match, hist
     }
   }, [checkInData, setMentionSource]);
 
-  const checkInSource = (checkInData && !loading) ? checkInData.checkIn : data.currentCheckIn;
   const contentBody = error ? (
     <Alert
       showIcon
@@ -54,12 +53,7 @@ const CheckInDetailContainer: React.FC<ICheckInDetailContainer> = ({ match, hist
       description="The check-in you're looking for isn't available"
     />
   ) : (
-    <CheckInDetailView
-      checkInName={data.name}
-      checkInStatus={data.status}
-      done={Boolean(derivedPastCheckinId)}
-      data={checkInSource}
-    />
+    <CheckInDetailView />
   );
 
   return loading ? (

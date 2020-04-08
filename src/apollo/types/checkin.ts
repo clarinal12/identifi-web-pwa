@@ -73,9 +73,13 @@ export type TPastCheckIns = {
 export interface ICheckinData {
   scheduleId: string,
   name: string,
-  frequency: string
+  frequency: string,
+  currentCheckInInfo?: {
+    id: string,
+    date: string,
+  },
   days: string[]
-  nextCheckInDate: Date,
+  nextCheckInDate: string,
   time: string,
   waitingTime: number,
   remindTime: number,

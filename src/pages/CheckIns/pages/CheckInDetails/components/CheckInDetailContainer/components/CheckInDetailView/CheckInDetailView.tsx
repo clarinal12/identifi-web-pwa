@@ -1,22 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Row, Col } from 'antd';
 
-import CheckInHeader from './components/CheckInHeader';
-import CheckInStats from './components/CheckInStats';
-import RespondentCard from './components/RespondentCard';
-import { TCurrentCheckIn } from 'apollo/types/checkin';
+import CheckInHeader from '../../../CheckInHeader';
+// import RespondentCard from '../../../RespondentCard';
+// import { TCurrentCheckIn } from 'apollo/types/checkin';
 import { IconMessage } from 'utils/iconUtils';
 
 const { Title, Text } = Typography;
-
-interface ICheckInDetailView extends RouteComponentProps {
-  done?: boolean,
-  checkInName: string,
-  checkInStatus: string,
-  data: TCurrentCheckIn,
-}
 
 const StyledEmptyRow = styled(Row)`
   min-height: 350px;
@@ -34,34 +26,29 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInDetailView: React.FC<ICheckInDetailView> = ({
-  data, checkInName, checkInStatus, done, location,
-}) => {
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const responseIdFromURL = queryParams.get('responseId');
-    if (responseIdFromURL && document && window) {
-      const expectedElement = document.getElementById(responseIdFromURL);
-      expectedElement && window.scrollBy({
-        top: expectedElement.offsetTop + 88, // 88px for nav height and content padding top
-        behavior: 'smooth',
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return data ? (
+const CheckInDetailView: React.FC<RouteComponentProps> = ({ location }) => {
+  // useEffect(() => {
+  //   const queryParams = new URLSearchParams(location.search);
+  //   const responseIdFromURL = queryParams.get('responseId');
+  //   if (responseIdFromURL && document && window) {
+  //     const expectedElement = document.getElementById(responseIdFromURL);
+  //     expectedElement && window.scrollBy({
+  //       top: expectedElement.offsetTop + 88, // 88px for nav height and content padding top
+  //       behavior: 'smooth',
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+  return (
     <>
-      <CheckInHeader
-        data={data}
-        checkInName={checkInName}
-        checkInState={ done ? 'FINISHED' : checkInStatus}
-      />
-      <CheckInStats
+      <CheckInHeader />
+      <EmptyState />
+      {/* <CheckInStats
         goals={data.completedGoals}
         blockers={data.blockers}
         checkins={data.checkedIn}
-      />
-      {(data.responses.length > 0) ? (
+      /> */}
+      {/* {(data.responses.length > 0) ? (
         <div>
           {data.responses.map((response) => (
             <RespondentCard key={`response_${response.id}`} response={response} isCurrent={data.isCurrent} />
@@ -69,10 +56,8 @@ const CheckInDetailView: React.FC<ICheckInDetailView> = ({
         </div>
       ) : (
         <EmptyState done />
-      )}
+      )} */}
     </>
-  ) : (
-    <EmptyState />
   );
 };
 

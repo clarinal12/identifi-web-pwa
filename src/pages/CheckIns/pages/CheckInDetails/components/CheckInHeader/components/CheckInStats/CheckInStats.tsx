@@ -10,9 +10,11 @@ import { getDisplayName } from 'utils/userUtils';
 const { Title, Text } = Typography;
 
 interface ICheckInStats {
-  goals: TCheckInStats,
-  blockers: TCheckInStats,
-  checkins: TCheckInStats,
+  data: {
+    completedGoals: TCheckInStats,
+    blockers: TCheckInStats,
+    checkedIn: TCheckInStats,
+  }
 }
 
 interface IStackedAvatars {
@@ -89,42 +91,43 @@ const StackedAvatars: React.FC<IStackedAvatars> = ({ source, maxDisplay = 3 }) =
   </>
 };
 
-const CheckInStats: React.FC<ICheckInStats> = ({ goals, blockers, checkins }) => {
+const CheckInStats: React.FC<ICheckInStats> = ({ data }) => {
+  const { completedGoals, blockers, checkedIn } = data;
   return (
     <Row gutter={16} className="mb-3 d-flex">
       <Col lg={8} md={8} xs={24}>
         <StyledCard>
-          {checkins && (
+          {checkedIn && (
             <>
               <div className="stat-wrapper text-center">
                 <Text>Checked-in</Text>
-                <Title className="my-3">{checkins.percentage}%</Title>
+                <Title className="my-3">{checkedIn.percentage}%</Title>
               </div>
               <AvatarWrapper className="d-flex">
                 <div className="active-avatars">
-                  <StackedAvatars source={checkins.colored} />
+                  <StackedAvatars source={checkedIn.colored} />
                 </div>
                 <div className="inactive-avatars">
-                  <StackedAvatars source={checkins.faded} />
+                  <StackedAvatars source={checkedIn.faded} />
                 </div>
               </AvatarWrapper>
             </>
           )}
         </StyledCard>
       </Col>
-      {goals && (
+      {completedGoals && (
         <Col lg={8} md={8} xs={24}>
           <StyledCard>
             <div className="stat-wrapper text-center">
               <Text>Completed goals</Text>
-              <Title className="my-3" style={{ color: '#08979C' }}>{goals.percentage}%</Title>
+              <Title className="my-3" style={{ color: '#08979C' }}>{completedGoals.percentage}%</Title>
             </div>
             <AvatarWrapper className="d-flex">
               <div className="active-avatars">
-                <StackedAvatars source={goals.colored} />
+                <StackedAvatars source={completedGoals.colored} />
               </div>
               <div className="inactive-avatars">
-                <StackedAvatars source={goals.faded} />
+                <StackedAvatars source={completedGoals.faded} />
               </div>
             </AvatarWrapper>
           </StyledCard>

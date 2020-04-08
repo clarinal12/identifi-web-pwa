@@ -122,6 +122,10 @@ const CHECKIN_FIELDS = `
 
 const CHECKIN_CARD = `
   scheduleId
+  currentCheckInInfo {
+    id
+    date
+  }
   name
   replies {
     expected
@@ -187,6 +191,28 @@ export const PAST_CHECKINS = gql`
         # hasPreviousPage
       }
       totalCount
+    }
+  }
+`;
+
+export const CHECKIN_HEADER = gql`
+  query CheckInHeader($checkInId: ID!) {
+    checkInHeader(checkInId: $checkInId) {
+      name
+      scheduleId
+      status
+      date
+      stats {
+        checkedIn {
+        ${CHECKIN_STATS}
+        }
+        completedGoals {
+          ${CHECKIN_STATS}
+        }
+        blockers {
+          ${CHECKIN_STATS}
+        }
+      }
     }
   }
 `;

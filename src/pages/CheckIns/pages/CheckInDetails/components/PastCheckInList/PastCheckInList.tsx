@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import { PAST_CHECKINS } from 'apollo/queries/checkin';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 import { scrollToTop } from 'utils/scrollUtils';
 import { PastClockIcon } from 'utils/iconUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
@@ -26,7 +27,7 @@ type TEdge = {
   __typename: string,
 }
 
-export interface ICheckInHistoryQuery {
+interface ICheckInHistoryQuery {
   pastCheckIns: {
     edges: TEdge[],
     pageInfo: {
@@ -64,6 +65,8 @@ const EmptyState = () => (
 const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({
   match, history, location,
 }) => {
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+
   const { data, loading, fetchMore, networkStatus } = useQuery<ICheckInHistoryQuery>(PAST_CHECKINS, {
     variables: { checkInScheduleId: match.params.checkin_id },
     skip: !Boolean(match.params.checkin_id),
@@ -115,7 +118,7 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
     },
   };
 
-  const derivedPastCheckinId = match.params.past_checkin_id || '';
+  const derivedPastCheckinId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const dataSource = elemT(derivedResult.pastCheckIns.edges);
 
   return (dataSource.length > 0) ? (
@@ -130,8 +133,8 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
         <List
           size="large"
           dataSource={[{
-            id: '',
-            date: '',
+            id: selectedCheckInCard?.currentCheckInInfo?.id,
+            date: selectedCheckInCard?.currentCheckInInfo?.date,
           }].concat(dataSource.map(({ node }) => node))}
           renderItem={({ date, id }) => {
             const isActive = (id === derivedPastCheckinId);

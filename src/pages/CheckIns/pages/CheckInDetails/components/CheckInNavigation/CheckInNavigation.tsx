@@ -33,11 +33,11 @@ const StyledListWrapper = styled.div`
 `;
 
 const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
-  match, history, location,
+  match, history,
 }) => {
-  const { checkInCards } = useCheckInScheduleContextValue();
+  const { checkInCards, loading: checkInContextLoading } = useCheckInScheduleContextValue();
   const currentCheckInIndex = checkInCards.allCheckIns.findIndex(({ scheduleId }) => scheduleId === match.params.checkin_id);
-  return (checkInCards.allCheckIns.length > 1) ? (
+  return ((checkInCards.allCheckIns.length > 1) && !checkInContextLoading) ? (
     <>
       {(currentCheckInIndex !== 0) && (
         <StyledCard className="mb-3" title="Previous check-in">
