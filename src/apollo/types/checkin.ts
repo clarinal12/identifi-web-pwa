@@ -36,14 +36,14 @@ export type TResponse = {
     answer: string
   }>,
   onTime: boolean,
-  goalCompleted: boolean,
-  mood: TEmoji,
-  block?: TBlocker,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
+  block?: TBlocker,
+  mood: TEmoji,
   numberOfComments: number,
   reactions: TReaction[],
   streak: number,
+  goalCompleted: boolean,
   __typename: string,
 }
 
@@ -124,4 +124,25 @@ export interface IComment {
   mentions: IAccount[],
   createdAt: string,
   updatedAt: string,
+}
+
+export type TCheckInResponseEdge = {
+  cursor: string,
+  node: TResponse,
+}
+
+export type TCheckIn = {
+  id: string,
+  isCurrent: boolean,
+  replies: {
+    edges: TCheckInResponseEdge[],
+    pageInfo: {
+      endCursor: string,
+      hasNextPage: boolean,
+      // startCursor: string,
+      // hasPreviousPage: boolean,
+      __typename: string,
+    },
+    totalCount: number,
+  },
 }

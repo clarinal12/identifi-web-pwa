@@ -8,28 +8,15 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { LoadingIcon } from 'components/PageSpinner';
 import RespondentCard from './components/RespondentCard';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
-import { CHECKIN_RESPONSES } from 'apollo/queries/checkin';
-import { TResponse } from 'apollo/types/checkin';
+import { CHECKIN } from 'apollo/queries/checkin';
+import { TCheckIn } from 'apollo/types/checkin';
 import { IconMessage } from 'utils/iconUtils';
 import { elemT } from 'utils/typescriptUtils';
 
 const { Title, Text } = Typography;
 
-type TEdge = {
-  cursor: string,
-  node: TResponse,
-  __typename: string,
-}
-
 interface ICheckInResponseQuery {
-  checkInResponses: {
-    edges: TEdge[],
-    pageInfo: {
-      endCursor: string,
-      hasNextPage: boolean,
-    },
-    totalCount: number,
-  }
+  checkIn: TCheckIn
 }
 
 const StyledSpinnerWrapper = styled.div`
@@ -57,9 +44,9 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
 const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string }>>  = ({ match }) => {
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
-  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN_RESPONSES, {
+  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN, {
     variables: {
-      checkInId: derivedPastCheckInId,
+      id: derivedPastCheckInId,
       pagination: { first: 5 },
     },
     skip: !Boolean(derivedPastCheckInId),
@@ -69,28 +56,31 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string }
   const fetchMoreResponses = (endCursor?: string) => {
     fetchMore({
       variables: {
-        checkInScheduleId: derivedPastCheckInId,
+        id: derivedPastCheckInId,
         ...(endCursor && {
           pagination: {
             first: 5,
             after: endCursor,
           },
-        })
+        }),
       },
       updateQuery: (previousResult: ICheckInResponseQuery, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousResult;
-        const prevEdges =  previousResult.checkInResponses.edges;
-        const newEdges = fetchMoreResult.checkInResponses.edges;
-        const newCheckInResponsesData = {
-          ...previousResult.checkInResponses,
-          pageInfo: {
-            endCursor: fetchMoreResult?.checkInResponses.pageInfo.endCursor,
-            hasNextPage: fetchMoreResult?.checkInResponses.pageInfo.hasNextPage,
-            __typename: "PageInfo",
-          },
-          edges: [...prevEdges, ...newEdges],
+        const prevEdges =  previousResult.checkIn.replies.edges;
+        const newEdges = fetchMoreResult.checkIn.replies.edges;
+        const newCheckInData = {
+          ...previousResult.checkIn,
+          replies: {
+            ...previousResult.checkIn.replies,
+            edges: [...prevEdges, ...newEdges],
+            pageInfo: {
+              endCursor: fetchMoreResult?.checkIn.replies.pageInfo.endCursor,
+              hasNextPage: fetchMoreResult?.checkIn.replies.pageInfo.hasNextPage,
+              __typename: "PageInfo",
+            },
+          }
         };
-        return { checkInResponses: newCheckInResponsesData };
+        return { checkIn: newCheckInData };
       },
     });
   }
@@ -121,28 +111,33 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string }
   }
   
   const derivedResult = data || {
-    checkInResponses: {
-      edges: [],
-      pageInfo: {
-        endCursor: undefined,
-        hasNextPage: false,
-      },
-      totalCount: 0,
+    checkIn: {
+      id: '',
+      isCurrent: false,
+      replies: {
+        edges: [],
+        pageInfo: {
+          endCursor: undefined,
+          hasNextPage: false,
+        },
+        totalCount: 0,
+      }
     },
   };
 
-  const dataSource = elemT(derivedResult.checkInResponses.edges).map(({ node }) => node);
+  const replies = derivedResult.checkIn.replies;
+  const dataSource = elemT(replies.edges).map(({ node }) => node);
 
   return data ? (
     (dataSource.length > 0) ? (
       <InfiniteScroll
         initialLoad={false}
         pageStart={0}
-        hasMore={!loading && derivedResult.checkInResponses.pageInfo.hasNextPage}
-        loadMore={() => fetchMoreResponses(derivedResult.checkInResponses.pageInfo.endCursor)}
+        hasMore={!loading && replies.pageInfo.hasNextPage}
+        loadMore={() => fetchMoreResponses(replies.pageInfo.endCursor)}
       >
         {dataSource.map((response) => (
-          <RespondentCard key={`response_${response.id}`} response={response} />
+          <RespondentCard key={`response_${response.id}`} response={response} isCurrent={derivedResult.checkIn.isCurrent} />
         ))}
         {(networkStatus === 3 || (loading && networkStatus !== 3)) && (
           <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
