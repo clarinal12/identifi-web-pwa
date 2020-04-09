@@ -35,6 +35,9 @@ export const UPDATE_CHECKIN_GOAL = gql`
   mutation UpdateCheckInGoal($goalId: ID!, $input: UpdateCheckInGoalInput!) {
     updateCheckInGoal(goalId: $goalId, input: $input) {
       id
+      createdAt
+      goal
+      completed
     }
   }
 `;

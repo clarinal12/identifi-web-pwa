@@ -5,37 +5,43 @@ import { Button } from 'antd';
 
 import EditGoalForm from './components/EditGoalForm';
 import { IExternalProps } from './components/EditGoalForm/EditGoalForm';
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_GOAL } from 'apollo/mutations/checkin';
 import { TCheckInGoal } from 'apollo/types/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import updateCheckInGoalCacheHandler from './cache-handler/updateCheckInGoal';
 
 interface IEditGoalModal extends Partial<IExternalProps>, RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {}
 
 const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) => {
   const { alertSuccess, alertError } = useMessageContextValue();
+  const { account } = useUserContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [modalState, setModalState] = useState(false);
   const [updateCheckInGoal] = useMutation(UPDATE_CHECKIN_GOAL);
 
-  const onSubmitAction = async (values: Partial<TCheckInGoal>, setSubmitting: (isSubmitting: boolean) => void) => {
+  const onSubmitAction = async (values: Partial<TCheckInGoal>) => {
     try {
-      await updateCheckInGoal({
+      updateCheckInGoal({
         variables: {
           ...(data && {
             goalId: data.id,
           }),
           input: values,
         },
-        refetchQueries: [{
-          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: {
-            id: match.params.past_checkin_id || match.params.checkin_id,
+        ...updateCheckInGoalCacheHandler({
+          isPreviousGoal: showSwitch,
+          respondentId: account?.id,
+          checkInId: derivedPastCheckInId,
+          value: {
+            ...data,
+            ...values,
           },
-        }],
-        awaitRefetchQueries: true,
+        }),
       });
       alertSuccess("Checkin goal updated");
-      setSubmitting(false);
       setModalState(false);
     } catch (error) {
       let errorMessage = null;
@@ -43,7 +49,6 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) =>
         errorMessage = error.graphQLErrors[0].message;
       }
       alertError(errorMessage);
-      setSubmitting(false);
     }
   }
 

@@ -50,7 +50,7 @@ const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> =
                   <List.Item
                     key={scheduleId}
                     onClick={() => {
-                      scrollToTop();
+                      scrollToTop(false);
                       history.push({
                         pathname: `/checkins/${scheduleId}`,
                         state: {
@@ -81,7 +81,7 @@ const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> =
                   <List.Item
                     key={scheduleId}
                     onClick={() => {
-                      scrollToTop();
+                      scrollToTop(false);
                       history.push({
                         pathname: `/checkins/${scheduleId}`,
                         state: {

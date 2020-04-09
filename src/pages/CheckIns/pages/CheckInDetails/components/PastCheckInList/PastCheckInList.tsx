@@ -161,7 +161,7 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
                 className={cx({ active: isActive })}
                 key={id}
                 onClick={() => {
-                  scrollToTop();
+                  scrollToTop(false);
                   if (isPastCheckIn) {
                     history.push({
                       pathname: `/checkins/${match.params.checkin_id}/${id}`,

@@ -1,1 +1,1 @@
-export const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+export const scrollToTop = (isSmooth = true) => window.scrollTo({ top: 0, behavior: isSmooth ? 'smooth' : 'auto' });

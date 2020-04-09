@@ -12,10 +12,7 @@ import { TCheckInGoal } from 'apollo/types/checkin';
 const { Text } = Typography;
 
 export interface IExternalProps {
-  onSubmitAction: (
-    values: Partial<TCheckInGoal>,
-    setSubmitting: (isSubmitting: boolean) => void,
-  ) => void,
+  onSubmitAction: (values: Partial<TCheckInGoal>) => void,
   modalState: boolean,
   setModalState: (modalState: boolean) => void,
   showSwitch?: boolean,
@@ -108,12 +105,14 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
 
 export default withFormik<IExternalProps, Partial<TCheckInGoal>>({
   validationSchema: editGoalFormSchema,
+  enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     goal: data.goal,
     completed: data.completed,
   }),
-  handleSubmit: (values, { setSubmitting, props }) => {
-    props.onSubmitAction(values, setSubmitting);
+  handleSubmit: (values, { props, setSubmitting }) => {
+    setSubmitting(false);
+    props.onSubmitAction(values);
   },
   displayName: 'EditGoalForm',
 })(EditGoalForm);
