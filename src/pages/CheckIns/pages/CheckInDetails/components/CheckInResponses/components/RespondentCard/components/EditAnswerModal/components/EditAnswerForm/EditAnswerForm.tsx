@@ -14,7 +14,6 @@ export interface IExternalProps {
     values: {
       answer: string,
     },
-    setSubmitting: (isSubmitting: boolean) => void,
   ) => void,
   modalState: boolean,
   setModalState: (modalState: boolean) => void,
@@ -90,11 +89,13 @@ const EditAnswerForm: React.FC<IExternalProps & FormikProps<{ answer: string }>>
 
 export default withFormik<IExternalProps, { answer: string }>({
   validationSchema: editAnswerFormSchema,
+  enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     answer: data.answer,
   }),
   handleSubmit: (values, { setSubmitting, props }) => {
-    props.onSubmitAction(values, setSubmitting);
+    setSubmitting(false);
+    props.onSubmitAction(values);
   },
   displayName: 'EditAnswerForm',
 })(EditAnswerForm);

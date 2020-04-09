@@ -5,39 +5,41 @@ import { Button } from 'antd';
 
 import EditAnswerForm from './components/EditAnswerForm';
 import { IExternalProps } from './components/EditAnswerForm/EditAnswerForm';
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_ANSWER } from 'apollo/mutations/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import updateCheckInAnswerCacheHandler from './cache-handler/updateCheckInAnswer';
 
 interface IEditAnswerModal extends Partial<IExternalProps>, RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {}
 
 const EditAnswerModal: React.FC<IEditAnswerModal> = ({ data, match }) => {
   const { alertSuccess, alertError } = useMessageContextValue();
+  const { account } = useUserContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [modalState, setModalState] = useState(false);
   const [updateCheckInAnswer] = useMutation(UPDATE_CHECKIN_ANSWER);
 
-  const onSubmitAction = async (
-    values: { answer: string },
-    setSubmitting: (isSubmitting: boolean) => void,
-  ) => {
+  const onSubmitAction = (values: { answer: string }) => {
     try {
-      await updateCheckInAnswer({
+      updateCheckInAnswer({
         variables: {
           ...(data && {
             answerId: data.id,
           }),
           input: values,
         },
-        refetchQueries: [{
-          query: match.params.past_checkin_id ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: {
-            id: match.params.past_checkin_id || match.params.checkin_id,
+        ...updateCheckInAnswerCacheHandler({
+          respondentId: account?.id,
+          checkInId: derivedCheckInId,
+          value: {
+            ...data,
+            ...values,
           },
-        }],
-        awaitRefetchQueries: true,
+        }),
       });
       alertSuccess("Checkin answer updated");
-      setSubmitting(false);
       setModalState(false);
     } catch (error) {
       let errorMessage = null;
@@ -45,7 +47,6 @@ const EditAnswerModal: React.FC<IEditAnswerModal> = ({ data, match }) => {
         errorMessage = error.graphQLErrors[0].message;
       }
       alertError(errorMessage);
-      setSubmitting(false);
     }
   }
 

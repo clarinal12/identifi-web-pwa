@@ -26,15 +26,17 @@ export type TReaction = {
   __typename: string,
 }
 
+export type TCheckInAnswer = {
+  id: string,
+  question: string
+  answer: string
+}
+
 export type TResponse = {
   id: string,
   respondent: IAccount,
   submitDate: Date,
-  answers: Array<{
-    id: string,
-    question: string
-    answer: string
-  }>,
+  answers: TCheckInAnswer[],
   onTime: boolean,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,

@@ -46,6 +46,8 @@ export const UPDATE_CHECKIN_ANSWER = gql`
   mutation UpdateCheckInAnswer($answerId: ID!, $input: UpdateCheckInAnswerInput!) {
     updateCheckInAnswer(answerId: $answerId, input: $input) {
       id
+      question
+      answer
     }
   }
 `;
