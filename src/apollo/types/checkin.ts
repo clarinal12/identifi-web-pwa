@@ -20,6 +20,7 @@ export type TBlocker = {
 }
 
 export type TReaction = {
+  id: number,
   emoji: TEmoji,
   count: number,
   hasReacted: boolean,

@@ -1,13 +1,13 @@
 import { DataProxy } from 'apollo-cache/lib/types';
+import cloneDeep from 'lodash/cloneDeep';
 
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { CHECKIN } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { IAccount } from 'apollo/types/user';
-import { TEmoji, TCurrentCheckIn } from 'apollo/types/checkin';
+import { TEmoji, TCheckIn } from 'apollo/types/checkin';
 
 interface ICacheHandler {
-  isPastCheckIn: boolean,
-  checkInId: string,
+  checkInId?: string,
   responseId: string,
   values: {
     emoji: TEmoji,
@@ -15,37 +15,45 @@ interface ICacheHandler {
   }
 }
 
-export default ({
-  isPastCheckIn, checkInId, responseId, values,
-}: ICacheHandler) => ({
+export default ({ checkInId, responseId, values }: ICacheHandler) => ({
   update: (store: DataProxy, { data: { addCheckInResponseReaction } }: any) => {
     try {
-      const checkInCacheData: any | null = store.readQuery({
-        query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-        variables: { id: checkInId },
+      const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
+        query: CHECKIN,
+        variables: {
+          id: checkInId,
+          pagination: { first: 5 },
+        },
       });
-      const checkInSource: TCurrentCheckIn = isPastCheckIn ? checkInCacheData?.checkIn : checkInCacheData?.checkInSchedule.currentCheckIn;
-      const checkInResponse = checkInSource.responses.find(({ id }) => id === responseId);
-      if (checkInResponse) {
-        const reactionIndex = checkInResponse.reactions.findIndex((reactionGroup) => {
-          return reactionGroup.emoji.id === values.emoji.id;
-        });
-        if (reactionIndex >= 0) {
-          checkInResponse.reactions[reactionIndex].count += 1;
-          checkInResponse.reactions[reactionIndex].hasReacted = true;
-        } else {
-          checkInResponse.reactions.push({
-            emoji: addCheckInResponseReaction,
-            count: 1,
-            hasReacted: true,
-            __typename: "CheckInResponseReactionGroup",
+      if (checkInCacheData) {
+        const clonedCheckInCacheData = cloneDeep(checkInCacheData);
+        const { edges } = clonedCheckInCacheData.checkIn.replies;
+        const checkInResponse = edges.find(({ node }) => node.id === responseId);  
+        if (checkInResponse) {
+          const reaction = checkInResponse.node.reactions.find((reactionGroup) => {
+            return reactionGroup.emoji.id === values.emoji.id;
+          });
+          if (reaction) {
+            reaction.count += 1;
+            reaction.hasReacted = true;
+          } else {
+            checkInResponse.node.reactions.push({
+              id: addCheckInResponseReaction.id,
+              emoji: addCheckInResponseReaction,
+              count: 1,
+              hasReacted: true,
+              __typename: "CheckInResponseReactionGroup",
+            });
+          }
+          store.writeQuery({
+            query: CHECKIN,
+            variables: {
+              id: checkInId,
+              pagination: { first: 5 },
+            },
+            data: clonedCheckInCacheData,
           });
         }
-        store.writeQuery({
-          query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: { id: checkInId },
-          data: checkInCacheData,
-        });
       }
     } catch (_) {}
 
