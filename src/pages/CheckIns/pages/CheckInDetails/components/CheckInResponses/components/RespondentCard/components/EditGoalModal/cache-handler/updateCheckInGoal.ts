@@ -1,7 +1,7 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
-import { CHECKIN } from 'apollo/queries/checkin';
-import { TCheckIn, TCheckInGoal } from 'apollo/types/checkin';
+import { CHECKIN, CHECKIN_HEADER } from 'apollo/queries/checkin';
+import { TCheckIn, TCheckInGoal, TCheckInHeader } from 'apollo/types/checkin';
 
 interface ICacheHandler {
   isPreviousGoal?: boolean,
@@ -33,6 +33,38 @@ export default ({ checkInId, respondentId, isPreviousGoal, value }: ICacheHandle
             pagination: { first: 5 },
           },
           data: checkInCacheData,
+        });
+      }
+    } catch (_) {}
+
+    try {
+      const checkInHeaderCacheData = store.readQuery<{ checkInHeader: TCheckInHeader }>({
+        query: CHECKIN_HEADER,
+        variables: { checkInId },
+      });
+      if (checkInHeaderCacheData && updateCheckInGoal) {
+        const { stats } = checkInHeaderCacheData.checkInHeader;
+        if (updateCheckInGoal.completed) {
+          const selectedUserToBeMoved = stats.completedGoals.faded.find(({ id }) => id === respondentId);
+          if (selectedUserToBeMoved) {
+            const newFadedUsers = stats.completedGoals.faded.filter(({ id }) => id !== respondentId);
+            stats.completedGoals.faded = newFadedUsers;
+            stats.completedGoals.colored.push(selectedUserToBeMoved);
+          }
+        } else {
+          const selectedUserToBeMoved = stats.completedGoals.colored.find(({ id }) => id === respondentId);
+          if (selectedUserToBeMoved) {
+            const newColoredUsers = stats.completedGoals.colored.filter(({ id }) => id !== respondentId);
+            stats.completedGoals.colored = newColoredUsers;
+            stats.completedGoals.faded.push(selectedUserToBeMoved);
+          }
+        }
+        const totalMembers = stats.checkedIn.faded.length + stats.checkedIn.colored.length;
+        stats.completedGoals.percentage = Math.round((stats.completedGoals.colored.length / totalMembers) * 100);
+        store.writeQuery({
+          query: CHECKIN_HEADER,
+          variables: { checkInId },
+          data: checkInHeaderCacheData,
         });
       }
     } catch (_) {}

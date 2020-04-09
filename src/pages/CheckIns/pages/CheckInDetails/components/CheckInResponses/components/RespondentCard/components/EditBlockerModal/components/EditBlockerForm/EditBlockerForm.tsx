@@ -15,7 +15,6 @@ export interface IExternalProps {
     values: Partial<TBlocker> & {
       isBlocked?: boolean,
     },
-    setSubmitting: (isSubmitting: boolean) => void,
   ) => void,
   modalState: boolean,
   setModalState: (modalState: boolean) => void,
@@ -105,12 +104,14 @@ const EditBlockerForm: React.FC<IExternalProps & FormikProps<Partial<TBlocker> &
 
 export default withFormik<IExternalProps, Partial<TBlocker> & { isBlocked: boolean }>({
   validationSchema: editBlockerFormSchema,
+  enableReinitialize: true,
   mapPropsToValues: ({ data }) => ({
     blocker: data.blocker,
     isBlocked: true,
   }),
   handleSubmit: (values, { setSubmitting, props }) => {
-    props.onSubmitAction(values, setSubmitting);
+    setSubmitting(false);
+    props.onSubmitAction(values);
   },
   displayName: 'EditBlockerForm',
 })(EditBlockerForm);

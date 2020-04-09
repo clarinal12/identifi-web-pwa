@@ -18,11 +18,11 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) =>
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
-  const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [modalState, setModalState] = useState(false);
   const [updateCheckInGoal] = useMutation(UPDATE_CHECKIN_GOAL);
 
-  const onSubmitAction = async (values: Partial<TCheckInGoal>) => {
+  const onSubmitAction = (values: Partial<TCheckInGoal>) => {
     try {
       updateCheckInGoal({
         variables: {
@@ -34,7 +34,7 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) =>
         ...updateCheckInGoalCacheHandler({
           isPreviousGoal: showSwitch,
           respondentId: account?.id,
-          checkInId: derivedPastCheckInId,
+          checkInId: derivedCheckInId,
           value: {
             ...data,
             ...values,

@@ -138,7 +138,7 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
               </div>
               {isCheckInEditable && (
                 <EditGoalModal showSwitch data={previousGoal} />
-                )}
+              )}
             </div>
           </div>
         )}

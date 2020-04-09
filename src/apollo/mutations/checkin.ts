@@ -62,6 +62,7 @@ export const UPDATE_CHECKIN_BLOCKER = gql`
   mutation UpdateCheckInBlocker($blockerId: ID!, $input: UpdateCheckInBlockerInput!) {
     updateCheckInBlocker(blockerId: $blockerId, input: $input) {
       id
+      blocker
     }
   }
 `;
