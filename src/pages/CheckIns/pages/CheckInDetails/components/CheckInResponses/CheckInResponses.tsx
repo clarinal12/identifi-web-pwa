@@ -150,6 +150,8 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
   const replies = derivedResult.checkIn.replies;
   const dataSource = elemT(replies.edges).map(({ node }) => node);
 
+  console.log(replies.pageInfo.hasNextPage);
+
   return data ? (
     (dataSource.length > 0) ? (
       <InfiniteScroll
@@ -157,6 +159,7 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
         pageStart={0}
         hasMore={!loading && replies.pageInfo.hasNextPage}
         loadMore={() => fetchMoreResponses(replies.pageInfo.endCursor)}
+        threshold={750}
       >
         {dataSource.map((response) => (
           <RespondentCard key={`response_${response.id}`} response={response} isCurrent={derivedResult.checkIn.isCurrent} />

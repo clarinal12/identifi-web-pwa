@@ -12,12 +12,12 @@ const StyledWrapper = styled.div`
   align-items: center;
 `;
 
-export default () => (
+export default ({ errorMessage }: { errorMessage: string }) => (
   <StyledWrapper>
     <Result
-      status="404"
-      title={<Title level={1}>404</Title>}
-      subTitle={<Title type="secondary" level={4}>Sorry, the page you visited does not exist.</Title>}
+      status="error"
+      title={<Title level={1}>Something went wrong</Title>}
+      subTitle={<Title type="secondary" level={4}>{errorMessage}</Title>}
       extra={(
         <Link to="/">
           <Button size="large" type="primary">Go back to {process.env.REACT_APP_NAME}</Button>

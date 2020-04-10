@@ -40,6 +40,7 @@ const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_che
   if (error) {
     return (
       <Alert
+        className="mb-3"
         showIcon
         type="warning"
         message={function() {
