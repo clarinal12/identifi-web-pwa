@@ -150,8 +150,6 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
   const replies = derivedResult.checkIn.replies;
   const dataSource = elemT(replies.edges).map(({ node }) => node);
 
-  console.log(replies.pageInfo.hasNextPage);
-
   return data ? (
     (dataSource.length > 0) ? (
       <InfiniteScroll

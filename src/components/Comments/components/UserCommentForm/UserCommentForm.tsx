@@ -158,7 +158,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
         {...account?.avatar && {
           avatar: (
             <Link to={`/profile/${account.id}`}>
-              <Avatar src={account.avatar} />
+              <Avatar style={{ width: 36, height: 36 }} src={account.avatar} />
             </Link>
           )
         }}

@@ -16,27 +16,30 @@ declare module "react-mentions" {
 
 const StyledMentionInput = styled(MentionsInput)`
   div[class$="__highlighter"], textarea {
-    padding: 6px 10px;
+    padding: 8px 12px;
+    line-height: 20px;
   }
   div[class$="__highlighter"] {
+    background-color: #f2f3f5 !important;
+    border-radius: 16px;
     word-break: break-word;
     border: 0;
     strong {
       background: #E6FFFB;
+      border-radius: 2px;
     }
   }
   textarea {
-    transition: all .3s,height 0s;
-    border-radius: 4px;
+    border-radius: 16px;
+    border: 1px solid #ccd0d5;
     color: #262626;
     &::placeholder {
-      color: #d9d9d9;
-    }
-    &:hover, &:focus {
-      border-color: #23a8a8;
+      color: #8d949e;
     }
     &:focus {
-      box-shadow: 0 0 0 2px #08979c33;
+      &::placeholder {
+        color: #d9d9d9;
+      }
     }
   }
 `;
@@ -66,7 +69,7 @@ const MentionBox: React.FC<IMentionBox> = ({
       id={id}
       allowSpaceInQuery
       allowSuggestionsAboveCursor
-      placeholder="Add a comment"
+      placeholder="Write a comment..."
       onChange={(e, _newValue, _newPlainTextValue, mentions) => {
         const newSetOfMentions: IAccount[] = [];
         mentions.forEach((mention) => {

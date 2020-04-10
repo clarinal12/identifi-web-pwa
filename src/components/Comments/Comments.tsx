@@ -165,7 +165,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             <List.Item.Meta
               avatar={(
                 <Link to={`/profile/${author.id}`}>
-                  <Avatar {...(author.avatar && { src: author.avatar })} />
+                  <Avatar style={{ width: 36, height: 36 }} {...(author.avatar && { src: author.avatar })} />
                 </Link>
               )}
               title={
