@@ -1,13 +1,12 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
 import { COMMENTS } from 'apollo/queries/comments';
-import { CHECKIN_SCHEDULE, CHECKIN } from 'apollo/queries/checkin';
-import { IComment, TCurrentCheckIn } from 'apollo/types/checkin';
+import { CHECKIN } from 'apollo/queries/checkin';
+import { IComment, TCheckIn } from 'apollo/types/checkin';
 import { IAccount } from 'apollo/types/user';
 
 interface ICacheHandler {
-  isPastCheckIn: boolean,
-  checkInId: string,
+  checkInId?: string,
   checkInResponseId: string,
   values: {
     comment: string,
@@ -16,12 +15,10 @@ interface ICacheHandler {
   },
 }
 
-export default ({
-  checkInResponseId, values, isPastCheckIn, checkInId,
-}: ICacheHandler) => ({
+export default ({ checkInResponseId, values, checkInId }: ICacheHandler) => ({
   update: (store: DataProxy, { data: { addCheckInResponseComment } }: any) => {
     try {
-      const checkInResponseCacheData: { checkInResponseComments: IComment[] } | null = store.readQuery({
+      const checkInResponseCacheData = store.readQuery<{ checkInResponseComments: IComment[] }>({
         query: COMMENTS,
         variables: { checkInResponseId },
       });
@@ -34,19 +31,28 @@ export default ({
     } catch (_) {}
 
     try {
-      const DERIVED_QUERY = isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE;
-      const checkInCacheData: any | null = store.readQuery({
-        query: DERIVED_QUERY,
-        variables: { id: checkInId },
+      const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
+        query: CHECKIN,
+        variables: {
+          id: checkInId,
+          pagination: { first: 5 },
+        },
       });
-      const checkInSource: TCurrentCheckIn = isPastCheckIn ? checkInCacheData?.checkIn : checkInCacheData?.checkInSchedule.currentCheckIn;
-      const checkInResponse = checkInSource.responses.find(({ id }) => id === checkInResponseId) || { numberOfComments: 0 };
-      checkInResponse.numberOfComments += 1;
-      store.writeQuery({
-        query: DERIVED_QUERY,
-        variables: { id: checkInId },
-        data: checkInCacheData,
-      });
+      if (checkInCacheData) {
+        const { edges } = checkInCacheData.checkIn.replies;
+        const checkInResponse = edges.find(({ node }) => node.id === checkInResponseId);
+        if (checkInResponse) {
+          checkInResponse.node.numberOfComments += 1;
+          store.writeQuery({
+            query: CHECKIN,
+            variables: {
+              id: checkInId,
+              pagination: { first: 5 },
+            },
+            data: checkInCacheData,
+          });
+        }
+      }
     } catch (_) {}
   },
   optimisticResponse: {

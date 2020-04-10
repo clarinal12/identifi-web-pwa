@@ -31,6 +31,7 @@ const StyledCollapse = styled(Collapse)`
   .ant-collapse-item {
     border: none !important;
     .ant-collapse-header {
+      user-select: none;
       padding: 16px 24px !important;
     }
     .ant-collapse-content {

@@ -6,6 +6,7 @@ import { Modal, Typography } from 'antd';
 
 import { DELETE_COMMENT } from 'apollo/mutations/comments';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 import deleteCommentCacheHandler from './cache-handler/deleteComment';
 
 const { Text} = Typography;
@@ -26,6 +27,8 @@ const StyledModal = styled(Modal)`
 const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId }) => {
   const [deleteCommentMutation] = useMutation(DELETE_COMMENT);
   const { alertError } = useMessageContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
 
   const deleteCommentAction = () => {
     try {
@@ -33,8 +36,7 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         variables: { id: commentId },
         ...deleteCommentCacheHandler({
           commentId,
-          isPastCheckIn: Boolean(match.params.past_checkin_id),
-          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInId: derivedCheckInId,
           checkInResponseId: responseId,
         }),
       });
