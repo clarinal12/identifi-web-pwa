@@ -201,3 +201,14 @@ export const CHECKIN_HEADER = gql`
     }
   }
 `;
+
+export const CHECKIN_PARTICIPANTS = gql`
+  query CheckInParticipants($checkInScheduleId: ID!) {
+    checkInParticipants(checkInScheduleId: $checkInScheduleId) {
+      member {
+        ${MEMBER_FIELDS}
+      }
+      role
+    }
+  }
+`;

@@ -8,8 +8,9 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { LoadingIcon } from 'components/PageSpinner';
 import RespondentCard from './components/RespondentCard';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
-import { CHECKIN } from 'apollo/queries/checkin';
-import { TCheckIn } from 'apollo/types/checkin';
+import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
+import { CHECKIN, CHECKIN_PARTICIPANTS } from 'apollo/queries/checkin';
+import { TCheckIn, TCheckInParticipant } from 'apollo/types/checkin';
 import { IconMessage } from 'utils/iconUtils';
 import { elemT } from 'utils/typescriptUtils';
 
@@ -41,7 +42,8 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string }>>  = ({ match }) => {
+const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match }) => {
+  const { setMentionSource } = useMentionSourceContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN, {
@@ -51,6 +53,17 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string }
     },
     skip: !Boolean(derivedPastCheckInId),
     notifyOnNetworkStatusChange: true,
+  });
+
+  // initializing mentionables
+  useQuery<{ checkInParticipants: TCheckInParticipant[] }>(CHECKIN_PARTICIPANTS, {
+    variables: { checkInScheduleId: match.params.checkin_id },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ checkInParticipants }) => {
+      const mentionables = checkInParticipants.map(({ member }) => member);
+      setMentionSource(mentionables);
+    },
+    skip: !Boolean(match.params.checkin_id),
   });
 
   const fetchMoreResponses = (endCursor?: string) => {

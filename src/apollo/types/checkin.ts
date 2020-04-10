@@ -149,3 +149,8 @@ export type TCheckIn = {
     totalCount: number,
   },
 }
+
+export type TCheckInParticipant = {
+  role: 'WATCHER' | 'RESPONDENT',
+  member: IAccount,
+}
