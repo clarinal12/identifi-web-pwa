@@ -124,6 +124,8 @@ const StyledEditorWrapper = styled.div`
 `;
 
 const StyledHTMLRenderer = styled.div`
+  word-break: break-word;
+  font-size: 16px;
   p, span, ul, ol {
     font-size: 16px !important;
   }

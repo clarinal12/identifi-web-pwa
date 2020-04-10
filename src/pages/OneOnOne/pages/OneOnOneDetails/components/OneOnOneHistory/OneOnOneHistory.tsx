@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useQuery } from 'react-apollo';
 import cx from 'classnames';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -15,30 +15,31 @@ import { getDisplayName } from 'utils/userUtils';
 import { SESSION_STATUS_ICON } from 'utils/oneOnOneUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
-import { IOneOnOneSession } from 'apollo/types/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { elemT } from 'utils/typescriptUtils';
 
 const { Title, Text } = Typography;
 
-interface IOneOnOneHistoryQuery {
+type TEdge = {
+  cursor: string,
+  node: {
+    id: string,
+    time: string,
+    status: 'UPCOMING' | 'HAPPENING' | 'INCOMPLETE' | 'COMPLETED' | 'SKIPPED',
+    __typename: string,
+  },
+  __typename: string,
+}
+
+export interface IOneOnOneHistoryQuery {
   oneOnOneSessions: {
-    edges: Array<{
-      cursor: string,
-      node: IOneOnOneSession,
-    }>,
+    edges: TEdge[],
     pageInfo: {
       endCursor: string,
       hasNextPage: boolean,
     },
     totalCount: number,
   }
-}
-
-interface IOneOnOneSessionState {
-  dataSource: IOneOnOneSession[],
-  hasMore: boolean,
-  loading: boolean,
-  endCursor?: string,
 }
 
 const StyledEmptyRow = styled(Row)`
@@ -74,65 +75,40 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
   const upcomingSessionDate = selectedUserSession?.info?.upcomingSessionDate;
 
   const derivedSessionId = match.params.session_id || '';
-  const [state, setState] = useState<IOneOnOneSessionState>({
-    dataSource: [],
-    loading: true,
-    hasMore: true,
-    endCursor: undefined,
-  });
-
-  const { data, loading, refetch } = useQuery<IOneOnOneHistoryQuery>(ONE_ON_ONE_SESSIONS, {
+  
+  const { data, loading, fetchMore, networkStatus } = useQuery<IOneOnOneHistoryQuery>(ONE_ON_ONE_SESSIONS, {
     variables: { scheduleId },
-    notifyOnNetworkStatusChange: true,
     skip: !Boolean(scheduleId),
+    notifyOnNetworkStatusChange: true,
   });
 
-  useEffect(() => {
-    if (data) {
-      const { oneOnOneSessions } = data;
-      setState({
-        dataSource: oneOnOneSessions.edges.map(({ node }) => node),
-        loading: false,
-        hasMore: oneOnOneSessions.pageInfo.hasNextPage,
-        endCursor: oneOnOneSessions.pageInfo.endCursor,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scheduleId, loading]);
-
-  useEffect(() => {
-    if (!loading && data && !state.endCursor) {
-      const { oneOnOneSessions } = data;
-      setState({
-        dataSource: [...state.dataSource].concat(oneOnOneSessions.edges.map(({ node }) => node)),
-        loading: false,
-        hasMore: oneOnOneSessions.pageInfo.hasNextPage,
-        endCursor: oneOnOneSessions.pageInfo.endCursor,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, loading]);
-
-  const refetchSessions = async () => {
-    setState({ ...state, loading: true });
-    const { data: refetchResult } = await refetch({
-      scheduleId,
-      ...(state.endCursor && {
-        pagination: {
-          after: state.endCursor,
-        }
-      }),
-    });
-    setState({
-      ...state,
-      loading: false,
-      hasMore: refetchResult.oneOnOneSessions.pageInfo.hasNextPage,
-      endCursor: refetchResult.oneOnOneSessions.pageInfo.endCursor,
-      dataSource: [...state.dataSource].concat(refetchResult.oneOnOneSessions.edges.map(({ node }) => node)),
+  const fetchMoreSessions = (endCursor?: string) => {
+    fetchMore({
+      variables: {
+        scheduleId,
+        ...(endCursor && {
+          pagination: { after: endCursor },
+        })
+      },
+      updateQuery: (previousResult: IOneOnOneHistoryQuery, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return previousResult;
+        const prevEdges =  previousResult.oneOnOneSessions.edges;
+        const newEdges = fetchMoreResult.oneOnOneSessions.edges;
+        const newSessionHistoryData = {
+          ...previousResult.oneOnOneSessions,
+          pageInfo: {
+            endCursor: fetchMoreResult?.oneOnOneSessions.pageInfo.endCursor,
+            hasNextPage: fetchMoreResult?.oneOnOneSessions.pageInfo.hasNextPage,
+            __typename: "PageInfo",
+          },
+          edges: [...prevEdges, ...newEdges],
+        };
+        return { oneOnOneSessions: newSessionHistoryData };
+      },
     });
   }
 
-  if (loading) {
+  if (loading && [1,2].includes(networkStatus)) {
     return (
       <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
         <Spin className="py-4" size="small" indicator={LoadingIcon} spinning tip="Fetching 1-on-1 history..." />
@@ -140,20 +116,34 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
     );
   }
 
-  return (state.dataSource.length > 0) ? (
+  const derivedResult = data || {
+    oneOnOneSessions: {
+      edges: [],
+      pageInfo: {
+        endCursor: undefined,
+        hasNextPage: false,
+      },
+      totalCount: 0,
+    },
+  };
+
+  const dataSource = elemT(derivedResult.oneOnOneSessions.edges);
+
+  return (dataSource.length > 0) ? (
     <StyledListWrapper>
       <InfiniteScroll
         initialLoad={false}
         pageStart={0}
-        hasMore={!state.loading && state.hasMore}
-        loadMore={refetchSessions}
+        hasMore={!loading && derivedResult.oneOnOneSessions.pageInfo.hasNextPage}
+        loadMore={() => fetchMoreSessions(derivedResult.oneOnOneSessions.pageInfo.endCursor)}
+        useWindow={false}
       >
         <List
           dataSource={[{
             id: currentSessionId,
             status: currentSessionStatus,
             time: upcomingSessionDate,
-          }].concat(state.dataSource)}
+          }].concat(dataSource.map(({ node }) => node))}
           renderItem={({ time, id, status }) => {
             const isActive = (id === derivedSessionId);
             return (
@@ -186,7 +176,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
             );
           }}
         >
-          {state.loading && (
+          {(networkStatus === 3 || (loading && networkStatus !== 3)) && (
             <div>
               <Spinner label="" />
             </div>

@@ -9,12 +9,13 @@ import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
 import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
 import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION, ONE_ON_ONES, ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
+import { ONE_ON_ONE_HEADER, ONE_ON_ONES } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { IOneOnOneHeader } from 'apollo/types/oneOnOne';
+import completeOneOnOneCacheHandler from './cache-handler/completeOneOnOne';
 
 const { Title, Text } = Typography;
 
@@ -67,17 +68,12 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
       await completeOneOnOneMutation({
         variables: { sessionId },
         refetchQueries: [{
-          query: ONE_ON_ONE_HEADER,
-          variables: { sessionId },
-        }, {
-          query: ONE_ON_ONE_SESSION,
-          variables: { sessionId },
-        }, {
-          query: ONE_ON_ONE_SESSIONS,
-          variables: { scheduleId: match.params.schedule_id },
-        }, {
           query: ONE_ON_ONES,
         }],
+        ...completeOneOnOneCacheHandler({
+          sessionId,
+          scheduleId: match.params.schedule_id,
+        }),
         awaitRefetchQueries: true,
       });
     } catch (error) {

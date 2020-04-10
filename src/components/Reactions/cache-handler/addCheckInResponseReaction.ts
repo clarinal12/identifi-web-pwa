@@ -1,84 +1,106 @@
 import { DataProxy } from 'apollo-cache/lib/types';
+import { Location } from 'history/index';
+import cloneDeep from 'lodash/cloneDeep';
 
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { CHECKIN } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { IAccount } from 'apollo/types/user';
-import { TEmoji, TCurrentCheckIn } from 'apollo/types/checkin';
+import { TEmoji, TCheckIn } from 'apollo/types/checkin';
 
 interface ICacheHandler {
-  isPastCheckIn: boolean,
-  checkInId: string,
+  checkInId?: string,
   responseId: string,
   values: {
     emoji: TEmoji,
     reactor?: IAccount,
-  }
+  },
+  location: Location,
 }
 
-export default ({
-  isPastCheckIn, checkInId, responseId, values,
-}: ICacheHandler) => ({
-  update: (store: DataProxy, { data: { addCheckInResponseReaction } }: any) => {
-    try {
-      const checkInCacheData: any | null = store.readQuery({
-        query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-        variables: { id: checkInId },
-      });
-      const checkInSource: TCurrentCheckIn = isPastCheckIn ? checkInCacheData?.checkIn : checkInCacheData?.checkInSchedule.currentCheckIn;
-      const checkInResponse = checkInSource.responses.find(({ id }) => id === responseId);
-      if (checkInResponse) {
-        const reactionIndex = checkInResponse.reactions.findIndex((reactionGroup) => {
-          return reactionGroup.emoji.id === values.emoji.id;
+export default ({ checkInId, responseId, values, location }: ICacheHandler) => {
+  const queryParams = new URLSearchParams(location.search);
+  const memberIdFromLink = queryParams.get('memberId');
+  const commentIdFromLink = queryParams.get('commentId');
+  const isLinkFromNotification = (memberIdFromLink && commentIdFromLink);
+  return {
+    update: (store: DataProxy, { data: { addCheckInResponseReaction } }: any) => {
+      try {
+        const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
+          query: CHECKIN,
+          variables: {
+            id: checkInId,
+            pagination: { first: 5 },
+            ...(isLinkFromNotification && {
+              filter: { memberId: memberIdFromLink },
+            }),
+          },
         });
-        if (reactionIndex >= 0) {
-          checkInResponse.reactions[reactionIndex].count += 1;
-          checkInResponse.reactions[reactionIndex].hasReacted = true;
-        } else {
-          checkInResponse.reactions.push({
-            emoji: addCheckInResponseReaction,
-            count: 1,
-            hasReacted: true,
-            __typename: "CheckInResponseReactionGroup",
-          });
+        if (checkInCacheData) {
+          const clonedCheckInCacheData = cloneDeep(checkInCacheData);
+          const { edges } = clonedCheckInCacheData.checkIn.replies;
+          const checkInResponse = edges.find(({ node }) => node.id === responseId);  
+          if (checkInResponse) {
+            const reaction = checkInResponse.node.reactions.find((reactionGroup) => {
+              return reactionGroup.emoji.id === values.emoji.id;
+            });
+            if (reaction) {
+              reaction.count += 1;
+              reaction.hasReacted = true;
+            } else {
+              checkInResponse.node.reactions.push({
+                id: addCheckInResponseReaction.id,
+                emoji: addCheckInResponseReaction,
+                count: 1,
+                hasReacted: true,
+                __typename: "CheckInResponseReactionGroup",
+              });
+            }
+            store.writeQuery({
+              query: CHECKIN,
+              variables: {
+                id: checkInId,
+                pagination: { first: 5 },
+                ...(isLinkFromNotification && {
+                  filter: { memberId: memberIdFromLink },
+                }),
+              },
+              data: clonedCheckInCacheData,
+            });
+          }
         }
-        store.writeQuery({
-          query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: { id: checkInId },
-          data: checkInCacheData,
+      } catch (_) {}
+  
+      try {
+        const reactorsCacheData: any | null = store.readQuery({
+          query: CHECKIN_RESPONSE_REACTORS,
+          variables: {
+            filter: { responseId, emojiId: values.emoji.id },
+          },
         });
+        reactorsCacheData.checkInResponseReactors.push({
+          id: values.reactor?.id,
+          email: values.reactor?.email,
+          firstname: values.reactor?.firstname,
+          lastname: values.reactor?.lastname,
+          role: values.reactor?.role,
+          avatar: values.reactor?.avatar,
+          isGuest: values.reactor?.isGuest,
+          __typename: 'Member',
+        });
+        store.writeQuery({
+          query: CHECKIN_RESPONSE_REACTORS,
+          variables: {
+            filter: { responseId, emojiId: values.emoji.id },
+          },
+          data: reactorsCacheData,
+        });
+      } catch (_) {}
+    },
+    optimisticResponse: {
+      addCheckInResponseReaction: {
+        ...values.emoji,
+        id: `optimistic-${values.emoji.id}`,
       }
-    } catch (_) {}
-
-    try {
-      const reactorsCacheData: any | null = store.readQuery({
-        query: CHECKIN_RESPONSE_REACTORS,
-        variables: {
-          filter: { responseId, emojiId: values.emoji.id },
-        },
-      });
-      reactorsCacheData.checkInResponseReactors.push({
-        id: values.reactor?.id,
-        email: values.reactor?.email,
-        firstname: values.reactor?.firstname,
-        lastname: values.reactor?.lastname,
-        role: values.reactor?.role,
-        avatar: values.reactor?.avatar,
-        isGuest: values.reactor?.isGuest,
-        __typename: 'Member',
-      });
-      store.writeQuery({
-        query: CHECKIN_RESPONSE_REACTORS,
-        variables: {
-          filter: { responseId, emojiId: values.emoji.id },
-        },
-        data: reactorsCacheData,
-      });
-    } catch (_) {}
-  },
-  optimisticResponse: {
-    addCheckInResponseReaction: {
-      ...values.emoji,
-      id: `optimistic-${values.emoji.id}`,
-    }
-  },
-});
+    },
+  };
+};

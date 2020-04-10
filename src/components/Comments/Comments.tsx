@@ -31,6 +31,7 @@ const StyledCollapse = styled(Collapse)`
   .ant-collapse-item {
     border: none !important;
     .ant-collapse-header {
+      user-select: none;
       padding: 16px 24px !important;
     }
     .ant-collapse-content {
@@ -105,13 +106,13 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const responseIdFromURL = queryParams.get('responseId');
+    const memberId = queryParams.get('memberId');
     const commentId = queryParams.get('commentId');
-    const isLinkFromNotification = (responseIdFromURL && commentId) && (responseIdFromURL === responseId);
+    const isLinkFromNotification = (memberId && commentId);
     if (emptyComments || isLinkFromNotification) {
       setCollapseKey('1');
     }
-  }, [emptyComments, location.search, responseId]);
+  }, [emptyComments, location.search]);
 
   const contentBody = error ? (
     <Alert

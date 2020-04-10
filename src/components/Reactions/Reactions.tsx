@@ -10,6 +10,7 @@ import { SmileyIcon } from 'utils/iconUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useReactionContextValue } from 'contexts/ReactionContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 import { ADD_CHECKIN_RESPONSE_REACTION, REMOVE_CHECKIN_RESPONSE_REACTION } from 'apollo/mutations/reactions';
 import { TReaction, TEmoji } from 'apollo/types/checkin';
 import addCheckInResponseReactionCacheHandler from './cache-handler/addCheckInResponseReaction';
@@ -87,9 +88,11 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAct
   );
 };
 
-const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
+const Reactions: React.FC<IReactions> = ({ responseId, reactions, match, location }) => {
   const { alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [addCheckInResponseReactionMutation] = useMutation(ADD_CHECKIN_RESPONSE_REACTION);
   const [removeCheckInResponseReactionMutation] = useMutation(REMOVE_CHECKIN_RESPONSE_REACTION);
 
@@ -100,13 +103,13 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
           input: { responseId, emojiId: emoji.id }
         },
         ...addCheckInResponseReactionCacheHandler({
-          isPastCheckIn: Boolean(match.params.past_checkin_id),
-          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInId: derivedCheckInId,
           responseId: responseId,
           values: {
             emoji,
             reactor: account,
           },
+          location,
         }),
       });
     } catch(error) {
@@ -123,13 +126,13 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
       removeCheckInResponseReactionMutation({
         variables: { responseId, emojiId: emoji.id },
         ...removeCheckInResponseReaction({
-          isPastCheckIn: Boolean(match.params.past_checkin_id),
-          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInId: derivedCheckInId,
           responseId: responseId,
           values: {
             emoji,
             reactor: account,
           },
+          location,
         }),
       });
     } catch(error) {

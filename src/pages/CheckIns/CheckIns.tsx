@@ -7,7 +7,7 @@ import AppLayout from 'components/AppLayout';
 import SlackIntegration from 'HOC/SlackIntegration';
 import CheckInList from './components/CheckInList';
 import { useUserContextValue } from 'contexts/UserContext'
-import { CheckInScheduleProvider } from 'contexts/CheckInScheduleContext';
+import { CheckInScheduleProviderWithRouter } from 'contexts/CheckInScheduleContext';
 import { CheckInScheduleConsumer } from 'contexts/CheckInScheduleContext'
 import { useCheckInFilterContextValue, FILTER_OPTIONS, TFilterState } from 'contexts/CheckInFilterContext'
 
@@ -26,7 +26,7 @@ const CheckIns: React.FC = () => {
   const { account } = useUserContextValue();
   const { filterState, setFilterState } = useCheckInFilterContextValue();
   return (
-    <CheckInScheduleProvider>
+    <CheckInScheduleProviderWithRouter>
       <AppLayout>
         <CheckInScheduleConsumer>
           {({ checkInCards }) => (
@@ -89,7 +89,7 @@ const CheckIns: React.FC = () => {
           </TabPane>
         </StyledTabs>
       </AppLayout>
-    </CheckInScheduleProvider>
+    </CheckInScheduleProviderWithRouter>
   );
 }
 

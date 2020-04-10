@@ -1,5 +1,6 @@
-import React, { createContext, useContext, PropsWithChildren } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useQuery } from 'react-apollo';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { ICheckinData } from 'apollo/types/checkin';
 import { CHECKIN_CARDS } from 'apollo/queries/checkin';
@@ -11,6 +12,7 @@ interface ICheckInScheduleContext {
     myCheckIns: ICheckinData[],
     allCheckIns: ICheckinData[],
   },
+  selectedCheckInCard?: ICheckinData,
   loading: boolean,
 }
 
@@ -22,7 +24,7 @@ const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
   loading: true,
 });
 
-const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
+const CheckInScheduleProvider: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ children, match }) => {
   const { selectedStates } = useCheckInFilterContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account?.activeCompany;
@@ -40,11 +42,14 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
     allCheckIns: [],
   };
 
+  const selectedCheckInCard = checkInCardsSource.allCheckIns.find(({ scheduleId }) => scheduleId === match.params.checkin_id);
+
   return (
     <CheckInScheduleContext.Provider
       value={{
         checkInCards: checkInCardsSource,
         loading,
+        selectedCheckInCard,
       }}
     >
       {children}
@@ -52,10 +57,12 @@ const CheckInScheduleProvider: React.FC<PropsWithChildren<any>> = ({ children })
   );
 }
 
+const CheckInScheduleProviderWithRouter = withRouter(CheckInScheduleProvider);
+
 const CheckInScheduleConsumer = CheckInScheduleContext.Consumer;
 
 const useCheckInScheduleContextValue = () => useContext(CheckInScheduleContext);
 
-export { CheckInScheduleProvider, useCheckInScheduleContextValue, CheckInScheduleConsumer };
+export { CheckInScheduleProviderWithRouter, useCheckInScheduleContextValue, CheckInScheduleConsumer };
 
 export default CheckInScheduleContext;

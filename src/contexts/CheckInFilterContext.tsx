@@ -1,4 +1,5 @@
-import React, { createContext, useContext, PropsWithChildren, useState } from 'react';
+import React, { createContext, useContext, PropsWithChildren } from 'react';
+import createPersistedState from 'use-persisted-state';
 
 export type TFilterState = 'ALL' | 'ACTIVE' | 'DEACTIVATED';
 
@@ -10,6 +11,8 @@ interface ICheckInFilterContext {
 
 const ACTIVE_STATES = ['SCHEDULED', 'WAITING', 'FINISHED'];
 const INACTIVE_STATES = ['DEACTIVATED'];
+
+const useCheckInFilterState = createPersistedState('checkinFilter');
 
 export const FILTER_OPTIONS: { label: TFilterState, states: string[] }[] = [
   { label: 'ALL', states: [...ACTIVE_STATES, ...INACTIVE_STATES] },
@@ -24,7 +27,7 @@ const CheckInFilterContext = createContext<ICheckInFilterContext>({
 });
 
 const CheckInFilterProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
-  const [filterState, setFilterState] = useState<TFilterState>('ACTIVE');
+  const [filterState, setFilterState] = useCheckInFilterState('ACTIVE');
   const { states } = FILTER_OPTIONS.find(({ label }) => label === filterState) || { states: ACTIVE_STATES };
   return (
     <CheckInFilterContext.Provider value={{ filterState, setFilterState, selectedStates: states }}>

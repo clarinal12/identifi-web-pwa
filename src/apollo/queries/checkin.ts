@@ -25,66 +25,6 @@ const CHECKIN_GOAL = `
   completed
 `;
 
-const SINGLE_CHECKIN_FIELDS = `
-  id
-  date
-  submitted {
-    ${MEMBER_FIELDS}
-  }
-  notSubmitted {
-    ${MEMBER_FIELDS}
-  }
-  mentionables {
-    ${MEMBER_FIELDS}
-  }
-  responses {
-    id
-    respondent {
-      ${MEMBER_FIELDS}
-    }
-    submitDate
-    answers {
-      id
-      question
-      answer
-    }
-    onTime
-    goalCompleted
-    mood {
-      ${EMOJI_FIELDS}
-    }
-    block {
-      id
-      blocker
-    }
-    currentGoal {
-      ${CHECKIN_GOAL}
-    }
-    previousGoal {
-      ${CHECKIN_GOAL}
-    }
-    numberOfComments
-    reactions {
-      emoji {
-        ${EMOJI_FIELDS}
-      }
-      count
-      hasReacted
-    }
-    streak
-  }
-  checkedIn {
-    ${CHECKIN_STATS}
-  }
-  completedGoals {
-    ${CHECKIN_STATS}
-  }
-  blockers {
-    ${CHECKIN_STATS}
-  }
-  isCurrent
-`;
-
 const CHECKIN_FIELDS = `
   id
   name
@@ -109,19 +49,15 @@ const CHECKIN_FIELDS = `
     id
     name
   }
-  status
-  currentCheckIn {
-    ${SINGLE_CHECKIN_FIELDS}
-  }
-  pastCheckIns {
-    id
-    date
-  }
   isPrivate
 `;
 
 const CHECKIN_CARD = `
   scheduleId
+  currentCheckInInfo {
+    id
+    date
+  }
   name
   replies {
     expected
@@ -130,6 +66,55 @@ const CHECKIN_CARD = `
   nextCheckInDate
   frequency
   status
+`;
+
+const CHECKIN_REPLIES = `
+  edges {
+    cursor
+    node {
+      id
+      respondent {
+        ${MEMBER_FIELDS}
+      }
+      submitDate
+      answers {
+        id
+        question
+        answer
+      }
+      onTime
+      currentGoal {
+        ${CHECKIN_GOAL}
+      }
+      previousGoal {
+        ${CHECKIN_GOAL}
+      }
+      block {
+        id
+        blocker
+      }
+      mood {
+        ${EMOJI_FIELDS}
+      }
+      numberOfComments
+      reactions {
+        emoji {
+          ${EMOJI_FIELDS}
+        }
+        count
+        hasReacted
+      }
+      streak
+      goalCompleted
+    }
+  }
+  pageInfo {
+    endCursor
+    hasNextPage
+    # startCursor
+    # hasPreviousPage
+  }
+  totalCount
 `;
 
 export const CHECKIN_CARDS = gql`
@@ -163,9 +148,67 @@ export const CHECKIN_SCHEDULE = gql`
 `;
 
 export const CHECKIN = gql`
-  query CheckIn($id: ID!) {
+  query CheckIn($id: ID!, $filter: CheckInResponsesFilterInput, $pagination: PaginationInput) {
     checkIn(id: $id) {
-      ${SINGLE_CHECKIN_FIELDS}
+      id
+      isCurrent
+      replies(filter: $filter, pagination: $pagination) {
+        ${CHECKIN_REPLIES}
+      }
+    }
+  }
+`;
+
+export const PAST_CHECKINS = gql`
+  query PastCheckIns($checkInScheduleId: ID!, $pagination: PaginationInput ) {
+    pastCheckIns(checkInScheduleId: $checkInScheduleId, pagination: $pagination) {
+      edges {
+        cursor
+        node {
+          id
+          date
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        # startCursor
+        # hasPreviousPage
+      }
+      totalCount
+    }
+  }
+`;
+
+export const CHECKIN_HEADER = gql`
+  query CheckInHeader($checkInId: ID!) {
+    checkInHeader(checkInId: $checkInId) {
+      name
+      scheduleId
+      status
+      date
+      stats {
+        checkedIn {
+        ${CHECKIN_STATS}
+        }
+        completedGoals {
+          ${CHECKIN_STATS}
+        }
+        blockers {
+          ${CHECKIN_STATS}
+        }
+      }
+    }
+  }
+`;
+
+export const CHECKIN_PARTICIPANTS = gql`
+  query CheckInParticipants($checkInScheduleId: ID!) {
+    checkInParticipants(checkInScheduleId: $checkInScheduleId) {
+      member {
+        ${MEMBER_FIELDS}
+      }
+      role
     }
   }
 `;

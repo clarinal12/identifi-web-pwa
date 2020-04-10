@@ -7,6 +7,7 @@ import { Avatar, List, Typography, Button } from 'antd';
 import { useUserContextValue } from 'contexts/UserContext';
 import { ADD_COMMENT, UPDATE_COMMENT } from 'apollo/mutations/comments';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
 import MentionBox from './components/MentionBox';
 import addCommentCacheHandler from './cache-handler/addComment';
 import updateCommentCacheHandler from './cache-handler/updateComment';
@@ -65,7 +66,7 @@ const StyledListItem = styled(List.Item)`
 `;
 
 const UserCommentForm: React.FC<IUserCommentForm> = ({
-  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [],
+  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [], location,
 }) => {
   const textAreaId = `textarea_${responseId}_${commentId}`;
   const isUpdating = Boolean(defaultComment && commentId && setEditCommentId);
@@ -73,6 +74,8 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   const [comment, setComment] = useState(defaultComment);
 
   const { account } = useUserContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const { alertError } = useMessageContextValue();
   const [addCommentMutation] = useMutation(ADD_COMMENT);
   const [updateCommentMutation] = useMutation(UPDATE_COMMENT);
@@ -113,10 +116,10 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
           },
         },
         ...addCommentCacheHandler({
-          isPastCheckIn: Boolean(match.params.past_checkin_id),
-          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          checkInId: derivedCheckInId,
           checkInResponseId: responseId,
-          values: { comment, mentions, author: account }
+          values: { comment, mentions, author: account },
+          location,
         }),
       });
       setComment('');

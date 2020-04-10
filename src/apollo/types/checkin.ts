@@ -20,30 +20,34 @@ export type TBlocker = {
 }
 
 export type TReaction = {
+  id: number,
   emoji: TEmoji,
   count: number,
   hasReacted: boolean,
   __typename: string,
 }
 
+export type TCheckInAnswer = {
+  id: string,
+  question: string
+  answer: string
+}
+
 export type TResponse = {
   id: string,
   respondent: IAccount,
   submitDate: Date,
-  answers: Array<{
-    id: string,
-    question: string
-    answer: string
-  }>,
+  answers: TCheckInAnswer[],
   onTime: boolean,
-  goalCompleted: boolean,
-  mood: TEmoji,
-  block?: TBlocker,
   currentGoal: TCheckInGoal,
   previousGoal: TCheckInGoal,
+  block?: TBlocker,
+  mood: TEmoji,
   numberOfComments: number,
   reactions: TReaction[],
   streak: number,
+  goalCompleted: boolean,
+  __typename: string,
 }
 
 export type TCurrentCheckIn = {
@@ -65,6 +69,18 @@ export type TCheckInStats = {
   faded: IAccount[],
 }
 
+export type TCheckInHeader = {
+  name: string,
+  scheduleId: string,
+  status: 'SCHEDULED' | 'WAITING' | 'FINISHED' | 'DEACTIVATED',
+  date: string,
+  stats: {
+    checkedIn: TCheckInStats,
+    completedGoals: TCheckInStats,
+    blockers: TCheckInStats,
+  }
+}
+
 export type TPastCheckIns = {
   id: string,
   date: string,
@@ -73,9 +89,13 @@ export type TPastCheckIns = {
 export interface ICheckinData {
   scheduleId: string,
   name: string,
-  frequency: string
+  frequency: string,
+  currentCheckInInfo?: {
+    id: string,
+    date: string,
+  },
   days: string[]
-  nextCheckInDate: Date,
+  nextCheckInDate: string,
   time: string,
   waitingTime: number,
   remindTime: number,
@@ -107,4 +127,30 @@ export interface IComment {
   mentions: IAccount[],
   createdAt: string,
   updatedAt: string,
+}
+
+export type TCheckInResponseEdge = {
+  cursor: string,
+  node: TResponse,
+}
+
+export type TCheckIn = {
+  id: string,
+  isCurrent: boolean,
+  replies: {
+    edges: TCheckInResponseEdge[],
+    pageInfo: {
+      endCursor: string,
+      hasNextPage: boolean,
+      // startCursor: string,
+      // hasPreviousPage: boolean,
+      __typename: string,
+    },
+    totalCount: number,
+  },
+}
+
+export type TCheckInParticipant = {
+  role: 'WATCHER' | 'RESPONDENT',
+  member: IAccount,
 }
