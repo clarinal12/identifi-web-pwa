@@ -75,7 +75,6 @@ const RespondentCard: React.FC<IRespondentCard> = ({ response, isCurrent }) => {
   const deriviedName = (firstname && lastname) ? `${firstname} ${lastname}` : email;
   return (
     <StyledCard
-      id={id}
       title={(
         <div className="d-flex">
           <div className="mr-3">

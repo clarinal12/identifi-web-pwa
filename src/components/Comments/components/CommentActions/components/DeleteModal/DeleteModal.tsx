@@ -24,7 +24,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId }) => {
+const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId, location }) => {
   const [deleteCommentMutation] = useMutation(DELETE_COMMENT);
   const { alertError } = useMessageContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
@@ -38,6 +38,7 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
           commentId,
           checkInId: derivedCheckInId,
           checkInResponseId: responseId,
+          location,
         }),
       });
     } catch(error) {

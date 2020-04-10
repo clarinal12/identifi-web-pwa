@@ -42,14 +42,23 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match }) => {
+const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match, location }) => {
   const { setMentionSource } = useMentionSourceContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
+
+  const queryParams = new URLSearchParams(location.search);
+  const memberIdFromLink = queryParams.get('memberId');
+  const commentIdFromLink = queryParams.get('commentId');
+  const isLinkFromNotification = (memberIdFromLink && commentIdFromLink);
+
   const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN, {
     variables: {
       id: derivedPastCheckInId,
       pagination: { first: 5 },
+      ...(isLinkFromNotification && {
+        filter: { memberId: memberIdFromLink },
+      }),
     },
     skip: !Boolean(derivedPastCheckInId),
     notifyOnNetworkStatusChange: true,

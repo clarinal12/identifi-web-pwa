@@ -88,7 +88,7 @@ const ReactionsMenu: React.FC<IReactionsMenu> = ({ addCheckInResponseReactionAct
   );
 };
 
-const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
+const Reactions: React.FC<IReactions> = ({ responseId, reactions, match, location }) => {
   const { alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
@@ -109,6 +109,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
             emoji,
             reactor: account,
           },
+          location,
         }),
       });
     } catch(error) {
@@ -131,6 +132,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match }) => {
             emoji,
             reactor: account,
           },
+          location,
         }),
       });
     } catch(error) {

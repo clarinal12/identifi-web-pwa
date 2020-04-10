@@ -66,7 +66,7 @@ const StyledListItem = styled(List.Item)`
 `;
 
 const UserCommentForm: React.FC<IUserCommentForm> = ({
-  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [],
+  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [], location,
 }) => {
   const textAreaId = `textarea_${responseId}_${commentId}`;
   const isUpdating = Boolean(defaultComment && commentId && setEditCommentId);
@@ -118,7 +118,8 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
         ...addCommentCacheHandler({
           checkInId: derivedCheckInId,
           checkInResponseId: responseId,
-          values: { comment, mentions, author: account }
+          values: { comment, mentions, author: account },
+          location,
         }),
       });
       setComment('');
