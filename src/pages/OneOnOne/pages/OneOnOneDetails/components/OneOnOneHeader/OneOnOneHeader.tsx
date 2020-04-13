@@ -92,24 +92,18 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
     try {
       setSkippingState(true);
       await skipOneOnOneMutation({
-        variables: {
-          sessionId: selectedUserSession?.info?.currentSessionId,
-        },
+        variables: { sessionId },
         refetchQueries: [{
           query: ONE_ON_ONE_SESSION,
-          variables: {
-            sessionId: selectedUserSession?.info?.currentSessionId,
-          },
+          variables: { sessionId },
         }, {
           query: ONE_ON_ONE_SESSIONS,
           variables: {
-            scheduleId: selectedUserSession?.info?.scheduleId,
+            scheduleId: match.params.schedule_id,
           },
         }, {
           query: ONE_ON_ONE_HEADER,
-          variables: {
-            sessionId: selectedUserSession?.info?.currentSessionId,
-          },
+          variables: { sessionId },
         }, {
           query: ONE_ON_ONES,
         }],
