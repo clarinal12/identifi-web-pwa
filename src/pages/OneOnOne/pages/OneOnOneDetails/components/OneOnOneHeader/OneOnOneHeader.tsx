@@ -8,8 +8,8 @@ import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip, Alert } from 'ant
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
 import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
-import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-import { ONE_ON_ONE_HEADER, ONE_ON_ONES } from 'apollo/queries/oneOnOne';
+import { COMPLETE_ONE_ON_ONE, SKIP_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
+import { ONE_ON_ONE_HEADER, ONE_ON_ONES, ONE_ON_ONE_SESSION, ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
@@ -45,9 +45,11 @@ const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boole
 
 const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history, match }) => {
   const { alertError } = useMessageContextValue();
+  const [skippingState, setSkippingState] = useState(false);
   const { selectedUserSession } = useOneOnOneContextValue();
   const [loadingState, setLoadingState] = useState(false);
   const [completeOneOnOneMutation] = useMutation(COMPLETE_ONE_ON_ONE);
+  const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
 
   const { data, loading, error } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
     variables: { sessionId },
@@ -84,6 +86,43 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
       alertError(errorMessage);
     }
     setLoadingState(false);
+  }
+
+  const skipOneOnOneAction = async () => {
+    try {
+      setSkippingState(true);
+      await skipOneOnOneMutation({
+        variables: {
+          sessionId: selectedUserSession?.info?.currentSessionId,
+        },
+        refetchQueries: [{
+          query: ONE_ON_ONE_SESSION,
+          variables: {
+            sessionId: selectedUserSession?.info?.currentSessionId,
+          },
+        }, {
+          query: ONE_ON_ONE_SESSIONS,
+          variables: {
+            scheduleId: selectedUserSession?.info?.scheduleId,
+          },
+        }, {
+          query: ONE_ON_ONE_HEADER,
+          variables: {
+            sessionId: selectedUserSession?.info?.currentSessionId,
+          },
+        }, {
+          query: ONE_ON_ONES,
+        }],
+        awaitRefetchQueries: true,
+      });
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+    setSkippingState(false);
   }
 
   if (error) {
@@ -146,12 +185,9 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
                 )}
               </div>
               {selectedUserSession?.isManager && (
-                <div className="d-block mt-3">
+                <div className="d-flex mt-3">
                   {data?.oneOnOneHeader.canRescheduleSession && (
-                    <RescheduleOneOnOneModal
-                      canSkipSession={data.oneOnOneHeader.canSkipSession}
-                      maxRescheduleDate={data.oneOnOneHeader.maxRescheduleDateRange}
-                    />
+                    <RescheduleOneOnOneModal maxRescheduleDate={data.oneOnOneHeader.maxRescheduleDateRange} />
                   )}
                   {data?.oneOnOneHeader.showCompleteButton && (
                     <CompleteButtonWrapper disabled={!(data?.oneOnOneHeader.canCompleteSession)}>
@@ -165,6 +201,17 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
                         Complete 1-1
                       </Button>
                     </CompleteButtonWrapper>
+                  )}
+                  {data?.oneOnOneHeader.canSkipSession && (
+                    <Button
+                      className="ml-3"
+                      type="danger"
+                      ghost
+                      onClick={skipOneOnOneAction}
+                      loading={skippingState}
+                    >
+                      Skip 1-1
+                    </Button>
                   )}
                 </div>
               )}
