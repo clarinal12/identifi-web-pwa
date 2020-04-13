@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { omitBy, isNil } from 'lodash';
+import omitBy from 'lodash/omitBy';
+import isNil from 'lodash/isNil';
 import queryString from 'query-string';
 
 export type TResponseFilterState = {
