@@ -47,7 +47,7 @@ export default ({ checkInId, scheduleId, respondentId, isBlocked, value }: ICach
           query: CHECKIN_HEADER,
           variables: { scheduleId, checkInId },
         });
-        if (checkInHeaderCacheData) {
+        if (checkInHeaderCacheData && checkInHeaderCacheData.checkInHeader.stats) {
           const { stats } = checkInHeaderCacheData.checkInHeader;
           if (!isBlocked) {
             const newColoredUsers = stats.blockers.colored.filter(({ id }) => id !== respondentId);

@@ -45,7 +45,7 @@ export default ({ checkInId, scheduleId, respondentId, isPreviousGoal, value }: 
         query: CHECKIN_HEADER,
         variables: { scheduleId, checkInId },
       });
-      if (checkInHeaderCacheData && updateCheckInGoal) {
+      if (checkInHeaderCacheData && updateCheckInGoal && checkInHeaderCacheData.checkInHeader.stats) {
         const { stats } = checkInHeaderCacheData.checkInHeader;
         if (updateCheckInGoal.completed) {
           const selectedUserToBeMoved = stats.completedGoals.faded.find(({ id }) => id === respondentId);

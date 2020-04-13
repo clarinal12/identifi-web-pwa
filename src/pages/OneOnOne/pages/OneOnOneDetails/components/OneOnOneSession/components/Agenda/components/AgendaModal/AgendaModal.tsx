@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
 import styled from 'styled-components';
 import { Modal, Button, Typography } from 'antd';
@@ -10,7 +11,6 @@ import updateOneOnOneAgendaCacheHandler from './cache-handler/updateOneOnOneAgen
 import deleteOneOnOneAgendaCacheHandler from './cache-handler/deleteOneOnOneAgenda';
 import { ADD_ONE_ON_ONE_AGENDA, UPDATE_ONE_ON_ONE_AGENDA, DELETE_ONE_ON_ONE_AGENDA } from 'apollo/mutations/agenda';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { TAgenda } from 'apollo/types/oneOnOne';
 
@@ -29,30 +29,29 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-interface IAgendaModal {
+interface IAgendaModal extends RouteComponentProps<{ session_id: string }> {
   isEmpty?: boolean,
   agenda?: TAgenda,
 }
 
-const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
+const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty, match }) => {
   const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
-  const { selectedUserSession } = useOneOnOneContextValue();
   const [visiblity, setVisibility] = useState(false);
   const [addOneOnOneAgendaMutation] = useMutation(ADD_ONE_ON_ONE_AGENDA);
   const [updateOneOnOneAgendaMutation] = useMutation(UPDATE_ONE_ON_ONE_AGENDA);
   const [deleteOneOnOneAgendaMutation] = useMutation(DELETE_ONE_ON_ONE_AGENDA);
 
   const addOneOnOneAgendaAction = (values: IAgendaFormValues) => {
-    if (!selectedUserSession?.info || !account) return;
+    if (!account) return;
     try {
       addOneOnOneAgendaMutation({
         variables: {
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId: match.params.session_id,
           input: { ...values },
         },
         ...addOneOnOneAgendaCacheHandler({
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId: match.params.session_id,
           author: account,
           values,
         }),
@@ -70,7 +69,7 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
   }
 
   const updateOneOnOneAgendaAction = (values: IAgendaFormValues) => {
-    if (!selectedUserSession?.info || !agenda) return;
+    if (!agenda) return;
     try {
       updateOneOnOneAgendaMutation({
         variables: {
@@ -80,7 +79,7 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
         ...updateOneOnOneAgendaCacheHandler({
           agendaId: agenda.id,
           author: agenda.author,
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId: match.params.session_id,
           values,
         }),
       });
@@ -94,13 +93,13 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
   }
 
   const deleteOneOnOneAgendaAction = () => {
-    if (!selectedUserSession?.info || !agenda) return;
+    if (!agenda) return;
     try {
       deleteOneOnOneAgendaMutation({
         variables: {  agendaId: agenda?.id },
         ...deleteOneOnOneAgendaCacheHandler({
           agendaId: agenda.id,
-          sessionId: selectedUserSession.info.currentSessionId,
+          sessionId: match.params.session_id,
         }),
       });
       setVisibility(false);
@@ -137,4 +136,4 @@ const AgendaModal: React.FC<IAgendaModal> = ({ agenda, isEmpty }) => {
   );
 }
 
-export default AgendaModal;
+export default withRouter(AgendaModal);
