@@ -2,16 +2,18 @@ import { DataProxy } from 'apollo-cache/lib/types';
 
 import { CHECKIN_RESPONSE_SECTION, CHECKIN_HEADER } from 'apollo/queries/checkin';
 import { TCheckIn, TBlocker, TCheckInHeader } from 'apollo/types/checkin';
+import { TResponseFilterState } from 'contexts/CheckInResponseFilterContext';
 
 interface ICacheHandler {
   isBlocked?: boolean,
   respondentId?: string,
   scheduleId?: string,
   checkInId?: string,
+  filter: TResponseFilterState,
   value: Partial<TBlocker>,
 }
 
-export default ({ checkInId, scheduleId, respondentId, isBlocked, value }: ICacheHandler) => {
+export default ({ checkInId, scheduleId, respondentId, isBlocked, value, filter }: ICacheHandler) => {
   const derivedMutation = isBlocked ? 'updateCheckInBlocker' : 'removeCheckInBlocker';
   return {
     update: (store: DataProxy, { data }: any) => {
@@ -23,6 +25,7 @@ export default ({ checkInId, scheduleId, respondentId, isBlocked, value }: ICach
             scheduleId,
             checkInId,
             pagination: { first: 5 },
+            filter,
           },
         });
         if (checkInCacheData) {
@@ -36,6 +39,7 @@ export default ({ checkInId, scheduleId, respondentId, isBlocked, value }: ICach
               scheduleId,
               checkInId,
               pagination: { first: 5 },
+              filter,
             },
             data: checkInCacheData,
           });

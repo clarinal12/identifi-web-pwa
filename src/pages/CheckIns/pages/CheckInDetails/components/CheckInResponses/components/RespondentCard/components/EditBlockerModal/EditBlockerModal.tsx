@@ -10,6 +10,7 @@ import { TBlocker } from 'apollo/types/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import updateCheckInBlockerCacheHandler from './cache-handler/updateCheckInBlocker';
 
 interface IEditBlockerModal extends Partial<IExternalProps>, RouteComponentProps<{ past_checkin_id: string, checkin_id: string }> {}
@@ -17,6 +18,7 @@ interface IEditBlockerModal extends Partial<IExternalProps>, RouteComponentProps
 const EditBlockerModal: React.FC<IEditBlockerModal> = ({ data, match }) => {
   const { alertSuccess, alertError } = useMessageContextValue();
   const { account } = useUserContextValue();
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [modalState, setModalState] = useState(false);
@@ -42,6 +44,7 @@ const EditBlockerModal: React.FC<IEditBlockerModal> = ({ data, match }) => {
           respondentId: account?.id,
           scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
+          filter: responseFilterState,
           value: {
             id: data?.id,
             blocker: values.blocker,
@@ -50,7 +53,7 @@ const EditBlockerModal: React.FC<IEditBlockerModal> = ({ data, match }) => {
       });
       alertSuccess("Checkin blocker updated");
       if (values.isBlocked) {
-        setModalState(false);  
+        setModalState(false);
       }
     } catch (error) {
       let errorMessage = null;

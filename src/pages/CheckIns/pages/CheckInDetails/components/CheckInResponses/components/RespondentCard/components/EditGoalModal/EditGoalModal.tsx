@@ -59,6 +59,7 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) =>
       {data && (
         <EditGoalForm
           data={data}
+          key={data.goal?.length} // ugly hack to reset form values after updating content
           showSwitch={showSwitch}
           modalState={modalState}
           setModalState={setModalState}

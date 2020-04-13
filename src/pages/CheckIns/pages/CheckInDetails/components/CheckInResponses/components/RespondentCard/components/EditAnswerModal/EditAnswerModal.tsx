@@ -57,6 +57,7 @@ const EditAnswerModal: React.FC<IEditAnswerModal> = ({ data, match }) => {
       {data && (
         <EditAnswerForm
           data={data}
+          key={data.answer?.length} // ugly hack to reset form values after updating content
           modalState={modalState}
           setModalState={setModalState}
           onSubmitAction={onSubmitAction}
