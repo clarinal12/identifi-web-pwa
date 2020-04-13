@@ -38,6 +38,7 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         variables: { id: commentId },
         ...deleteCommentCacheHandler({
           commentId,
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           checkInResponseId: responseId,
           filter: responseFilterState,

@@ -105,6 +105,7 @@ const Reactions: React.FC<IReactions> = ({ responseId, reactions, match, locatio
           input: { responseId, emojiId: emoji.id }
         },
         ...addCheckInResponseReactionCacheHandler({
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           responseId: responseId,
           values: {

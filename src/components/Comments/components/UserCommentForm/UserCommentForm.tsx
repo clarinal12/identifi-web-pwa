@@ -118,6 +118,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
           },
         },
         ...addCommentCacheHandler({
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           checkInResponseId: responseId,
           values: { comment, mentions, author: account },

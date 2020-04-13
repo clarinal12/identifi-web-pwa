@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { omitBy, isNil } from 'lodash';
 import queryString from 'query-string';
 
 export type TResponseFilterState = {
-  memberId: string | string[] | undefined,
-  commentId: string | string[] | undefined,
+  memberId?: string | string[] | undefined,
+  commentId?: string | string[] | undefined,
 }
 
 interface ICheckInResponseFilterContext {
@@ -43,7 +44,12 @@ const CheckInResponseFilterProvider: React.FC<RouteComponentProps<{ checkin_id: 
   }, [match.params.checkin_id]);
 
   return (
-    <CheckInResponseFilterContext.Provider value={{ responseFilterState, setResponseFilterState }}>
+    <CheckInResponseFilterContext.Provider
+      value={{
+        responseFilterState: omitBy(responseFilterState, isNil),
+        setResponseFilterState,
+      }}
+    >
       {children}
     </CheckInResponseFilterContext.Provider>
   );
