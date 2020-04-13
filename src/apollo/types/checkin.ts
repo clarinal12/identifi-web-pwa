@@ -78,7 +78,7 @@ export type TCheckInHeader = {
     checkedIn: TCheckInStats,
     completedGoals: TCheckInStats,
     blockers: TCheckInStats,
-  }
+  } | null
 }
 
 export type TPastCheckIns = {

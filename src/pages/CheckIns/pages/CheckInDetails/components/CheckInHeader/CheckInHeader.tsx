@@ -98,7 +98,9 @@ const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_che
           </div>
         </div>
       </Card>
-      <CheckInStats data={data.checkInHeader.stats} />
+      {data.checkInHeader.stats && (
+        <CheckInStats data={data.checkInHeader.stats} />
+      )}
       <CheckInFilter />
     </>
   );
