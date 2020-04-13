@@ -147,9 +147,9 @@ export const CHECKIN_SCHEDULE = gql`
   }
 `;
 
-export const CHECKIN = gql`
-  query CheckIn($id: ID!, $filter: CheckInResponsesFilterInput, $pagination: PaginationInput) {
-    checkIn(id: $id) {
+export const CHECKIN_RESPONSE_SECTION = gql`
+  query CheckInResponseSection($scheduleId: ID!, $checkInId: ID, $filter: CheckInResponsesFilterInput, $pagination: PaginationInput) {
+    checkInResponseSection(scheduleId: $scheduleId, checkInId: $checkInId) {
       id
       isCurrent
       replies(filter: $filter, pagination: $pagination) {
@@ -181,8 +181,8 @@ export const PAST_CHECKINS = gql`
 `;
 
 export const CHECKIN_HEADER = gql`
-  query CheckInHeader($checkInId: ID!) {
-    checkInHeader(checkInId: $checkInId) {
+  query CheckInHeader($scheduleId: ID!, $checkInId: ID) {
+    checkInHeader(scheduleId: $scheduleId, checkInId: $checkInId) {
       name
       scheduleId
       status

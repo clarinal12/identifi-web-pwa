@@ -1,12 +1,13 @@
 import { DataProxy } from 'apollo-cache/lib/types';
-import { Location } from 'history/index';
 
 import { COMMENTS } from 'apollo/queries/comments';
-import { CHECKIN } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_SECTION } from 'apollo/queries/checkin';
 import { IComment, TCheckIn } from 'apollo/types/checkin';
 import { IAccount } from 'apollo/types/user';
+import { TResponseFilterState } from 'contexts/CheckInResponseFilterContext';
 
 interface ICacheHandler {
+  scheduleId?: string,
   checkInId?: string,
   checkInResponseId: string,
   values: {
@@ -14,14 +15,10 @@ interface ICacheHandler {
     mentions: IAccount[],
     author: IAccount | undefined,
   },
-  location: Location,
+  filter: TResponseFilterState,
 }
 
-export default ({ checkInResponseId, values, checkInId, location }: ICacheHandler) => {
-  const queryParams = new URLSearchParams(location.search);
-  const memberIdFromLink = queryParams.get('memberId');
-  const commentIdFromLink = queryParams.get('commentId');
-  const isLinkFromNotification = (memberIdFromLink && commentIdFromLink);
+export default ({ checkInResponseId, values, checkInId, scheduleId, filter }: ICacheHandler) => {
   return {
     update: (store: DataProxy, { data: { addCheckInResponseComment } }: any) => {
       try {
@@ -38,29 +35,27 @@ export default ({ checkInResponseId, values, checkInId, location }: ICacheHandle
       } catch (_) {}
   
       try {
-        const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
-          query: CHECKIN,
+        const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
+          query: CHECKIN_RESPONSE_SECTION,
           variables: {
-            id: checkInId,
+            scheduleId,
+            checkInId,
             pagination: { first: 5 },
-            ...(isLinkFromNotification && {
-              filter: { memberId: memberIdFromLink },
-            }),
+            filter,
           },
         });
         if (checkInCacheData) {
-          const { edges } = checkInCacheData.checkIn.replies;
+          const { edges } = checkInCacheData.checkInResponseSection.replies;
           const checkInResponse = edges.find(({ node }) => node.id === checkInResponseId);
           if (checkInResponse) {
             checkInResponse.node.numberOfComments += 1;
             store.writeQuery({
-              query: CHECKIN,
+              query: CHECKIN_RESPONSE_SECTION,
               variables: {
-                id: checkInId,
+                scheduleId,
+                checkInId,
                 pagination: { first: 5 },
-                ...(isLinkFromNotification && {
-                  filter: { memberId: memberIdFromLink },
-                }),
+                filter,
               },
               data: checkInCacheData,
             });

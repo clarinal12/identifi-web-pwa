@@ -40,6 +40,7 @@ const EditBlockerModal: React.FC<IEditBlockerModal> = ({ data, match }) => {
         ...updateCheckInBlockerCacheHandler({
           isBlocked: values.isBlocked,
           respondentId: account?.id,
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           value: {
             id: data?.id,

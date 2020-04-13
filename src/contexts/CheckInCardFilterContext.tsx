@@ -3,7 +3,7 @@ import createPersistedState from 'use-persisted-state';
 
 export type TFilterState = 'ALL' | 'ACTIVE' | 'DEACTIVATED';
 
-interface ICheckInFilterContext {
+interface ICheckInCardFilterContext {
   filterState: TFilterState,
   setFilterState: (state: TFilterState) => void,
   selectedStates: string[],
@@ -12,7 +12,7 @@ interface ICheckInFilterContext {
 const ACTIVE_STATES = ['SCHEDULED', 'WAITING', 'FINISHED'];
 const INACTIVE_STATES = ['DEACTIVATED'];
 
-const useCheckInFilterState = createPersistedState('checkinFilter');
+const useCheckInCardFilterState = createPersistedState('checkInCardFilter');
 
 export const FILTER_OPTIONS: { label: TFilterState, states: string[] }[] = [
   { label: 'ALL', states: [...ACTIVE_STATES, ...INACTIVE_STATES] },
@@ -20,24 +20,24 @@ export const FILTER_OPTIONS: { label: TFilterState, states: string[] }[] = [
   { label: 'DEACTIVATED', states: INACTIVE_STATES },
 ];
 
-const CheckInFilterContext = createContext<ICheckInFilterContext>({
+const CheckInCardFilterContext = createContext<ICheckInCardFilterContext>({
   filterState: 'ACTIVE',
   setFilterState: _ => {},
   selectedStates: ACTIVE_STATES,
 });
 
-const CheckInFilterProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
-  const [filterState, setFilterState] = useCheckInFilterState('ACTIVE');
+const CheckInCardFilterProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
+  const [filterState, setFilterState] = useCheckInCardFilterState('ACTIVE');
   const { states } = FILTER_OPTIONS.find(({ label }) => label === filterState) || { states: ACTIVE_STATES };
   return (
-    <CheckInFilterContext.Provider value={{ filterState, setFilterState, selectedStates: states }}>
+    <CheckInCardFilterContext.Provider value={{ filterState, setFilterState, selectedStates: states }}>
       {children}
-    </CheckInFilterContext.Provider>
+    </CheckInCardFilterContext.Provider>
   );
 }
 
-const useCheckInFilterContextValue = () => useContext(CheckInFilterContext);
+const useCheckInCardFilterContextValue = () => useContext(CheckInCardFilterContext);
 
-export { CheckInFilterProvider, useCheckInFilterContextValue };
+export { CheckInCardFilterProvider, useCheckInCardFilterContextValue };
 
-export default CheckInFilterContext;
+export default CheckInCardFilterContext;

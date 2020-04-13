@@ -10,6 +10,7 @@ import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 import { transformComment } from 'utils/commentsUtils';
@@ -95,6 +96,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -105,14 +107,12 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   });
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const memberId = queryParams.get('memberId');
-    const commentId = queryParams.get('commentId');
+    const { memberId, commentId } = responseFilterState;
     const isLinkFromNotification = (memberId && commentId);
     if (emptyComments || isLinkFromNotification) {
       setCollapseKey('1');
     }
-  }, [emptyComments, location.search]);
+  }, [emptyComments, responseFilterState]);
 
   const contentBody = error ? (
     <Alert

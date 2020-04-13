@@ -8,6 +8,7 @@ import { useUserContextValue } from 'contexts/UserContext';
 import { ADD_COMMENT, UPDATE_COMMENT } from 'apollo/mutations/comments';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import MentionBox from './components/MentionBox';
 import addCommentCacheHandler from './cache-handler/addComment';
 import updateCommentCacheHandler from './cache-handler/updateComment';
@@ -73,6 +74,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
   const [mentions, setMentions] = useState(defaultMentions);
   const [comment, setComment] = useState(defaultComment);
 
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const { account } = useUserContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
@@ -119,7 +121,7 @@ const UserCommentForm: React.FC<IUserCommentForm> = ({
           checkInId: derivedCheckInId,
           checkInResponseId: responseId,
           values: { comment, mentions, author: account },
-          location,
+          filter: responseFilterState,
         }),
       });
       setComment('');

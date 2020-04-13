@@ -1,43 +1,39 @@
 import { DataProxy } from 'apollo-cache/lib/types';
-import { Location } from 'history/index';
 import cloneDeep from 'lodash/cloneDeep';
 
-import { CHECKIN } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_SECTION } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { IAccount } from 'apollo/types/user';
 import { TEmoji, TCheckIn } from 'apollo/types/checkin';
+import { TResponseFilterState } from 'contexts/CheckInResponseFilterContext';
 
 interface ICacheHandler {
+  scheduleId?: string,
   checkInId?: string,
   responseId: string,
   values: {
     emoji: TEmoji,
     reactor?: IAccount,
   },
-  location: Location,
+  filter: TResponseFilterState,
 }
 
-export default ({ checkInId, responseId, values, location }: ICacheHandler) => {
-  const queryParams = new URLSearchParams(location.search);
-  const memberIdFromLink = queryParams.get('memberId');
-  const commentIdFromLink = queryParams.get('commentId');
-  const isLinkFromNotification = (memberIdFromLink && commentIdFromLink);
+export default ({ checkInId, scheduleId, responseId, values, filter }: ICacheHandler) => {
   return {
     update: (store: DataProxy, { data: { addCheckInResponseReaction } }: any) => {
       try {
-        const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
-          query: CHECKIN,
+        const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
+          query: CHECKIN_RESPONSE_SECTION,
           variables: {
-            id: checkInId,
+            scheduleId,
+            checkInId,
             pagination: { first: 5 },
-            ...(isLinkFromNotification && {
-              filter: { memberId: memberIdFromLink },
-            }),
+            filter,
           },
         });
         if (checkInCacheData) {
           const clonedCheckInCacheData = cloneDeep(checkInCacheData);
-          const { edges } = clonedCheckInCacheData.checkIn.replies;
+          const { edges } = clonedCheckInCacheData.checkInResponseSection.replies;
           const checkInResponse = edges.find(({ node }) => node.id === responseId);  
           if (checkInResponse) {
             const reaction = checkInResponse.node.reactions.find((reactionGroup) => {
@@ -56,13 +52,12 @@ export default ({ checkInId, responseId, values, location }: ICacheHandler) => {
               });
             }
             store.writeQuery({
-              query: CHECKIN,
+              query: CHECKIN_RESPONSE_SECTION,
               variables: {
-                id: checkInId,
+                scheduleId,
+                checkInId,
                 pagination: { first: 5 },
-                ...(isLinkFromNotification && {
-                  filter: { memberId: memberIdFromLink },
-                }),
+                filter,
               },
               data: clonedCheckInCacheData,
             });

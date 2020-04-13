@@ -32,6 +32,7 @@ const EditAnswerModal: React.FC<IEditAnswerModal> = ({ data, match }) => {
         },
         ...updateCheckInAnswerCacheHandler({
           respondentId: account?.id,
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           value: {
             ...data,

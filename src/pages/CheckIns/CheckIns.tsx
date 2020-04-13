@@ -9,7 +9,7 @@ import CheckInList from './components/CheckInList';
 import { useUserContextValue } from 'contexts/UserContext'
 import { CheckInScheduleProviderWithRouter } from 'contexts/CheckInScheduleContext';
 import { CheckInScheduleConsumer } from 'contexts/CheckInScheduleContext'
-import { useCheckInFilterContextValue, FILTER_OPTIONS, TFilterState } from 'contexts/CheckInFilterContext'
+import { useCheckInCardFilterContextValue, FILTER_OPTIONS, TFilterState } from 'contexts/CheckInCardFilterContext'
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -24,7 +24,7 @@ const StyledTabs = styled(Tabs)`
 
 const CheckIns: React.FC = () => {
   const { account } = useUserContextValue();
-  const { filterState, setFilterState } = useCheckInFilterContextValue();
+  const { filterState, setFilterState } = useCheckInCardFilterContextValue();
   return (
     <CheckInScheduleProviderWithRouter>
       <AppLayout>

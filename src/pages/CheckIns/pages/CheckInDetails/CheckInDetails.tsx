@@ -8,7 +8,9 @@ import CheckInResponses from './components/CheckInResponses';
 import PastCheckInList from './components/PastCheckInList';
 import CheckInNavigation from './components/CheckInNavigation';
 import { ReactionProvider } from 'contexts/ReactionContext';
+import { MentionSourceProviderWithRouter } from 'contexts/MentionSourceContext';
 import { CheckInScheduleProviderWithRouter } from 'contexts/CheckInScheduleContext';
+import { CheckInResponseFilterProviderWithRouter } from 'contexts/CheckInResponseFilterContext';
 
 const { Title } = Typography;
 
@@ -53,13 +55,17 @@ const CheckInDetails = () => {
   );
 
   return (
-    <CheckInScheduleProviderWithRouter>
-      <ReactionProvider>
-        <AppLayout>
-          {contentBody}
-        </AppLayout>
-      </ReactionProvider>
-    </CheckInScheduleProviderWithRouter>
+    <CheckInResponseFilterProviderWithRouter>
+      <MentionSourceProviderWithRouter>
+        <CheckInScheduleProviderWithRouter>
+          <ReactionProvider>
+            <AppLayout>
+              {contentBody}
+            </AppLayout>
+          </ReactionProvider>
+        </CheckInScheduleProviderWithRouter>
+      </MentionSourceProviderWithRouter>
+    </CheckInResponseFilterProviderWithRouter>
   );
 };
 

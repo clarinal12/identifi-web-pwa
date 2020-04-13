@@ -8,16 +8,16 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { LoadingIcon } from 'components/PageSpinner';
 import RespondentCard from './components/RespondentCard';
 import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
-import { useMentionSourceContextValue } from 'contexts/MentionSourceContext';
-import { CHECKIN, CHECKIN_PARTICIPANTS } from 'apollo/queries/checkin';
-import { TCheckIn, TCheckInParticipant } from 'apollo/types/checkin';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
+import { CHECKIN_RESPONSE_SECTION } from 'apollo/queries/checkin';
+import { TCheckIn } from 'apollo/types/checkin';
 import { IconMessage } from 'utils/iconUtils';
 import { elemT } from 'utils/typescriptUtils';
 
 const { Title, Text } = Typography;
 
 interface ICheckInResponseQuery {
-  checkIn: TCheckIn
+  checkInResponseSection: TCheckIn
 }
 
 const StyledSpinnerWrapper = styled.div`
@@ -43,36 +43,19 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
 );
 
 const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match, location }) => {
-  const { setMentionSource } = useMentionSourceContextValue();
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
 
-  const queryParams = new URLSearchParams(location.search);
-  const memberIdFromLink = queryParams.get('memberId');
-  const commentIdFromLink = queryParams.get('commentId');
-  const isLinkFromNotification = (memberIdFromLink && commentIdFromLink);
-
-  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN, {
+  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInResponseQuery>(CHECKIN_RESPONSE_SECTION, {
     variables: {
-      id: derivedPastCheckInId,
+      scheduleId: selectedCheckInCard?.scheduleId,
+      checkInId: derivedPastCheckInId,
       pagination: { first: 5 },
-      ...(isLinkFromNotification && {
-        filter: { memberId: memberIdFromLink },
-      }),
+      filter: responseFilterState,
     },
-    skip: !Boolean(derivedPastCheckInId),
     notifyOnNetworkStatusChange: true,
-  });
-
-  // initializing mentionables
-  useQuery<{ checkInParticipants: TCheckInParticipant[] }>(CHECKIN_PARTICIPANTS, {
-    variables: { checkInScheduleId: match.params.checkin_id },
-    notifyOnNetworkStatusChange: true,
-    onCompleted: ({ checkInParticipants }) => {
-      const mentionables = checkInParticipants.map(({ member }) => member);
-      setMentionSource(mentionables);
-    },
-    skip: !Boolean(match.params.checkin_id),
+    skip: !Boolean(selectedCheckInCard?.scheduleId),
   });
 
   const fetchMoreResponses = (endCursor?: string) => {
@@ -88,21 +71,21 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
       },
       updateQuery: (previousResult: ICheckInResponseQuery, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousResult;
-        const prevEdges =  previousResult.checkIn.replies.edges;
-        const newEdges = fetchMoreResult.checkIn.replies.edges;
+        const prevEdges =  previousResult.checkInResponseSection.replies.edges;
+        const newEdges = fetchMoreResult.checkInResponseSection.replies.edges;
         const newCheckInData = {
-          ...previousResult.checkIn,
+          ...previousResult.checkInResponseSection,
           replies: {
-            ...previousResult.checkIn.replies,
+            ...previousResult.checkInResponseSection.replies,
             edges: [...prevEdges, ...newEdges],
             pageInfo: {
-              endCursor: fetchMoreResult?.checkIn.replies.pageInfo.endCursor,
-              hasNextPage: fetchMoreResult?.checkIn.replies.pageInfo.hasNextPage,
+              endCursor: fetchMoreResult?.checkInResponseSection.replies.pageInfo.endCursor,
+              hasNextPage: fetchMoreResult?.checkInResponseSection.replies.pageInfo.hasNextPage,
               __typename: "PageInfo",
             },
           }
         };
-        return { checkIn: newCheckInData };
+        return { checkInResponseSection: newCheckInData };
       },
     });
   }
@@ -133,7 +116,7 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
   }
   
   const derivedResult = data || {
-    checkIn: {
+    checkInResponseSection: {
       id: '',
       isCurrent: false,
       replies: {
@@ -147,7 +130,7 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
     },
   };
 
-  const replies = derivedResult.checkIn.replies;
+  const replies = derivedResult.checkInResponseSection.replies;
   const dataSource = elemT(replies.edges).map(({ node }) => node);
 
   return data ? (
@@ -160,7 +143,7 @@ const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, 
         threshold={750}
       >
         {dataSource.map((response) => (
-          <RespondentCard key={`response_${response.id}`} response={response} isCurrent={derivedResult.checkIn.isCurrent} />
+          <RespondentCard key={`response_${response.id}`} response={response} isCurrent={derivedResult.checkInResponseSection.isCurrent} />
         ))}
         {(networkStatus === 3 || (loading && networkStatus !== 3)) && (
           <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">

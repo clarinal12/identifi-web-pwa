@@ -34,6 +34,7 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({ data, showSwitch, match }) =>
         ...updateCheckInGoalCacheHandler({
           isPreviousGoal: showSwitch,
           respondentId: account?.id,
+          scheduleId: selectedCheckInCard?.scheduleId,
           checkInId: derivedCheckInId,
           value: {
             ...data,

@@ -1,37 +1,40 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
-import { CHECKIN, CHECKIN_HEADER } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_SECTION, CHECKIN_HEADER } from 'apollo/queries/checkin';
 import { TCheckIn, TBlocker, TCheckInHeader } from 'apollo/types/checkin';
 
 interface ICacheHandler {
   isBlocked?: boolean,
   respondentId?: string,
+  scheduleId?: string,
   checkInId?: string,
   value: Partial<TBlocker>,
 }
 
-export default ({ checkInId, respondentId, isBlocked, value }: ICacheHandler) => {
+export default ({ checkInId, scheduleId, respondentId, isBlocked, value }: ICacheHandler) => {
   const derivedMutation = isBlocked ? 'updateCheckInBlocker' : 'removeCheckInBlocker';
   return {
     update: (store: DataProxy, { data }: any) => {
       const result = data[derivedMutation];
       try {
-        const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
-          query: CHECKIN,
+        const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
+          query: CHECKIN_RESPONSE_SECTION,
           variables: {
-            id: checkInId,
+            scheduleId,
+            checkInId,
             pagination: { first: 5 },
           },
         });
         if (checkInCacheData) {
-          const respondentIndex = checkInCacheData.checkIn.replies.edges.findIndex(({ node }) => {
+          const respondentIndex = checkInCacheData.checkInResponseSection.replies.edges.findIndex(({ node }) => {
             return node.respondent.id === respondentId;
           });
-          checkInCacheData.checkIn.replies.edges[respondentIndex].node.block = isBlocked ? result : null;
+          checkInCacheData.checkInResponseSection.replies.edges[respondentIndex].node.block = isBlocked ? result : null;
           store.writeQuery({
-            query: CHECKIN,
+            query: CHECKIN_RESPONSE_SECTION,
             variables: {
-              id: checkInId,
+              scheduleId,
+              checkInId,
               pagination: { first: 5 },
             },
             data: checkInCacheData,
@@ -42,7 +45,7 @@ export default ({ checkInId, respondentId, isBlocked, value }: ICacheHandler) =>
       try {
         const checkInHeaderCacheData = store.readQuery<{ checkInHeader: TCheckInHeader }>({
           query: CHECKIN_HEADER,
-          variables: { checkInId },
+          variables: { scheduleId, checkInId },
         });
         if (checkInHeaderCacheData) {
           const { stats } = checkInHeaderCacheData.checkInHeader;
@@ -54,7 +57,7 @@ export default ({ checkInId, respondentId, isBlocked, value }: ICacheHandler) =>
           stats.blockers.percentage = Math.round((stats.blockers.colored.length / totalMembers) * 100);
           store.writeQuery({
             query: CHECKIN_HEADER,
-            variables: { checkInId },
+            variables: { scheduleId, checkInId },
             data: checkInHeaderCacheData,
           });
         }

@@ -5,7 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { ICheckinData } from 'apollo/types/checkin';
 import { CHECKIN_CARDS } from 'apollo/queries/checkin';
 import { useUserContextValue } from 'contexts/UserContext';
-import { useCheckInFilterContextValue } from 'contexts/CheckInFilterContext';
+import { useCheckInCardFilterContextValue } from 'contexts/CheckInCardFilterContext';
 
 interface ICheckInScheduleContext {
   checkInCards: {
@@ -25,7 +25,7 @@ const CheckInScheduleContext = createContext<ICheckInScheduleContext>({
 });
 
 const CheckInScheduleProvider: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ children, match }) => {
-  const { selectedStates } = useCheckInFilterContextValue();
+  const { selectedStates } = useCheckInCardFilterContextValue();
   const { account } = useUserContextValue();
   const activeCompany = account?.activeCompany;
 

@@ -1,35 +1,38 @@
 import { DataProxy } from 'apollo-cache/lib/types';
 
-import { CHECKIN, CHECKIN_HEADER } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_SECTION, CHECKIN_HEADER } from 'apollo/queries/checkin';
 import { TCheckIn, TCheckInGoal, TCheckInHeader } from 'apollo/types/checkin';
 
 interface ICacheHandler {
   isPreviousGoal?: boolean,
   respondentId?: string,
+  scheduleId?: string,
   checkInId?: string,
   value: Partial<TCheckInGoal>,
 }
 
-export default ({ checkInId, respondentId, isPreviousGoal, value }: ICacheHandler) => ({
+export default ({ checkInId, scheduleId, respondentId, isPreviousGoal, value }: ICacheHandler) => ({
   update: (store: DataProxy, { data: { updateCheckInGoal } }: any) => {
     try {
-      const checkInCacheData = store.readQuery<{ checkIn: TCheckIn }>({
-        query: CHECKIN,
+      const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
+        query: CHECKIN_RESPONSE_SECTION,
         variables: {
-          id: checkInId,
+          scheduleId,
+          checkInId,
           pagination: { first: 5 },
         },
       });
       if (checkInCacheData && updateCheckInGoal) {
         const derivedGoalKey = isPreviousGoal ? 'previousGoal' : 'currentGoal';
-        const respondentIndex = checkInCacheData.checkIn.replies.edges.findIndex(({ node }) => {
+        const respondentIndex = checkInCacheData.checkInResponseSection.replies.edges.findIndex(({ node }) => {
           return node.respondent.id === respondentId;
         });
-        checkInCacheData.checkIn.replies.edges[respondentIndex].node[derivedGoalKey] = updateCheckInGoal;
+        checkInCacheData.checkInResponseSection.replies.edges[respondentIndex].node[derivedGoalKey] = updateCheckInGoal;
         store.writeQuery({
-          query: CHECKIN,
+          query: CHECKIN_RESPONSE_SECTION,
           variables: {
-            id: checkInId,
+            scheduleId,
+            checkInId,
             pagination: { first: 5 },
           },
           data: checkInCacheData,
@@ -40,7 +43,7 @@ export default ({ checkInId, respondentId, isPreviousGoal, value }: ICacheHandle
     try {
       const checkInHeaderCacheData = store.readQuery<{ checkInHeader: TCheckInHeader }>({
         query: CHECKIN_HEADER,
-        variables: { checkInId },
+        variables: { scheduleId, checkInId },
       });
       if (checkInHeaderCacheData && updateCheckInGoal) {
         const { stats } = checkInHeaderCacheData.checkInHeader;
@@ -63,7 +66,7 @@ export default ({ checkInId, respondentId, isPreviousGoal, value }: ICacheHandle
         stats.completedGoals.percentage = Math.round((stats.completedGoals.colored.length / totalMembers) * 100);
         store.writeQuery({
           query: CHECKIN_HEADER,
-          variables: { checkInId },
+          variables: { scheduleId, checkInId },
           data: checkInHeaderCacheData,
         });
       }

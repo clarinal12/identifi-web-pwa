@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Card, Typography, Icon, Button, Tag, Alert } from 'antd';
 
 import CheckInStats from './components/CheckInStats';
+import CheckInFilter from './components/CheckInFilter';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { Spinner } from 'components/PageSpinner';
 import { useUserContextValue } from 'contexts/UserContext';
@@ -24,8 +25,10 @@ const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_che
   const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
 
   const { data, loading, error } = useQuery<ICheckInHeaderQuery>(CHECKIN_HEADER, {
-    variables: { checkInId: derivedCheckInId },
-    skip: !Boolean(derivedCheckInId),
+    variables: {
+      scheduleId: selectedCheckInCard?.scheduleId,
+      checkInId: derivedCheckInId,
+    },
     onCompleted: ({ checkInHeader }) => {
       history.replace({
         state: {
@@ -35,6 +38,7 @@ const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_che
         ...(location.search && { search: location.search }),
       });
     },
+    skip: !Boolean(selectedCheckInCard?.scheduleId),
   });
 
   if (error) {
@@ -95,6 +99,7 @@ const CheckInHeader: React.FC<RouteComponentProps<{ checkin_id: string, past_che
         </div>
       </Card>
       <CheckInStats data={data.checkInHeader.stats} />
+      <CheckInFilter />
     </>
   );
 }

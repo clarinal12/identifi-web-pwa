@@ -46,6 +46,7 @@
     "moment-timezone": "^0.5.27",
     "node-emoji": "^1.10.0",
     "pluralize": "^8.0.0",
+    "query-string": "^6.12.1",
     "react": "^16.13.0",
     "react-apollo": "^3.1.3",
     "react-app-rewired": "^2.1.5",
@@ -64,6 +65,7 @@
   "scripts": {
     "start": "concurrently \"npm run build-fragment\" \"wait-on src/fragment-types.json && react-app-rewired start\"",
     "build": "react-app-rewired build",
+    "postbuild": "react-snap",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "build-fragment": "node schema-query.js"
