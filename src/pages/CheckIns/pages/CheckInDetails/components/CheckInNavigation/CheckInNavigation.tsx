@@ -37,7 +37,7 @@ const CheckInNavigation: React.FC<RouteComponentProps<{ checkin_id: string }>> =
 }) => {
   const { checkInCards, loading: checkInContextLoading } = useCheckInScheduleContextValue();
   const currentCheckInIndex = checkInCards.allCheckIns.findIndex(({ scheduleId }) => scheduleId === match.params.checkin_id);
-  return ((checkInCards.allCheckIns.length > 1) && !checkInContextLoading) ? (
+  return ((checkInCards.allCheckIns.length > 1) && !checkInContextLoading && currentCheckInIndex >= 0) ? (
     <>
       {(currentCheckInIndex !== 0) && (
         <StyledCard className="mb-3" title="Previous check-in">

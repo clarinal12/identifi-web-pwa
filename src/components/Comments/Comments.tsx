@@ -5,6 +5,7 @@ import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
+import queryString from 'query-string';
 
 import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
@@ -91,7 +92,7 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions }) => {
+const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions, location }) => {
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
@@ -105,10 +106,11 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
   });
 
   useEffect(() => {
-    if (emptyComments) {
+    const queryParams = queryString.parse(location.search);
+    if (emptyComments || Boolean(queryParams.memberId)) {
       setCollapseKey('1');
     }
-  }, [emptyComments]);
+  }, [emptyComments, location.search]);
 
   const contentBody = error ? (
     <Alert
