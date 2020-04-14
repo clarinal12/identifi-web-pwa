@@ -35,6 +35,9 @@ export const UPDATE_CHECKIN_GOAL = gql`
   mutation UpdateCheckInGoal($goalId: ID!, $input: UpdateCheckInGoalInput!) {
     updateCheckInGoal(goalId: $goalId, input: $input) {
       id
+      createdAt
+      goal
+      completed
     }
   }
 `;
@@ -43,6 +46,8 @@ export const UPDATE_CHECKIN_ANSWER = gql`
   mutation UpdateCheckInAnswer($answerId: ID!, $input: UpdateCheckInAnswerInput!) {
     updateCheckInAnswer(answerId: $answerId, input: $input) {
       id
+      question
+      answer
     }
   }
 `;
@@ -59,6 +64,7 @@ export const UPDATE_CHECKIN_BLOCKER = gql`
   mutation UpdateCheckInBlocker($blockerId: ID!, $input: UpdateCheckInBlockerInput!) {
     updateCheckInBlocker(blockerId: $blockerId, input: $input) {
       id
+      blocker
     }
   }
 `;

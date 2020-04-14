@@ -1,73 +1,86 @@
 import { DataProxy } from 'apollo-cache/lib/types';
+import cloneDeep from 'lodash/cloneDeep';
 
-import { CHECKIN, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
+import { CHECKIN_RESPONSE_SECTION } from 'apollo/queries/checkin';
 import { CHECKIN_RESPONSE_REACTORS } from 'apollo/queries/reactions';
 import { IAccount } from 'apollo/types/user';
-import { TEmoji, TCurrentCheckIn } from 'apollo/types/checkin';
+import { TEmoji, TCheckIn } from 'apollo/types/checkin';
+import { TResponseFilterState } from 'contexts/CheckInResponseFilterContext';
 
 interface ICacheHandler {
-  isPastCheckIn: boolean,
-  checkInId: string,
+  scheduleId?: string,
+  checkInId?: string,
   responseId: string,
   values: {
     emoji: TEmoji,
     reactor?: IAccount,
-  }
+  },
+  filter: TResponseFilterState,
 }
 
-export default ({
-  isPastCheckIn, checkInId, responseId, values,
-}: ICacheHandler) => ({
-  update: (store: DataProxy, { data: { removeCheckInResponseReaction } }: any) => {
-    if (!removeCheckInResponseReaction) return;
-    try {
-      const checkInCacheData: any | null = store.readQuery({
-        query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-        variables: { id: checkInId },
-      });
-      const checkInSource: TCurrentCheckIn = isPastCheckIn ? checkInCacheData?.checkIn : checkInCacheData?.checkInSchedule.currentCheckIn;
-      const checkInResponse = checkInSource.responses.find(({ id }) => id === responseId);
-      if (checkInResponse) {
-        const reactionIndex = checkInResponse.reactions.findIndex((reactionGroup) => {
-          return reactionGroup.emoji.id === values.emoji.id;
+export default ({ checkInId, scheduleId, responseId, values, filter }: ICacheHandler) => {
+  return {
+    update: (store: DataProxy, { data: { removeCheckInResponseReaction } }: any) => {
+      if (!removeCheckInResponseReaction) return;
+      try {
+        const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
+          query: CHECKIN_RESPONSE_SECTION,
+          variables: {
+            scheduleId,
+            checkInId,
+            pagination: { first: 5 },
+            filter,
+          },
         });
-        if (reactionIndex >= 0) {
-          checkInResponse.reactions[reactionIndex].count -= 1;
-          checkInResponse.reactions[reactionIndex].hasReacted = false;
-          if (checkInResponse.reactions[reactionIndex].count === 0) {
-            checkInResponse.reactions = checkInResponse.reactions.filter((_, idx) => idx !== reactionIndex);
+        if (checkInCacheData) {
+          const clonedCheckInCacheData = cloneDeep(checkInCacheData);
+          const { edges } = clonedCheckInCacheData.checkInResponseSection.replies;
+          const checkInResponse = edges.find(({ node }) => node.id === responseId);  
+          const reaction = checkInResponse?.node.reactions.find((reactionGroup) => {
+            return reactionGroup.emoji.id === values.emoji.id;
+          });
+          if (checkInResponse && reaction) {
+            reaction.count -= 1;
+            reaction.hasReacted = false;
+            checkInResponse.node.reactions = checkInResponse.node.reactions
+              .filter(({ count }) => count > 0);
           }
+          store.writeQuery({
+            query: CHECKIN_RESPONSE_SECTION,
+            variables: {
+              scheduleId,
+              checkInId,
+              pagination: { first: 5 },
+              filter,
+            },
+            data: clonedCheckInCacheData,
+          });
         }
-        store.writeQuery({
-          query: isPastCheckIn ? CHECKIN : CHECKIN_SCHEDULE,
-          variables: { id: checkInId },
-          data: checkInCacheData,
+      } catch (_) {}
+  
+      try {
+        const reactorsCacheData: any | null = store.readQuery({
+          query: CHECKIN_RESPONSE_REACTORS,
+          variables: {
+            filter: { responseId, emojiId: values.emoji.id },
+          },
         });
-      }
-    } catch (_) {}
-
-    try {
-      const reactorsCacheData: any | null = store.readQuery({
-        query: CHECKIN_RESPONSE_REACTORS,
-        variables: {
-          filter: { responseId, emojiId: values.emoji.id },
-        },
-      });
-      store.writeQuery({
-        query: CHECKIN_RESPONSE_REACTORS,
-        variables: {
-          filter: { responseId, emojiId: values.emoji.id },
-        },
-        data: {
-          checkInResponseReactors: reactorsCacheData.checkInResponseReactors
-            .filter((reactor: IAccount) => {
-              return reactor.id !== values.reactor?.id;
-            }),
-        },
-      });
-    } catch (_) {}
-  },
-  optimisticResponse: {
-    removeCheckInResponseReaction: true
-  },
-});
+        store.writeQuery({
+          query: CHECKIN_RESPONSE_REACTORS,
+          variables: {
+            filter: { responseId, emojiId: values.emoji.id },
+          },
+          data: {
+            checkInResponseReactors: reactorsCacheData.checkInResponseReactors
+              .filter((reactor: IAccount) => {
+                return reactor.id !== values.reactor?.id;
+              }),
+          },
+        });
+      } catch (_) {}
+    },
+    optimisticResponse: {
+      removeCheckInResponseReaction: true
+    },
+  };
+};

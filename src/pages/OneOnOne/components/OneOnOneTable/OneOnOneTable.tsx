@@ -69,7 +69,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
               ),
             },
             {
-              key: 'nextCheckInDate',
+              key: 'nextSessionDate',
               title: 'Next check-in date',
               render: ({ info }: IOneOnOnes) => info?.upcomingSessionDate && (
                 <Text className="text-muted">

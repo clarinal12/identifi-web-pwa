@@ -102,3 +102,7 @@
 .direct-report-tooltip .ant-tooltip-inner {
   margin-left: -13px;
 }
+
+.toolbar-emoji-popover .ant-popover-inner-content {
+  padding: 8px;
+}

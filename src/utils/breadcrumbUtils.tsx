@@ -15,7 +15,7 @@ type TSegmentWithSubmenu = {
   SubMenu: ReactNode,
 }
 
-const CheckInSchedulesMenu: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, location }) => (
+const CheckInCardsMenu: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, location }) => (
   <CheckInScheduleConsumer>
     {({ checkInCards }) => (
       <Menu
@@ -45,7 +45,7 @@ const CheckInSchedulesMenu: React.FC<RouteComponentProps<{ checkin_id: string }>
     )}
   </CheckInScheduleConsumer>
 );
-const CheckInSchedulesMenuWithRouter = withRouter(CheckInSchedulesMenu);
+const CheckInCardsMenuWithRouter = withRouter(CheckInCardsMenu);
 
 const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, location }) => (
   <MembersConsumer>
@@ -127,7 +127,7 @@ const OneOnOnesMenuWithRouter = withRouter(OneOnOnesMenu);
 
 export const ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU: TSegmentWithSubmenu[] = [{
   routeSegment: ':checkin_id',
-  SubMenu: <CheckInSchedulesMenuWithRouter />,
+  SubMenu: <CheckInCardsMenuWithRouter />,
 }, {
   routeSegment: ':profile_id',
   SubMenu: <ProfilesMenuWithRouter />,

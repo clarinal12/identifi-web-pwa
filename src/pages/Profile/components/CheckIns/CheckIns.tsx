@@ -51,7 +51,7 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
         {data?.memberCheckIns.length > 0 ? (
           <StyledList>
             {data.memberCheckIns.map((checkin: ICheckinData) => {
-              const { scheduleId, name, currentCheckInDate, nextCheckInDate, frequency } = checkin;
+              const { scheduleId, name, nextCheckInDate, frequency } = checkin;
               const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
               return (
                 <List.Item
@@ -61,7 +61,7 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
                     <Link to={`/checkins/${scheduleId}`} className="text-muted">
                       <Icon type="clock-circle" className="mr-2" />
                       <Text className="text-muted">
-                        {moment(currentCheckInDate || nextCheckInDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
+                        {moment(nextCheckInDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
                       </Text>
                       <Icon type="right" className="ml-5" />
                     </Link>,

@@ -10,7 +10,6 @@ import { IFinalValues } from '../../components/CheckInForm/components/CheckInFor
 import { CHECKIN_CARDS, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
 import { UPDATE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
 import { useMessageContextValue } from 'contexts/MessageContext';
-import { useUserContextValue } from 'contexts/UserContext';
 import { LoadingIcon, Spinner } from 'components/PageSpinner';
 
 const { Title } = Typography;
@@ -18,8 +17,6 @@ const { Title } = Typography;
 const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ history, match }) => {
   const [loadingState, setLoadingState] = useState(false);
   const { alertSuccess, alertError } = useMessageContextValue();
-  const { account } = useUserContextValue();
-  const activeCompany = account?.activeCompany;
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
@@ -50,9 +47,6 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
         },
         refetchQueries: [{
           query: CHECKIN_CARDS,
-          variables: {
-            companyId: activeCompany?.id,
-          },
         }, {
           query: CHECKIN_SCHEDULE,
           variables: { id: match.params.checkin_id },

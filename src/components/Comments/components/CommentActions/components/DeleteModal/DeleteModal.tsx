@@ -6,6 +6,8 @@ import { Modal, Typography } from 'antd';
 
 import { DELETE_COMMENT } from 'apollo/mutations/comments';
 import { useMessageContextValue } from 'contexts/MessageContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import deleteCommentCacheHandler from './cache-handler/deleteComment';
 
 const { Text} = Typography;
@@ -23,9 +25,12 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId }) => {
+const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibility, match, responseId, location }) => {
   const [deleteCommentMutation] = useMutation(DELETE_COMMENT);
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const { alertError } = useMessageContextValue();
+  const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  const derivedCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
 
   const deleteCommentAction = () => {
     try {
@@ -33,9 +38,10 @@ const DeleteModal: React.FC<IDeleteModal> = ({ commentId, visibility, setVisibil
         variables: { id: commentId },
         ...deleteCommentCacheHandler({
           commentId,
-          isPastCheckIn: Boolean(match.params.past_checkin_id),
-          checkInId: match.params.past_checkin_id || match.params.checkin_id,
+          scheduleId: selectedCheckInCard?.scheduleId,
+          checkInId: derivedCheckInId,
           checkInResponseId: responseId,
+          filter: responseFilterState,
         }),
       });
     } catch(error) {

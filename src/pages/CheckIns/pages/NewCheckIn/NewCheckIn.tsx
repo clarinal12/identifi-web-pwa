@@ -38,10 +38,7 @@ const NewCheckIn: React.FC<RouteComponentProps> = ({ history }) => {
           },
         },
         refetchQueries: [{
-          query: CHECKIN_CARDS,
-          variables: {
-            companyId: activeCompany?.id,
-          },
+          query: CHECKIN_CARDS
         }],
         awaitRefetchQueries: true,
       });

@@ -134,6 +134,7 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
       </Row>
       <div style={{ marginTop: 32 }} className="text-right">
         <Button
+          style={{ minWidth: 140 }}
           disabled={isSubmitting}
           className="mr-4"
           size="large"

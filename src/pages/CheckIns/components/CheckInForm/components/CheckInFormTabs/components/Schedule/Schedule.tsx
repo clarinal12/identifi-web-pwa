@@ -161,6 +161,11 @@ const Schedule: React.FC<IExternalProps & FormikProps<IScheduleFormValues>> = ({
               setFieldValue('waitingTime', value);
               setFieldTouched('waitingTime');
             }}
+            onBlur={({ target }) => {
+              const numValue = target.value.split(' ')[0];
+              setFieldValue('remindTime', +numValue - 1);
+              setFieldTouched('remindTime');
+            }}
           />
         </Form.Item>
       </Col>

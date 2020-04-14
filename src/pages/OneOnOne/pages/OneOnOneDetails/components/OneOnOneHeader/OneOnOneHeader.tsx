@@ -3,18 +3,19 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
-import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip } from 'antd';
+import { Card, Button, Typography, Spin, Avatar, Tag, Tooltip, Alert } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from 'pages/OneOnOne/components/ScheduleOneOnOneModal';
 import RescheduleOneOnOneModal from './components/RescheduleOneOnOneModal';
-import { COMPLETE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
-import { ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSION, ONE_ON_ONES, ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
+import { COMPLETE_ONE_ON_ONE, SKIP_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
+import { ONE_ON_ONE_HEADER, ONE_ON_ONES, ONE_ON_ONE_SESSION, ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { IOneOnOneHeader } from 'apollo/types/oneOnOne';
+import completeOneOnOneCacheHandler from './cache-handler/completeOneOnOne';
 
 const { Title, Text } = Typography;
 
@@ -44,11 +45,13 @@ const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boole
 
 const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history, match }) => {
   const { alertError } = useMessageContextValue();
+  const [skippingState, setSkippingState] = useState(false);
   const { selectedUserSession } = useOneOnOneContextValue();
   const [loadingState, setLoadingState] = useState(false);
   const [completeOneOnOneMutation] = useMutation(COMPLETE_ONE_ON_ONE);
+  const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
 
-  const { data, loading } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
+  const { data, loading, error } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
     variables: { sessionId },
     onCompleted: ({ oneOnOneHeader }) => {
       history.replace({
@@ -67,14 +70,40 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
       await completeOneOnOneMutation({
         variables: { sessionId },
         refetchQueries: [{
-          query: ONE_ON_ONE_HEADER,
-          variables: { sessionId },
-        }, {
+          query: ONE_ON_ONES,
+        }],
+        ...completeOneOnOneCacheHandler({
+          sessionId,
+          scheduleId: match.params.schedule_id,
+        }),
+        awaitRefetchQueries: true,
+      });
+    } catch (error) {
+      let errorMessage = null;
+      if (error.graphQLErrors[0]) {
+        errorMessage = error.graphQLErrors[0].message;
+      }
+      alertError(errorMessage);
+    }
+    setLoadingState(false);
+  }
+
+  const skipOneOnOneAction = async () => {
+    try {
+      setSkippingState(true);
+      await skipOneOnOneMutation({
+        variables: { sessionId },
+        refetchQueries: [{
           query: ONE_ON_ONE_SESSION,
           variables: { sessionId },
         }, {
           query: ONE_ON_ONE_SESSIONS,
-          variables: { scheduleId: match.params.schedule_id },
+          variables: {
+            scheduleId: match.params.schedule_id,
+          },
+        }, {
+          query: ONE_ON_ONE_HEADER,
+          variables: { sessionId },
         }, {
           query: ONE_ON_ONES,
         }],
@@ -87,7 +116,25 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
       }
       alertError(errorMessage);
     }
-    setLoadingState(false);
+    setSkippingState(false);
+  }
+
+  if (error) {
+    return (
+      <Alert
+        className="mb-3"
+        showIcon
+        type="warning"
+        message={function() {
+          let errorMessage = "Network error";
+          if (error.graphQLErrors[0]) {
+            errorMessage = error.graphQLErrors[0].message;
+          }
+          return errorMessage;
+        }()}
+        description="Could not load header details at the moment"
+      />
+    );
   }
 
   return (
@@ -132,12 +179,9 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
                 )}
               </div>
               {selectedUserSession?.isManager && (
-                <div className="d-block mt-3">
+                <div className="d-flex mt-3">
                   {data?.oneOnOneHeader.canRescheduleSession && (
-                    <RescheduleOneOnOneModal
-                      canSkipSession={data.oneOnOneHeader.canSkipSession}
-                      maxRescheduleDate={data.oneOnOneHeader.maxRescheduleDateRange}
-                    />
+                    <RescheduleOneOnOneModal maxRescheduleDate={data.oneOnOneHeader.maxRescheduleDateRange} />
                   )}
                   {data?.oneOnOneHeader.showCompleteButton && (
                     <CompleteButtonWrapper disabled={!(data?.oneOnOneHeader.canCompleteSession)}>
@@ -151,6 +195,17 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
                         Complete 1-1
                       </Button>
                     </CompleteButtonWrapper>
+                  )}
+                  {data?.oneOnOneHeader.canSkipSession && (
+                    <Button
+                      className="ml-3"
+                      type="danger"
+                      ghost
+                      onClick={skipOneOnOneAction}
+                      loading={skippingState}
+                    >
+                      Skip 1-1
+                    </Button>
                   )}
                 </div>
               )}

@@ -10,6 +10,7 @@ import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
+import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 import { transformComment } from 'utils/commentsUtils';
@@ -31,6 +32,7 @@ const StyledCollapse = styled(Collapse)`
   .ant-collapse-item {
     border: none !important;
     .ant-collapse-header {
+      user-select: none;
       padding: 16px 24px !important;
     }
     .ant-collapse-content {
@@ -94,6 +96,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
+  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -104,14 +107,12 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   });
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const responseIdFromURL = queryParams.get('responseId');
-    const commentId = queryParams.get('commentId');
-    const isLinkFromNotification = (responseIdFromURL && commentId) && (responseIdFromURL === responseId);
+    const { memberId, commentId } = responseFilterState;
+    const isLinkFromNotification = (memberId && commentId);
     if (emptyComments || isLinkFromNotification) {
       setCollapseKey('1');
     }
-  }, [emptyComments, location.search, responseId]);
+  }, [emptyComments, responseFilterState]);
 
   const contentBody = error ? (
     <Alert
@@ -164,7 +165,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
             <List.Item.Meta
               avatar={(
                 <Link to={`/profile/${author.id}`}>
-                  <Avatar {...(author.avatar && { src: author.avatar })} />
+                  <Avatar style={{ width: 36, height: 36 }} {...(author.avatar && { src: author.avatar })} />
                 </Link>
               )}
               title={

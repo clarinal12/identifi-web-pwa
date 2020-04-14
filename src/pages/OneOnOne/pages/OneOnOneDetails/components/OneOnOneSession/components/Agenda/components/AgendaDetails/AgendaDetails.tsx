@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { HTMLRenderer } from 'components/AppTextEditor';
 import { Modal, Button } from 'antd';
 
 interface IAgendaDetails {
@@ -18,9 +19,6 @@ const StyledModal = styled(Modal)`
     }
   }
   .ant-modal-body {
-    ol {
-      padding-inline-start: 16px;
-    }
     .custom-footer {
       margin-top: 32px;
     }
@@ -38,7 +36,7 @@ const AgendaDetails: React.FC<IAgendaDetails> = ({ topic, content, visibility, s
     visible={visibility}
     onCancel={() => setVisibility(false)}
   >
-    <div  dangerouslySetInnerHTML={{ __html: content }} />
+    <HTMLRenderer content={content} />
     <div className="custom-footer text-right">
       <Button size="large" onClick={() => setVisibility(false)}>Close</Button>
     </div>

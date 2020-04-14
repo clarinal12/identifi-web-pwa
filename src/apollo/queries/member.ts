@@ -35,7 +35,6 @@ export const MEMBER_CHECKINS = gql`
         expected
         total
       }
-      currentCheckInDate
       nextCheckInDate
       frequency
       status
