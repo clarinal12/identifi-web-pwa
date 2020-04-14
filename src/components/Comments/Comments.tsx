@@ -10,7 +10,6 @@ import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
-import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 import { transformComment } from 'utils/commentsUtils';
@@ -92,11 +91,10 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location, reactions }) => {
+const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions }) => {
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
-  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -107,12 +105,10 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   });
 
   useEffect(() => {
-    const { memberId, commentId } = responseFilterState;
-    const isLinkFromNotification = (memberId && commentId);
-    if (emptyComments || isLinkFromNotification) {
+    if (emptyComments) {
       setCollapseKey('1');
     }
-  }, [emptyComments, responseFilterState]);
+  }, [emptyComments]);
 
   const contentBody = error ? (
     <Alert
