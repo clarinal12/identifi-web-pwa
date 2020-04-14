@@ -42,6 +42,7 @@ const EditGoalForm: React.FC<IExternalProps & FormikProps<Partial<TCheckInGoal>>
   const dateString = timeAgo.includes('YESTERDAY') ? 'YESTERDAY:' : `${timeAgo[0]}:`;
   return (
     <StyledModal
+      destroyOnClose
       closable={false}
       visible={modalState}
       okText="Save changes"

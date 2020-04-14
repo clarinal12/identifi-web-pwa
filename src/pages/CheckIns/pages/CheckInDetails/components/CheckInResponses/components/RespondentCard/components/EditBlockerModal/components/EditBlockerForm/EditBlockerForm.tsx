@@ -41,6 +41,7 @@ const EditBlockerForm: React.FC<IExternalProps & FormikProps<Partial<TBlocker> &
   const editorRef = useRef<IRefObject>(null);
   return (
     <StyledModal
+      destroyOnClose
       closable={false}
       visible={modalState}
       okText="Save changes"

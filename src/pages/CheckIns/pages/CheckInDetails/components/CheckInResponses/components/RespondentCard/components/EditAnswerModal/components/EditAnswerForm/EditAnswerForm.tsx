@@ -42,6 +42,7 @@ const EditAnswerForm: React.FC<IExternalProps & FormikProps<{ answer: string }>>
   const editorRef = useRef<IRefObject>(null);
   return (
     <StyledModal
+      destroyOnClose
       closable={false}
       visible={modalState}
       okText="Save changes"
