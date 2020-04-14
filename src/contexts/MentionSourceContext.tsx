@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from 'react-apollo';
+import { ApolloError } from 'apollo-client/errors/ApolloError'
 
 import { CHECKIN_PARTICIPANTS } from 'apollo/queries/checkin';
 import { IAccount } from 'apollo/types/user';
@@ -10,6 +11,7 @@ interface IMentionSourceContext {
   mentionSource: IAccount[],
   filterSource: IAccount[],
   loading: boolean,
+  error?: ApolloError,
 }
 
 const MentionSourceContext = createContext<IMentionSourceContext>({
@@ -23,7 +25,7 @@ const MentionSourceProvider: React.FC<RouteComponentProps<{ checkin_id: string  
   const [filterSource, setFilterSource] = useState<IAccount[]>([]);
 
   // initializing mentionables
-  const { loading } = useQuery<{ checkInParticipants: TCheckInParticipant[] }>(CHECKIN_PARTICIPANTS, {
+  const { loading, error } = useQuery<{ checkInParticipants: TCheckInParticipant[] }>(CHECKIN_PARTICIPANTS, {
     variables: { checkInScheduleId: match.params.checkin_id },
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ checkInParticipants }) => {
@@ -43,6 +45,7 @@ const MentionSourceProvider: React.FC<RouteComponentProps<{ checkin_id: string  
         mentionSource,
         filterSource,
         loading,
+        error,
       }}
     >
       {children}
