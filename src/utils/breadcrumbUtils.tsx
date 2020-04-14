@@ -4,10 +4,10 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 
-import { CheckInScheduleConsumer } from 'contexts/CheckInScheduleContext';
-import { UserConsumer } from 'contexts/UserContext';
-import { MembersConsumer } from 'contexts/MembersContext';
-import { OneOnOneConsumer } from 'contexts/OneOnOneContext';
+import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
+import { useUserContextValue } from 'contexts/UserContext';
+import { useMembersContextValue } from 'contexts/MembersContext';
+import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
 import { getDisplayName } from 'utils/userUtils';
 
 type TSegmentWithSubmenu = {
@@ -15,114 +15,99 @@ type TSegmentWithSubmenu = {
   SubMenu: ReactNode,
 }
 
-const CheckInCardsMenu: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, location }) => (
-  <CheckInScheduleConsumer>
-    {({ checkInCards }) => (
-      <Menu
-        prefixCls="ignore-class"
-        className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
-      >
-        {checkInCards.allCheckIns.map(({ scheduleId, name }) => (
-          <Menu.Item
-            id={scheduleId}
-            key={scheduleId}
-            className={cx({
-              "ant-dropdown-menu-item": true,
-              "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.checkin_id === scheduleId,
-            })}
+const CheckInCardsMenu: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ match, location }) => {
+  const { checkInCards } = useCheckInScheduleContextValue();
+  return (
+    <Menu
+      prefixCls="ignore-class"
+      className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
+    >
+      {checkInCards.allCheckIns.map(({ scheduleId, name }) => (
+        <Menu.Item
+          id={scheduleId}
+          key={scheduleId}
+          className={cx({
+            "ant-dropdown-menu-item": true,
+            "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.checkin_id === scheduleId,
+          })}
+        >
+          <Link
+            to={{
+              pathname: `/checkins/${scheduleId}`,
+              state: location.state,
+            }}
           >
-            <Link
-              to={{
-                pathname: `/checkins/${scheduleId}`,
-                state: location.state,
-              }}
-            >
-              {name}
-            </Link>
-          </Menu.Item>
-        ))}
-      </Menu>
-    )}
-  </CheckInScheduleConsumer>
-);
+            {name}
+          </Link>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+}
 const CheckInCardsMenuWithRouter = withRouter(CheckInCardsMenu);
 
-const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, location }) => (
-  <MembersConsumer>
-    {({ members }) => (
-      <UserConsumer>
-        {({ account }) => {
-          if (!account) return null;
-          return (
-            <Menu
-              prefixCls="ignore-class"
-              className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
-            >
-              {members.filter(({ id }) => id !== account.id ).map((member) => (
-                <Menu.Item
-                  id={member.id}
-                  key={member.id}
-                  className={cx({
-                    "ant-dropdown-menu-item": true,
-                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.profile_id === member.id,
-                  })}
-                >
-                  <Link
-                    to={{
-                      pathname: `/profile/${member.id}`,
-                      state: location.state,
-                    }}
-                  >
-                    {getDisplayName(member)}
-                  </Link>
-                </Menu.Item>
-              ))}
-            </Menu>
-          )
-        }}
-      </UserConsumer>
-    )}
-  </MembersConsumer>
-);
+const ProfilesMenu: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, location }) => {
+  const { members } = useMembersContextValue();
+  const { account } = useUserContextValue();
+  return (!account) ? null : (
+    <Menu
+      prefixCls="ignore-class"
+      className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
+    >
+      {members.filter(({ id }) => id !== account.id ).map((member) => (
+        <Menu.Item
+          id={member.id}
+          key={member.id}
+          className={cx({
+            "ant-dropdown-menu-item": true,
+            "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.profile_id === member.id,
+          })}
+        >
+          <Link
+            to={{
+              pathname: `/profile/${member.id}`,
+              state: location.state,
+            }}
+          >
+            {getDisplayName(member)}
+          </Link>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+}
 const ProfilesMenuWithRouter = withRouter(ProfilesMenu);
 
-const OneOnOnesMenu: React.FC<RouteComponentProps<{ schedule_id: string }>> = ({ match, location }) => (
-  <OneOnOneConsumer>
-    {({ oneOnOnes }) => (
-      <UserConsumer>
-        {({ account }) => {
-          if (!account) return null;
-          return (
-            <Menu
-              prefixCls="ignore-class"
-              className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
-            >
-              {oneOnOnes.filter(({ info }) => info ).map(({ teammate, info }) => (
-                <Menu.Item
-                  id={teammate.id}
-                  key={teammate.id}
-                  className={cx({
-                    "ant-dropdown-menu-item": true,
-                    "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.schedule_id === info?.scheduleId,
-                  })}
-                >
-                  <Link
-                    to={{
-                      pathname: `/1-on-1s/${info?.scheduleId}/${info?.currentSessionId}`,
-                      state: location.state,
-                    }}
-                  >
-                    {getDisplayName(teammate)}
-                  </Link>
-                </Menu.Item>
-              ))}
-            </Menu>
-          )
-        }}
-      </UserConsumer>
-    )}
-  </OneOnOneConsumer>
-);
+const OneOnOnesMenu: React.FC<RouteComponentProps<{ schedule_id: string }>> = ({ match, location }) => {
+  const { oneOnOnes } = useOneOnOneContextValue();
+  const { account } = useUserContextValue();
+  return (!account) ? null : (
+    <Menu
+      prefixCls="ignore-class"
+      className="ant-dropdown-menu ant-dropdown-menu-light ant-dropdown-menu-root ant-dropdown-menu-vertical breadcrumb-menu"
+    >
+      {oneOnOnes.filter(({ info }) => info ).map(({ teammate, info }) => (
+        <Menu.Item
+          id={teammate.id}
+          key={teammate.id}
+          className={cx({
+            "ant-dropdown-menu-item": true,
+            "ant-dropdown-menu-item-active ant-dropdown-menu-item-selected": match.params.schedule_id === info?.scheduleId,
+          })}
+        >
+          <Link
+            to={{
+              pathname: `/1-on-1s/${info?.scheduleId}/${info?.currentSessionId}`,
+              state: location.state,
+            }}
+          >
+            {getDisplayName(teammate)}
+          </Link>
+        </Menu.Item>
+      ))}
+    </Menu>
+  )
+}
 const OneOnOnesMenuWithRouter = withRouter(OneOnOnesMenu);
 
 export const ROUTE_SEGMENTS_WITH_BREADCRUMB_MENU: TSegmentWithSubmenu[] = [{

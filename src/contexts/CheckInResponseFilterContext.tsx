@@ -6,7 +6,6 @@ import queryString from 'query-string';
 
 export type TResponseFilterState = {
   memberId?: string | string[] | undefined,
-  commentId?: string | string[] | undefined,
 }
 
 interface ICheckInResponseFilterContext {
@@ -17,7 +16,6 @@ interface ICheckInResponseFilterContext {
 const CheckInResponseFilterContext = createContext<ICheckInResponseFilterContext>({
   responseFilterState: {
     memberId: undefined,
-    // commentId: undefined,
   },
   setResponseFilterState: _ => {},
 });
@@ -29,7 +27,6 @@ const CheckInResponseFilterProvider: React.FC<RouteComponentProps<{ checkin_id: 
 
   const [responseFilterState, setResponseFilterState] = useState<TResponseFilterState>({
     memberId: queryParams.memberId || undefined,
-    // commentId: queryParams.commentId || undefined,
   });
 
   // reset filterState when changing checkins
@@ -38,7 +35,6 @@ const CheckInResponseFilterProvider: React.FC<RouteComponentProps<{ checkin_id: 
       setCurrentCheckInRoute(match.params.checkin_id);
       setResponseFilterState({
         memberId: undefined,
-        // commentId: undefined,
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

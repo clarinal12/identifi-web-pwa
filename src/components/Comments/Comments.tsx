@@ -5,12 +5,12 @@ import { useQuery } from 'react-apollo';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
+import queryString from 'query-string';
 
 import Reactions from '../Reactions';
 import UserCommentForm from './components/UserCommentForm';
 import CommentActions from './components/CommentActions';
 import { useUserContextValue } from 'contexts/UserContext';
-import { useCheckInResponseFilterContextValue } from 'contexts/CheckInResponseFilterContext';
 import { getDisplayName } from 'utils/userUtils';
 import { getMultipleLines } from 'utils/textUtils';
 import { transformComment } from 'utils/commentsUtils';
@@ -92,11 +92,10 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location, reactions }) => {
+const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions, location }) => {
   const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
-  const { responseFilterState } = useCheckInResponseFilterContextValue();
   const emptyComments = numberOfComments === 0;
 
   const { data, loading, error } = useQuery(COMMENTS, {
@@ -107,12 +106,11 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, location,
   });
 
   useEffect(() => {
-    const { memberId, commentId } = responseFilterState;
-    const isLinkFromNotification = (memberId && commentId);
-    if (emptyComments || isLinkFromNotification) {
+    const queryParams = queryString.parse(location.search);
+    if (emptyComments || Boolean(queryParams.memberId)) {
       setCollapseKey('1');
     }
-  }, [emptyComments, responseFilterState]);
+  }, [emptyComments, location.search]);
 
   const contentBody = error ? (
     <Alert

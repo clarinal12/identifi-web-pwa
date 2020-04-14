@@ -33,21 +33,19 @@ const CheckInScheduleProvider: React.FC<RouteComponentProps<{ checkin_id: string
     skip: !(activeCompany?.slackEnabled),
   });
 
-  const checkInCardsSource = data
-  ? {
-    myCheckIns: data.checkInCards.myCheckIns.filter(({ status }) => selectedStates.includes(status)),
-    allCheckIns: data.checkInCards.allCheckIns.filter(({ status }) => selectedStates.includes(status)),
-  } : {
-    myCheckIns: [],
-    allCheckIns: [],
-  };
-
-  const selectedCheckInCard = checkInCardsSource.allCheckIns.find(({ scheduleId }) => scheduleId === match.params.checkin_id);
+  const selectedCheckInCard = data?.checkInCards.allCheckIns.find(({ scheduleId }) => scheduleId === match.params.checkin_id);
 
   return (
     <CheckInScheduleContext.Provider
       value={{
-        checkInCards: checkInCardsSource,
+        checkInCards: data
+        ? {
+          myCheckIns: data.checkInCards.myCheckIns.filter(({ status }) => selectedStates.includes(status)),
+          allCheckIns: data.checkInCards.allCheckIns.filter(({ status }) => selectedStates.includes(status)),
+        } : {
+          myCheckIns: [],
+          allCheckIns: [],
+        },
         loading,
         selectedCheckInCard,
       }}
