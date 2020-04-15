@@ -26,14 +26,16 @@ export default ({ checkInResponseId, values, checkInId, scheduleId, filter }: IC
           query: COMMENTS,
           variables: { checkInResponseId },
         });
-        checkInResponseCacheData?.checkInResponseComments.push(addCheckInResponseComment);
+        if (!checkInResponseCacheData?.checkInResponseComments.find(({ id }) => id === addCheckInResponseComment.id)) {
+          checkInResponseCacheData?.checkInResponseComments.push(addCheckInResponseComment);
+        }
         store.writeQuery({
           query: COMMENTS,
           variables: { checkInResponseId },
           data: checkInResponseCacheData,
         });
       } catch (_) {}
-  
+
       try {
         const checkInCacheData = store.readQuery<{ checkInResponseSection: TCheckIn }>({
           query: CHECKIN_RESPONSE_SECTION,
