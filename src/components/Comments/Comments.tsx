@@ -60,15 +60,20 @@ const StyledList = styled(List)`
     &:last-of-type {
       padding-bottom: 0 !important;
     }
-    .ant-list-item-meta-title {
-      font-size: 12px;
-      line-height: 20px;
-      a {
-        font-weight: 600;
+    .user-comment-content > .ant-list-item-meta-content {
+      background-color: #f2f3f5bf;
+      border-radius: 18px;
+      padding: 8px 10px;
+      .ant-list-item-meta-title {
+        font-size: 12px;
+        line-height: 20px;
+        a {
+          font-weight: 600;
+        }
       }
     }
     .ant-list-item-action {
-      margin-left: 24px;
+      margin-left: 8px;
     }
   }
 `;
@@ -111,6 +116,19 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
       setCollapseKey('1');
     }
   }, [emptyComments, location.search]);
+
+  // useEffect(() => {
+  //   const { commentId, responseId } = queryString.parse(location.search);
+  //   const referenceId = commentId || responseId;
+  //   if (document && window && referenceId) {
+  //     const expectedElement = document.getElementById(referenceId.toString());
+  //     expectedElement && expectedElement.scrollIntoView({
+  //       behavior: 'smooth',
+  //       block: 'end',
+  //     });
+  //   }
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loading]);
 
   const contentBody = error ? (
     <Alert
@@ -161,6 +179,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
             })}
           >
             <List.Item.Meta
+              className="user-comment-content"
               avatar={(
                 <Link to={`/profile/${author.id}`}>
                   <Avatar style={{ width: 36, height: 36 }} {...(author.avatar && { src: author.avatar })} />
