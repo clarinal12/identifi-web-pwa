@@ -67,7 +67,7 @@ const StyledListItem = styled(List.Item)`
 `;
 
 const UserCommentForm: React.FC<IUserCommentForm> = ({
-  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [], location,
+  responseId, match, defaultComment = '', commentId, setEditCommentId, defaultMentions = [],
 }) => {
   const textAreaId = `textarea_${responseId}_${commentId}`;
   const isUpdating = Boolean(defaultComment && commentId && setEditCommentId);

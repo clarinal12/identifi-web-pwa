@@ -42,7 +42,7 @@ const EmptyState = ({ done = false }: { done?: boolean }) => (
   </StyledEmptyRow>
 );
 
-const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match, location }) => {
+const CheckInResponses: React.FC<RouteComponentProps<{ past_checkin_id: string, checkin_id: string }>>  = ({ match }) => {
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
   const { responseFilterState } = useCheckInResponseFilterContextValue();
   const derivedPastCheckInId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
