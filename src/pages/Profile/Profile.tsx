@@ -9,6 +9,7 @@ import UserDetails from './components/UserDetails';
 import DirectReports from './components/DirectReports';
 import CheckIns from './components/CheckIns';
 import Goals from './components/Goals';
+import Integrations from './components/Integrations';
 import { MembersProvider } from 'contexts/MembersContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
@@ -65,6 +66,9 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
               <>
                 <CheckIns memberId={match.params.profile_id || account.id}  />
                 <Goals memberId={match.params.profile_id || account.id} />
+                {(!Boolean(match.params.profile_id) || match.params.profile_id === account?.id) && (
+                  <Integrations />
+                )}
               </>
             )}
           </Col>

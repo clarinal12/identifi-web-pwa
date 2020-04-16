@@ -8,3 +8,15 @@ export const INTEGRATE_SLACK = gql`
     }
   }
 `;
+
+export const INTEGRATE_GOOGLE = gql`
+  mutation IntegrateGoogle($code: String!, $scopes: [GOOGLE_INTEGRATION_SCOPES!]!) {
+    integrateGoogle(code: $code, scopes: $scopes)
+  }
+`;
+
+export const DISABLE_GOOGLE_CALENDAR = gql`
+  mutation DisableGoogleCalendar {
+    disableGoogleCalendar
+  }
+`;

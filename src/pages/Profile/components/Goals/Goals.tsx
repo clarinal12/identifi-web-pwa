@@ -99,7 +99,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
           )}
         </>
       ) : (
-        <Card>
+        <Card className="mb-3">
           <Empty description="No goals yet">
             {isGoalOwner && (
               <>
