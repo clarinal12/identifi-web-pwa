@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-apollo';
 import { Row, Col, Typography, Button } from 'antd';
 import LazyLoad from 'react-lazyload';
+import queryString from 'query-string';
 
 import PageSpinner from 'components/PageSpinner';
 import PasswordResetForm from './components/PasswordResetForm';
@@ -17,8 +18,7 @@ const PasswordReset: React.FC<RouteComponentProps> = ({ history, location }) => 
   const { alertError, alertSuccess } = useMessageContextValue();
   const [resetPassword] = useMutation(RESET_PASSWORD);
 
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get('token');
+  const { token } = queryString.parse(location.search);
 
   const { data, loading } = useQuery(VERIFY_RESET_TOKEN, {
     variables: { token },

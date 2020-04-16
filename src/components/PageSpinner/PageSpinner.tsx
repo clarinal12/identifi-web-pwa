@@ -47,7 +47,7 @@ export const Spinner: React.FC<IPageSpinner> = ({ loading = true, label = "Loadi
   </StyledSpinnerWrapper>
 );
 
-export default ({ loading = true, children = <div />, label = "Loading..." }: IPageSpinner) => (
+export default ({ loading = true, label = "Loading..." }: IPageSpinner) => (
   <StyledPageSpinnerWrapper>
     <Spin
       className="page-spinner"
@@ -55,8 +55,6 @@ export default ({ loading = true, children = <div />, label = "Loading..." }: IP
       tip={label}
       indicator={LoadingIcon}
       spinning={loading}
-    >
-      {children}
-    </Spin>
+    />
   </StyledPageSpinnerWrapper>
 );

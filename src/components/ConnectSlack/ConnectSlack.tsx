@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { useMutation } from 'react-apollo';
 import { Row, Col, Typography, Button, Icon } from 'antd';
+import queryString from 'query-string';
 
 import { Spinner } from 'components/PageSpinner';
 import { useUserContextValue } from 'contexts/UserContext'
@@ -33,9 +34,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
 
   const [loadingState, setLoadingState] = useState(false);
 
-  const queryParams = new URLSearchParams(location.search);
-  const code = queryParams.get('code');
-  const errorCode = queryParams.get('error');
+  const { code, errorCode } = queryString.parse(location.search);
 
   const slackIntegration = async () => {
     try {
@@ -72,7 +71,7 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
       slackIntegration();
     }
     if (errorCode) {
-      alertError(ERROR_MAP[errorCode]);
+      alertError(ERROR_MAP[errorCode.toString()]);
       setLoadingState(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

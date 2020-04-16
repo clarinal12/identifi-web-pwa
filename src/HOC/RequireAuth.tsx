@@ -30,8 +30,12 @@ export default <P extends object>(
   requireAuth = true,
 ) => {
   const RequireAuth: React.FC<P & RouteComponentProps> = (props) => {
-    let newProps = { ...props, requireAuth };
     const token = getAuthToken();
+
+    const { data, loading, error } = useQuery<IQueryData, IQueryVariables>(ACCOUNT, {
+      variables: { token },
+      skip: !isLoggedIn(),
+    });
 
     useEffect(() => {
       const redirectToHome = () => {
@@ -52,32 +56,17 @@ export default <P extends object>(
       requireAuth ? redirectToLogin() : redirectToHome();
     }, [props]);
 
-    const { data, loading, error } = useQuery<IQueryData, IQueryVariables>(ACCOUNT, {
-      variables: { token },
-      skip: !isLoggedIn(),
-    });
-
     if (error) {
       localStorage.clear();
       return <ErrorPage errorMessage={error.graphQLErrors[0].message} />
     }
 
-    if (data) {
-      newProps = {
-        ...props,
-        requireAuth, account: data.me, token,
-        authenticated: Boolean(data.me && token),
-      };
-    }
-
-    return (
-      <PageSpinner loading={loading}>
-        {!loading && (
-          <UserProvider value={newProps}>
-            <ComposedComponent {...newProps as P} />
-          </UserProvider>
-        )}
-      </PageSpinner>
+    return loading ? (
+      <PageSpinner />
+    ) : (
+      <UserProvider value={{ token, account: data?.me }}>
+        <ComposedComponent {...props as P} />
+      </UserProvider>
     );
   }
   return RequireAuth;
