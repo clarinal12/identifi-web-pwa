@@ -16,7 +16,7 @@ import { getDisplayName } from 'utils/userUtils';
 import { MEMBER } from 'apollo/queries/member';
 import { IAccount } from 'apollo/types/user';
 
-const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history }) => {
+const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history, location }) => {
   const ApplicationWrapper = match.params.profile_id ? MembersProvider : ({ children }: any) => <>{children}</>;
   const { account } = useUserContextValue();
 
@@ -30,6 +30,7 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
         state: {
           profile_id_alias: getDisplayName(data.member),
         },
+        ...(location.search && { search: location.search }),
       });
     }
   });

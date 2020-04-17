@@ -13,6 +13,7 @@ import { ACCOUNT } from 'apollo/queries/user';
 import { MEMBERS } from 'apollo/queries/member';
 import { ERROR_MAP } from 'utils/errorUtils';
 import env from 'config/env';
+import { INTEGRATION_URLS } from 'config/appConfig';
 
 const { Title } = Typography;
 
@@ -91,8 +92,13 @@ const ConnectSlack: React.FC<IConnectSlack> = ({ slackMessage, location }) => {
           size="large"
           type="primary"
           onClick={() => {
-            const slackCallbackURL = window.location.href;
-            const slackURL = `https://slack.com/oauth/v2/authorize?client_id=${process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`]}&scope=channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email&user_scope=channels:read,groups:read,team:read,users:read,users:read.email&redirect_uri=${slackCallbackURL}`;
+            const queryParams = queryString.stringify({
+              client_id: process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`],
+              scope: "channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email",
+              user_scope: "channels:read,groups:read,team:read,users:read,users:read.email",
+              redirect_uri: `${window.location.origin}${window.location.pathname}`,
+            });
+            const slackURL = `${INTEGRATION_URLS.SLACK}?${queryParams}`;
             window.location.href = slackURL;
           }}
         >

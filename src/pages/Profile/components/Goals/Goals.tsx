@@ -99,7 +99,7 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
           )}
         </>
       ) : (
-        <Card className="mb-3">
+        <Card>
           <Empty description="No goals yet">
             {isGoalOwner && (
               <>
@@ -126,7 +126,9 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
 
   return loading ? (
     <Spinner label="Loading user goals..." />
-  ) : contentBody;
+  ) : <div className="mb-4">
+    {contentBody}
+  </div>;
 }
 
 export default Goals;
