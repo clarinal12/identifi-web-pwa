@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import GOOGLE_FIELDS from '../fields/goolge';
+
 export const INTEGRATE_SLACK = gql`
   mutation IntegrateSlack($input: IntegrateSlackInput!) {
     integrateSlack(input: $input) {
@@ -9,14 +11,18 @@ export const INTEGRATE_SLACK = gql`
   }
 `;
 
-export const INTEGRATE_GOOGLE = gql`
-  mutation IntegrateGoogle($code: String!, $scopes: [GOOGLE_INTEGRATION_SCOPES!]!) {
-    integrateGoogle(code: $code, scopes: $scopes)
+export const SETUP_GOOGLE_INTEGRATION = gql`
+  mutation SetupGoogleIntegration($redirectURI: String! ,$code: String!, $scopes: [String!]!) {
+    setupGoogleIntegration(redirectURI: $redirectURI, code: $code, scopes: $scopes) {
+      ${GOOGLE_FIELDS}
+    }
   }
 `;
 
-export const DISABLE_GOOGLE_CALENDAR = gql`
-  mutation DisableGoogleCalendar {
-    disableGoogleCalendar
+export const DISABLE_GOOGLE_INTEGRATION = gql`
+  mutation DisableGoogleIntegration($scope: String!) {
+    disableGoogleIntegration(scope: $scope) {
+      ${GOOGLE_FIELDS}
+    }
   }
 `;

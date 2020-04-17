@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useMutation } from 'react-apollo';
-import { Typography, List, Card, Switch, Popconfirm } from 'antd';
+import { useQuery } from 'react-apollo';
+import { Typography, List, Card, Alert, Spin } from 'antd';
 
-import { Spinner } from 'components/PageSpinner';
-import { useMessageContextValue } from 'contexts/MessageContext';
-import { DISABLE_GOOGLE_CALENDAR, INTEGRATE_GOOGLE } from 'apollo/mutations/integration';
+import { LoadingIcon } from 'components/PageSpinner';
+import Google from './components/Google';
+import { IGoogleIntegrationInfo } from './components/Google/Google';
+import { INTEGRATION_INFO } from 'apollo/queries/integration';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
+
+interface IIntegrationInfoQuery {
+  integrationInfo: {
+    google: IGoogleIntegrationInfo,
+  },
+}
 
 const StyledList = styled(List)`
   .ant-list-item {
@@ -22,74 +29,50 @@ const StyledList = styled(List)`
   }
 `;
 
+const StyledSpinnerWrapper = styled.div`
+  .ant-spin-text {
+    padding-top: 6px;
+  }
+`;
+
 const Integrations  = () => {
-  const { alertSuccess, alertError, alertWarning } = useMessageContextValue();
-  const [toggleState, setToggleState] = useState(false);
-  const [loadingState, setLoadingState] = useState(false);
-  const [integrateGoogleMutation] = useMutation(INTEGRATE_GOOGLE);
-  const [disableGoogleCalendarMutation] = useMutation(DISABLE_GOOGLE_CALENDAR);
+  const { data, loading, error } = useQuery<IIntegrationInfoQuery>(INTEGRATION_INFO);
 
-  const integrateGoogleAction = async () => {
-    setLoadingState(true);
-    try {
-      await integrateGoogleMutation({
-        variables: {
-          code: '', // ask code from chris
-          scopes: ['CALENDAR'],
-        }
-      });
-      alertSuccess('Google calendar integration success!');
-    } catch (error) {
-      let errorMessage = "Network error";
-      if (error.graphQLErrors[0]) {
-        errorMessage = error.graphQLErrors[0].message;
-      }
-      alertError(errorMessage);
-    }
-    setLoadingState(false);
+  if (error ) {
+    return (
+      <Alert
+        showIcon
+        type="warning"
+        message={function() {
+          let errorMessage = "Network error";
+          if (error.graphQLErrors[0]) {
+            errorMessage = error.graphQLErrors[0].message;
+          }
+          return errorMessage;
+        }()}
+        description="Could not load the comments at the moment"
+      />
+    );
   }
 
-  const disableGoogleCalendarMutationAction = async () => {
-    setLoadingState(true);
-    try {
-      await disableGoogleCalendarMutation();
-      alertWarning('Removed Google calendar integration.');
-    } catch (error) {
-      let errorMessage = "Network error";
-      if (error.graphQLErrors[0]) {
-        errorMessage = error.graphQLErrors[0].message;
-      }
-      alertError(errorMessage);
-    }
-    setLoadingState(false);
-  }
-
-  return false ? (
-    <Spinner label="Loading integrations..." />
+  return (loading) ? (
+    <StyledSpinnerWrapper className="py-4">
+      <Spin
+        className="d-block"
+        indicator={LoadingIcon}
+        tip="Loading integrations..."
+        size="small"
+        spinning
+      />
+    </StyledSpinnerWrapper>
   ) : (
     <>
       <Title className="mb-3" level={4}>Integrations</Title>
       <Card>
         <StyledList>
-          <List.Item
-            className="px-3"
-            actions={[
-              <Popconfirm
-                placement="topRight"
-                title="Connect your Google account to activate this integration."
-                onConfirm={() => {
-                  // redirect shit here
-                }}
-                onCancel={() => setToggleState(false)}
-                okText="Proceed"
-                cancelText="Cancel"
-              >
-                <Switch loading={loadingState} checked={toggleState} onChange={setToggleState} />
-              </Popconfirm>
-            ]}
-          >
-            <Text className="fs-16">Google Calendar</Text>
-          </List.Item>
+          {data && (
+            <Google integrationInfo={data.integrationInfo.google} />
+          )}
         </StyledList>
       </Card>
     </>
