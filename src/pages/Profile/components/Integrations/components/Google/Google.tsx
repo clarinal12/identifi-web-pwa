@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from 'react-apollo';
 import { Typography, List, Switch, Popconfirm } from 'antd';
-import { isDev } from 'config/env';
 import queryString from 'query-string';
 
 import { useMessageContextValue } from 'contexts/MessageContext';
@@ -27,8 +26,6 @@ interface IGoogle extends RouteComponentProps {
 }
 
 const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
-  // UPDATE THIS BEFORE DEPLOYING TO PRODUCTION
-  const redirectURI = isDev ? 'https://web.identifi.com/profile' : `${window.location.origin}${window.location.pathname}`;
   const { code: codeFromURL, scope: scopeFromURL, error: errorFromURL } = queryString.parse(location.search);
   const defaultToggleState = integrationInfo.calendar.enabled || Boolean(codeFromURL && scopeFromURL);
 
@@ -60,7 +57,7 @@ const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
         variables: {
           code: codeFromURL,
           scopes: scopeFromURL?.toString().split(' '),
-          redirectURI,
+          redirectURI: `${window.location.origin}${window.location.pathname}`,
         },
         ...setupGoogleIntegrationCacheHandler({
           scope: integrationInfo.calendar.scope,
@@ -110,7 +107,7 @@ const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
     }
     const queryParams = queryString.stringify({
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      redirect_uri: redirectURI,
+      redirect_uri: `${window.location.origin}${window.location.pathname}`,
       response_type: 'code',
       scope: allScopes.join(' '),
       access_type: 'offline',

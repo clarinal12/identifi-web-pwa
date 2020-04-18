@@ -50,7 +50,7 @@ const Integrations  = () => {
           }
           return errorMessage;
         }()}
-        description="Could not load the comments at the moment"
+        description="Could not load integrations at the moment"
       />
     );
   }
