@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
 import { Row, Col } from 'antd';
 import LazyLoad from 'react-lazyload';
+import queryString from 'query-string';
 
 import { Spinner } from 'components/PageSpinner';
 import SetupTabs from './components/SetupTabs';
@@ -36,9 +37,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
   const [loadingState, setLoadingState] = useState(false);
   const [activeTabKey, setActiveTabKey] = useActiveTabState(1);
 
-  const queryParams = new URLSearchParams(location.search);
-  const code = queryParams.get('code');
-  const errorCode = queryParams.get('error');
+  const { code, errorCode } = queryString.parse(location.search);
 
   const slackIntegration = async () => {
     try {
@@ -96,7 +95,7 @@ const Setup: React.FC<RouteComponentProps> = ({ location, history }) => {
       slackIntegration();
     }
     if (errorCode) {
-      alertError(ERROR_MAP[errorCode]);
+      alertError(ERROR_MAP[errorCode.toString()]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTabKey]);

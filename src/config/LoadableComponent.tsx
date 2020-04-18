@@ -1,6 +1,8 @@
 import React from 'react';
 import loadable from '@loadable/component';
-import { Spin, Icon } from 'antd';
+import { Spin } from 'antd';
+
+import { LoadingIcon } from 'components/PageSpinner';
 
 interface ILoadableComponentProps {
   componentPathName: string,
@@ -11,7 +13,7 @@ const DefaultLoader = (
   <Spin
     size="large"
     className="code-splitting-spinner"
-    indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}
+    indicator={LoadingIcon}
   />
 );
 

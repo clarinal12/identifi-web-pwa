@@ -46,8 +46,7 @@ const UserMenu: React.FC<
           if (setUserState) {
             setUserState({
               account: undefined,
-              token: undefined,
-              authenticated: false,
+              token: null,
             });
           }
           localStorage.clear();

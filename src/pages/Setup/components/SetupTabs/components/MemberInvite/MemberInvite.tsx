@@ -5,9 +5,11 @@ import {
   Form, Button,
   // Typography, Select,
 } from 'antd';
+import queryString from 'query-string';
 
 import { memberInviteFormSchema } from './validation';
 import env from 'config/env';
+import { INTEGRATION_URLS } from 'config/appConfig';
 
 // const { Text } = Typography;
 
@@ -43,8 +45,13 @@ const MemberInvite: React.FC<IExternalProps & FormikProps<IMemberInviteFormValue
         icon="slack"
         block
         onClick={() => {
-          const slackCallbackURL = `${window.location.origin}/setup`;
-          const slackURL = `https://slack.com/oauth/v2/authorize?client_id=${process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`]}&scope=channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email&user_scope=channels:read,groups:read,team:read,users:read,users:read.email&redirect_uri=${slackCallbackURL}`;
+          const queryParams = queryString.stringify({
+            client_id: process.env[`REACT_APP_${env}_SLACK_CLIENT_ID`],
+            scope: "channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email",
+            user_scope: "channels:read,groups:read,team:read,users:read,users:read.email",
+            redirect_uri: `${window.location.origin}${window.location.pathname}`,
+          });
+          const slackURL = `${INTEGRATION_URLS.SLACK}?${queryParams}`;
           window.location.href = slackURL;
         }}
       >

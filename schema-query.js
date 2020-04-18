@@ -4,7 +4,7 @@ const fs = require('fs');
 axios.request({
   url: "/graphql",
   method: "post",
-  baseURL: "http://development-api.identifi.com/",  
+  baseURL: "https://development-api.identifi.com/",  
   headers: { 'Content-Type': 'application/json' },
   data: JSON.stringify({
     variables: {},
