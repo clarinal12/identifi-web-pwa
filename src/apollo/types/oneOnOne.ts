@@ -7,7 +7,8 @@ export type TOneOnOneInfo = {
   scheduleId: string,
   currentSessionId: string,
   currentSessionStatus: 'UPCOMING' | 'HAPPENING' | 'INCOMPLETE' | 'COMPLETED' | 'SKIPPED',
-  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED'
+  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED',
+  recursAt?: string,
 }
 
 export interface IOneOnOnes {

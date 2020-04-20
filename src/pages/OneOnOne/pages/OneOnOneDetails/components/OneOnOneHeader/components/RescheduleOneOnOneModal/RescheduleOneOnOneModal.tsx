@@ -81,11 +81,11 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxR
 
   return (
     <div className="d-flex">
-      <Button type="primary" ghost onClick={() => setVisibility(true)}>Reschedule</Button>
+      <Button type="primary" ghost onClick={() => setVisibility(true)}>Postpone</Button>
       <StyledModal
         maskClosable={false}
         closable={false}
-        title="Reschedule upcoming 1-1"
+        title="Postpone upcoming 1-1"
         visible={visibility}
       >
         <Text className="fs-16">

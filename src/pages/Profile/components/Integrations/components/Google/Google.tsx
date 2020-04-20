@@ -35,10 +35,6 @@ const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
   const [setupGoogleIntegrationMutation] = useMutation(SETUP_GOOGLE_INTEGRATION);
   const [disableGoogleIntegrationMutation] = useMutation(DISABLE_GOOGLE_INTEGRATION);
 
-  const url = `${window.location.href}?client_id=${process.env.REACT_APP_DEVELOPMENT_SLACK_CLIENT_ID}&scope=channels:history,channels:join,channels:read,chat:write,commands,groups:history,groups:read,groups:write,im:history,im:write,mpim:write,users.profile:read,users:read,users:read.email&user_scope=channels:read,groups:read,team:read,users:read,users:read.email`
-
-  console.log(queryString.parse(url));
-
   useEffect(() => {
     if ((codeFromURL && scopeFromURL) && !integrationInfo.calendar.enabled) {
       setupGoogleIntegrationAction();
