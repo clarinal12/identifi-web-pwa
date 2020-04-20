@@ -60,7 +60,7 @@ const Google: React.FC<IGoogle>  = ({ integrationInfo, location, history }) => {
           scopes: scopeFromURL?.toString().split(' '),
         }),
       });
-      history.replace(`${window.location.origin}${window.location.pathname}`);
+      history.replace(location.pathname);
       alertSuccess('Google calendar integration success!');
     } catch (error) {
       let errorMessage = "Network error";
