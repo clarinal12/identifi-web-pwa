@@ -10,7 +10,7 @@ interface IPageSpinner {
 
 const StyledPageSpinnerWrapper = styled.div`
   .ant-spin {
-    &.page-spinner, &.code-splitting-spinner {
+    &.page-spinner {
       min-height: 100vh;
       display: flex !important;
       flex-direction: column;
