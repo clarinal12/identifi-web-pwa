@@ -9,13 +9,14 @@ import UserDetails from './components/UserDetails';
 import DirectReports from './components/DirectReports';
 import CheckIns from './components/CheckIns';
 import Goals from './components/Goals';
+import Integrations from './components/Integrations';
 import { MembersProvider } from 'contexts/MembersContext';
 import { useUserContextValue } from 'contexts/UserContext';
 import { getDisplayName } from 'utils/userUtils';
 import { MEMBER } from 'apollo/queries/member';
 import { IAccount } from 'apollo/types/user';
 
-const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history }) => {
+const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match, history, location }) => {
   const ApplicationWrapper = match.params.profile_id ? MembersProvider : ({ children }: any) => <>{children}</>;
   const { account } = useUserContextValue();
 
@@ -29,6 +30,7 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
         state: {
           profile_id_alias: getDisplayName(data.member),
         },
+        ...(location.search && { search: location.search }),
       });
     }
   });
@@ -65,6 +67,9 @@ const Profile: React.FC<RouteComponentProps<{ profile_id: string }>> = ({ match,
               <>
                 <CheckIns memberId={match.params.profile_id || account.id}  />
                 <Goals memberId={match.params.profile_id || account.id} />
+                {(!Boolean(match.params.profile_id) || match.params.profile_id === account?.id) && (
+                  <Integrations />
+                )}
               </>
             )}
           </Col>

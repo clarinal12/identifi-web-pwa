@@ -75,29 +75,30 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
                 <Text className="text-muted">
                   <Icon type="clock-circle" className="mr-2" />
                   {moment(info.upcomingSessionDate).format('MMM DD, hh:mm A')}
+                  <Tag className="ml-3" color={COLOR_MAP[info?.currentSessionStatus]}>{info?.currentSessionStatus}</Tag>
                 </Text>
               ),
             },
             {
               key: 'frequency',
               title: 'Frequency',
-              render: ({ info }: IOneOnOnes) => info?.frequency && (
-                <Text className="text-muted text-capitalize">
+              render: ({ info }: IOneOnOnes) => info?.recursAt && (
+                <Text className="text-muted">
                   <Icon type="reload" className="mr-2" />
-                  {info.frequency.toLowerCase().replace('_', '-')}
+                  {info?.recursAt}
                 </Text>
               ),
             },
-            {
-              key: 'currentSessionStatus',
-              title: 'Status',
-              className: 'text-center',
-              render: ({ info }: IOneOnOnes) => {
-                return info?.currentSessionStatus && (
-                  <Tag color={COLOR_MAP[info?.currentSessionStatus]}>{info?.currentSessionStatus}</Tag>
-                );
-              },
-            },
+            // {
+            //   key: 'currentSessionStatus',
+            //   title: 'Status',
+            //   className: 'text-center',
+            //   render: ({ info }: IOneOnOnes) => {
+            //     return info?.currentSessionStatus && (
+            //       <Tag color={COLOR_MAP[info?.currentSessionStatus]}>{info?.currentSessionStatus}</Tag>
+            //     );
+            //   },
+            // },
             {
               key: 'action',
               title: 'Action',

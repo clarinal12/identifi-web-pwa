@@ -9,9 +9,9 @@ import client from 'config/apolloClient';
 import 'bootstrap-utilities/bootstrap-utilities.css';
 import './stylesheets/app.css';
 
-import momentConfig from 'config/momentConfig';
+import appConfig from 'config/appConfig';
 
-momentConfig();
+appConfig();
 
 const rootElement: HTMLElement | null = document.getElementById('root');
 const AppRenderer = rootElement?.hasChildNodes() ? hydrate : render;

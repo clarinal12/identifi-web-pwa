@@ -3,6 +3,7 @@ import { useQuery, useMutation } from 'react-apollo';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Row, Col, Typography } from 'antd';
 import LazyLoad from 'react-lazyload';
+import queryString from 'query-string';
 
 import PageSpinner from 'components/PageSpinner';
 import InviteSetupForm from './components/InviteSetupForm';
@@ -20,10 +21,7 @@ const InviteSetup: React.FC<RouteComponentProps> = ({ history, location }) => {
   const [enterCompany] = useMutation(ENTER_COMPANY);
   const [setupInvitedUser] = useMutation(SETUP_INVITED_USER);
 
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get('token');
-  const companyId = queryParams.get('companyId');
-  const email = queryParams.get('email');
+  const { email, companyId, token } = queryString.parse(location.search);
 
   const { data, loading } = useQuery(VERIFY_INVITE_TOKEN, {
     variables: { token },
@@ -63,7 +61,7 @@ const InviteSetup: React.FC<RouteComponentProps> = ({ history, location }) => {
       <Title className="mb-5">
         Tell us about you
       </Title>
-      <InviteSetupForm email={email || ''} onSubmit={inviteSignupAction} />
+      <InviteSetupForm email={email?.toString() || ''} onSubmit={inviteSignupAction} />
     </div>
   ) : (
     <div className="text-center">

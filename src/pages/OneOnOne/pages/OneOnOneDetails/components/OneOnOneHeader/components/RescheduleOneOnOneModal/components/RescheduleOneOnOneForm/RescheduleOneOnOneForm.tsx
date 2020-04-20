@@ -2,12 +2,10 @@ import React from 'react';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import { withFormik, FormikProps } from 'formik';
-import { Row, Col, Form, Typography, TimePicker, DatePicker, Button } from 'antd';
+import { Row, Col, Form, TimePicker, DatePicker, Button } from 'antd';
 
 import { TOneOnOneInfo } from 'apollo/types/oneOnOne';
 import { rescheduleOneOnOneFormSchema } from './validation';
-
-const { Text } = Typography;
 
 interface IExternalProps {
   data?: Partial<TOneOnOneInfo>,
@@ -30,7 +28,7 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
 }) => {
   return (
     <Form className="mt-4" colon={false} onSubmit={handleSubmit}>
-      <Row gutter={24}>
+      <Row gutter={24} className="mb-5">
         <Col sm={24} md={12}>
           <Form.Item
             className="m-0"
@@ -96,9 +94,9 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           </Form.Item>
         </Col>
       </Row>
-      <div style={{ padding: '32px 0 42px 0' }}>
+      {/* <div style={{ padding: '32px 0 42px 0' }}>
         <Text className="fs-16">None of the dates work for you? You can also entirely skip this 1-1.</Text>
-      </div>
+      </div> */}
       <div className="d-flex justify-content-end">
         <Button
           style={{ minWidth: 140 }}
@@ -117,7 +115,7 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
           size="large"
           htmlType="submit"
         >
-          Reschedule
+          Postpone
         </Button>
       </div>
     </Form>

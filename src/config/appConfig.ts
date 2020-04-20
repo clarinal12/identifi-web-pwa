@@ -19,4 +19,9 @@ export default () => {
       yy: '%dY'
     }
   }); 
-}
+};
+
+export const INTEGRATION_URLS = {
+  SLACK: 'https://slack.com/oauth/v2/authorize',
+  GOOGLE: 'https://accounts.google.com/o/oauth2/v2/auth',
+};

@@ -1,32 +1,33 @@
-import React, { createContext, useContext, PropsWithChildren, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { IAccount } from 'apollo/types/user';
 
 interface IUserContext {
   account: IAccount | undefined,
-  token: string | undefined,
-  authenticated: boolean,
+  token: string | null,
   setUserState?: (userState: IUserContext) => void,
+}
+
+interface IUserProvider {
+  value: IUserContext,
 }
 
 const UserContext = createContext<IUserContext>({
   account: undefined,
-  token: undefined,
-  authenticated: false,
+  token: null,
 });
 
-const UserProvider: React.FC<PropsWithChildren<{ value: any }>> = ({ value, children }) => {
-  const { account, token, authenticated } = value;
+const UserProvider: React.FC<IUserProvider> = ({ value, children }) => {
+  const { account, token } = value;
   const [userState, setUserState] = useState<IUserContext>({
-    account, token, authenticated,
+    account: undefined,
+    token: null,
   });
 
   useEffect(() => {
     setUserState({
-      ...userState,
-      account,
+      account, token,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+  }, [account, token]);
 
   return (
     <UserContext.Provider value={{ ...userState, setUserState }}>

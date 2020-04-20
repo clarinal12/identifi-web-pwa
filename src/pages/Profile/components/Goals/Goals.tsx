@@ -126,7 +126,9 @@ const Goals: React.FC<{ memberId: string }> = ({ memberId }) => {
 
   return loading ? (
     <Spinner label="Loading user goals..." />
-  ) : contentBody;
+  ) : <div className="mb-4">
+    {contentBody}
+  </div>;
 }
 
 export default Goals;
