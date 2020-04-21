@@ -1,16 +1,11 @@
 import gql from 'graphql-tag';
 
+import SESSION_INFO_FIELDS from '../fields/sessionInfo';
+
 export const SCHEDULE_ONE_ON_ONE = gql`
   mutation ScheduleOneOnOne($directReportId: ID!, $input: ScheduleOneOnOneInput!) {
     scheduleOneOnOne(directReportId: $directReportId, input: $input) {
-      scheduleId
-      upcomingSessionDate
-      frequency
-      duration
-      currentSessionId
-      currentSessionStatus
-      status
-      time
+      ${SESSION_INFO_FIELDS}
     }
   }
 `;
@@ -18,14 +13,7 @@ export const SCHEDULE_ONE_ON_ONE = gql`
 export const UPDATE_ONE_ON_ONE_ESCHEDULE = gql`
   mutation UpdateOneOnOneSchedule($scheduleId: ID!, $input: UpdateOneOnOneScheduleInput!) {
     updateOneOnOneSchedule(scheduleId: $scheduleId, input: $input) {
-      scheduleId
-      upcomingSessionDate
-      frequency
-      duration
-      currentSessionId
-      currentSessionStatus
-      status
-      time
+      ${SESSION_INFO_FIELDS}
     }
   }
 `;
