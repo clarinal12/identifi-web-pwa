@@ -52,7 +52,7 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           input: {
             timings: {
               ...values,
-              time: values.time.toISOString(),
+              time: values.time.format(),
             },
           },
         },
@@ -61,8 +61,8 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           values: {
             duration: values.duration,
             frequency: values.frequency,
-            upcomingSessionDate: values.time.toISOString(),
-            time: values.time.toISOString(),
+            upcomingSessionDate: values.time.format(),
+            time: values.time.format(),
           },
         }),
       });
@@ -84,7 +84,7 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           input: {
             timings: {
               ...values,
-              time: values.time.toISOString(),
+              time: values.time.format(),
             },
           },
         },
@@ -93,12 +93,12 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           values: {
             duration: values.duration,
             frequency: values.frequency,
-            upcomingSessionDate: values.time.toISOString(),
+            upcomingSessionDate: values.time.format(),
             status: selectedUserSession.info.status,
             currentSessionId: selectedUserSession.info.currentSessionId,
             currentSessionStatus: 'UPCOMING',
             scheduleId: selectedUserSession.info.scheduleId,
-            time: values.time.toISOString(),
+            time: values.time.format(),
           },
         }),
       });

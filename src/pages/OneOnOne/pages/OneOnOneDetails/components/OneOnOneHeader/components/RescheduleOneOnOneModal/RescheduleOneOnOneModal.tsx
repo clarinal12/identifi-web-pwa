@@ -45,7 +45,7 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxR
       await rescheduleOneOnOneMutation({
         variables: {
           sessionId: selectedUserSession?.info?.currentSessionId,
-          time: values.time.toISOString(),
+          time: values.time.format(),
         },
         refetchQueries: [{
           query: ONE_ON_ONE_HEADER,
