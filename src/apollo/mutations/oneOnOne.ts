@@ -19,7 +19,7 @@ export const UPDATE_ONE_ON_ONE_ESCHEDULE = gql`
 `;
 
 export const RESCHEDULE_ONE_ON_ONE = gql`
-  mutation RescheduleOneOnOne($sessionId: ID!, $time: DateTime!) {
+  mutation RescheduleOneOnOne($sessionId: ID!, $time: String!) {
     rescheduleOneOnOne(sessionId: $sessionId, time: $time)
   }
 `;
