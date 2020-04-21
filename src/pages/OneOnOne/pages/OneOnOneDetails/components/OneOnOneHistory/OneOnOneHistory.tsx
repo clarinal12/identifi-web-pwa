@@ -16,6 +16,7 @@ import { SESSION_STATUS_ICON } from 'utils/oneOnOneUtils';
 import { StyledListWrapper } from 'utils/styledComponentUtils';
 import { ONE_ON_ONE_SESSIONS } from 'apollo/queries/oneOnOne';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { useUserContextValue } from 'contexts/UserContext';
 import { elemT } from 'utils/typescriptUtils';
 
 const { Title, Text } = Typography;
@@ -68,11 +69,13 @@ const EmptyState = () => (
 
 const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = ({ match, history }) => {
   const { selectedUserSession } = useOneOnOneContextValue();
+  const { account } = useUserContextValue();
   const directReport = selectedUserSession?.teammate;
   const scheduleId = selectedUserSession?.info?.scheduleId;
   const currentSessionStatus = selectedUserSession?.info?.currentSessionStatus || 'UPCOMING';
   const currentSessionId = selectedUserSession?.info?.currentSessionId;
   const upcomingSessionDate = selectedUserSession?.info?.upcomingSessionDate;
+  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const derivedSessionId = match.params.session_id || '';
   
@@ -156,7 +159,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
                     pathname: `/1-on-1s/${scheduleId}/${id || currentSessionId}`,
                     state: {
                       schedule_id_alias: getDisplayName(directReport),
-                      session_id_alias: moment(time).format('MMM DD, YYYY'),
+                      session_id_alias: moment(time).tz(derivedTimezone).format('MMM DD, YYYY'),
                       ignore_breadcrumb_link: ['schedule_id_alias'],
                     },
                   });
@@ -168,7 +171,7 @@ const OneOnOneHistory: React.FC<RouteComponentProps<{ session_id: string }>> = (
                     strong={isActive}
                   >
                     {SESSION_STATUS_ICON[status]}
-                    {moment(time).format('MMM DD, YYYY hh:mm A')}
+                    {moment(time).tz(derivedTimezone).format('MMM DD, YYYY hh:mm A')}
                   </Text>
                   <Icon className="float-right" type="right" />
                 </div>

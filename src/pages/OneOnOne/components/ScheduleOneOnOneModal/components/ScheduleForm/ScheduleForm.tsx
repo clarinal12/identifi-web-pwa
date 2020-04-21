@@ -13,6 +13,7 @@ interface IExternalProps {
   data?: TOneOnOneInfo | null,
   setVisibility: (visibility: boolean) => void,
   onSubmitAction: (values: IScheduleFormValues) => void,
+  tz: string,
 }
 
 export interface IScheduleFormValues {
@@ -159,18 +160,18 @@ const ScheduleForm: React.FC<FormikProps<IScheduleFormValues> & IExternalProps> 
 
 export default withFormik<IExternalProps, IScheduleFormValues>({
   validationSchema: scheduleFormSchema,
-  isInitialValid: ({ data }) => {
+  isInitialValid: ({ data, tz }) => {
     return scheduleFormSchema.isValidSync({
       duration: data?.duration || 30,
       frequency: data?.frequency || 'WEEKLY',
-      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+      time: data ? moment(data.upcomingSessionDate).tz(tz) : moment().tz(tz).add(15, 'minutes'),
     });
   },
-  mapPropsToValues: ({ data }) => {
+  mapPropsToValues: ({ data, tz }) => {
     return {
       duration: data?.duration || 30,
       frequency: data?.frequency || 'WEEKLY',
-      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+      time: data ? moment(data.upcomingSessionDate).tz(tz) : moment().tz(tz).add(15, 'minutes'),
     };
   },
   handleSubmit: (values, { props, setSubmitting }) => {

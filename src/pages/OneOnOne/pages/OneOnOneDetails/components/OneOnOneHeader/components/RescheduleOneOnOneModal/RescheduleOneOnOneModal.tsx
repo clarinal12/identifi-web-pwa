@@ -9,6 +9,7 @@ import { ONE_ON_ONES, ONE_ON_ONE_HEADER, ONE_ON_ONE_SESSIONS, ONE_ON_ONE_SESSION
 import { RESCHEDULE_ONE_ON_ONE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { useUserContextValue } from 'contexts/UserContext';
 
 const { Text } = Typography;
 
@@ -31,10 +32,12 @@ const StyledModal = styled(Modal)`
 `;
 
 const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxRescheduleDate }) => {
+  const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [visibility, setVisibility] = useState(false);
   const [rescheduleOneOnOneMutation] = useMutation(RESCHEDULE_ONE_ON_ONE);
+  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const rescheduleOneOnOneAction = async (
     values: IRescheduleOneOnOneFormValues,
@@ -45,7 +48,7 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxR
       await rescheduleOneOnOneMutation({
         variables: {
           sessionId: selectedUserSession?.info?.currentSessionId,
-          time: values.time.format(),
+          time: values.time.toISOString(),
         },
         refetchQueries: [{
           query: ONE_ON_ONE_HEADER,
@@ -97,6 +100,7 @@ const RescheduleOneOnOneModal: React.FC<{ maxRescheduleDate: string }> = ({ maxR
               upcomingSessionDate: selectedUserSession.info.upcomingSessionDate,
             },
           })}
+          tz={derivedTimezone}
           maxRescheduleDate={maxRescheduleDate}
           setVisibility={setVisibility}
           onSubmitAction={rescheduleOneOnOneAction}

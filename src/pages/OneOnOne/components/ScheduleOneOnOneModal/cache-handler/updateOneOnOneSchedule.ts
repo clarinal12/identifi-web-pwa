@@ -36,7 +36,7 @@ export default ({ directReportId, values }: ICacheHandler) => ({
       if (oneOnOneHeaderCacheData) {
         const multiplier = updateOneOnOneSchedule.frequency === 'BI_WEEKLY' ? 2 : 1;
         const daysToAdd = (multiplier * 7) - 1;
-        const newMaxRescheduleDate = moment(updateOneOnOneSchedule.upcomingSessionDate).add(daysToAdd, 'days').utc(false).format();
+        const newMaxRescheduleDate = moment(updateOneOnOneSchedule.upcomingSessionDate).add(daysToAdd, 'days').toISOString();
         oneOnOneHeaderCacheData.oneOnOneHeader.time = updateOneOnOneSchedule.upcomingSessionDate;
         oneOnOneHeaderCacheData.oneOnOneHeader.maxRescheduleDateRange = newMaxRescheduleDate;        
         store.writeQuery({
