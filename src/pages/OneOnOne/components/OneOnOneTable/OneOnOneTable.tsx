@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card, Table, List, Avatar, Typography, Icon, Button, Tag, Empty } from 'antd';
@@ -9,9 +9,7 @@ import ScheduleOneOnOneModal from '../ScheduleOneOnOneModal';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { IOneOnOnes, TOneOnOneInfo } from 'apollo/types/oneOnOne';
-import { IAccount } from 'apollo/types/user';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
-import { useUserContextValue } from 'contexts/UserContext';
 
 const { Text } = Typography;
 
@@ -38,9 +36,8 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const getRecursAt = (scheduleInfo: TOneOnOneInfo, account?: IAccount) => {
-  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const reference = moment(scheduleInfo.time).tz(derivedTimezone);
+const getRecursAt = (scheduleInfo: TOneOnOneInfo) => {
+  const reference = moment(scheduleInfo.time);
   const day = reference.format('dddd');
   const time = reference.format('h:mm A');
   const frequency = scheduleInfo.frequency === 'BI_WEEKLY' ? 'Bi-weekly' : 'Weekly';
@@ -49,8 +46,6 @@ const getRecursAt = (scheduleInfo: TOneOnOneInfo, account?: IAccount) => {
 
 const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
   const { oneOnOnes, loading } = useOneOnOneContextValue();
-  const { account } = useUserContextValue();
-  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   return loading ? (
     <Spinner />
   ) : (
@@ -87,7 +82,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
               render: ({ info }: IOneOnOnes) => info?.upcomingSessionDate && (
                 <Text className="text-muted">
                   <Icon type="clock-circle" className="mr-2" />
-                  {moment(info.upcomingSessionDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
+                  {moment(info.upcomingSessionDate).format('MMM DD, hh:mm A')}
                   <Tag className="ml-3" color={COLOR_MAP[info?.currentSessionStatus]}>{info?.currentSessionStatus}</Tag>
                 </Text>
               ),
@@ -98,7 +93,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
               render: ({ info }: IOneOnOnes) => info && (
                 <Text className="text-muted">
                   <Icon type="reload" className="mr-2" />
-                  {getRecursAt(info, account)}
+                  {getRecursAt(info)}
                 </Text>
               ),
             },
@@ -132,7 +127,7 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
                           pathname: `/1-on-1s/${info.scheduleId}/${info.currentSessionId}`,
                           state: {
                             schedule_id_alias: getDisplayName(teammate),
-                            session_id_alias: moment(info.upcomingSessionDate).tz(derivedTimezone).format('MMM DD, YYYY'),
+                            session_id_alias: moment(info.upcomingSessionDate).format('MMM DD, YYYY'),
                             ignore_breadcrumb_link: ['schedule_id_alias'],
                           },
                         })}

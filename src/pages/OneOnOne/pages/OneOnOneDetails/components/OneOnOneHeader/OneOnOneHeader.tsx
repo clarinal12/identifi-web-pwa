@@ -14,7 +14,6 @@ import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
-import { useUserContextValue } from 'contexts/UserContext';
 import { IOneOnOneHeader } from 'apollo/types/oneOnOne';
 import completeOneOnOneCacheHandler from './cache-handler/completeOneOnOne';
 
@@ -46,21 +45,19 @@ const CompleteButtonWrapper: React.FC<PropsWithChildren<any> & { disabled: boole
 
 const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history, match }) => {
   const { alertError } = useMessageContextValue();
-  const { account } = useUserContextValue();
   const [skippingState, setSkippingState] = useState(false);
   const { selectedUserSession } = useOneOnOneContextValue();
   const [loadingState, setLoadingState] = useState(false);
   const [completeOneOnOneMutation] = useMutation(COMPLETE_ONE_ON_ONE);
   const [skipOneOnOneMutation] = useMutation(SKIP_ONE_ON_ONE);
 
-  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { data, loading, error } = useQuery<IQueryResult>(ONE_ON_ONE_HEADER, {
     variables: { sessionId },
     onCompleted: ({ oneOnOneHeader }) => {
       history.replace({
         state: {
           schedule_id_alias: getDisplayName(oneOnOneHeader.displayMember),
-          session_id_alias: moment(oneOnOneHeader.time).tz(derivedTimezone).format('MMM DD, YYYY'),
+          session_id_alias: moment(oneOnOneHeader.time).format('MMM DD, YYYY'),
           ignore_breadcrumb_link: ['schedule_id_alias'],
         },
       });
@@ -170,7 +167,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({ sessionId, history
                 )}
               </div>
               <Text type="secondary" className="fs-16">
-                {moment(data?.oneOnOneHeader.time).tz(derivedTimezone).format('MMM DD, hh:mm a')}
+                {moment(data?.oneOnOneHeader.time).format('MMM DD, hh:mm a')}
               </Text>
             </div>
             <div>

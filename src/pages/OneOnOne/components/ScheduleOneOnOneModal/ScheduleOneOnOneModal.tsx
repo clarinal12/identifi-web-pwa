@@ -8,7 +8,6 @@ import { IScheduleFormValues } from './components/ScheduleForm/ScheduleForm';
 import { SCHEDULE_ONE_ON_ONE, UPDATE_ONE_ON_ONE_ESCHEDULE } from 'apollo/mutations/oneOnOne';
 import { useMessageContextValue } from 'contexts/MessageContext';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
-import { useUserContextValue } from 'contexts/UserContext';
 import scheduleOneOnOneCacheHandler from './cache-handler/scheduleOneOnOne';
 import updateOneOnOneScheduleCacheHandler from './cache-handler/updateOneOnOneSchedule';
 
@@ -39,13 +38,11 @@ const StyledModal = styled(Modal)`
 const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
   title, directReportId, isEditing,
 }) => {
-  const { account } = useUserContextValue();
   const { alertError } = useMessageContextValue();
   const { selectedUserSession } = useOneOnOneContextValue();
   const [visibility, setVisibility] = useState(false);
   const [scheduleOneOnOneMutation] = useMutation(SCHEDULE_ONE_ON_ONE);
   const [updateOneOnOneScheduleMutation] = useMutation(UPDATE_ONE_ON_ONE_ESCHEDULE);
-  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const scheduleOneOnOneAction = (values: IScheduleFormValues) => {
     try {
@@ -132,7 +129,6 @@ const ScheduleOneOnOneModal: React.FC<IScheduleOneOnOneModal> = ({
           data={selectedUserSession?.info}
           setVisibility={setVisibility}
           onSubmitAction={isEditing ? updateOneOnOneScheduleAction : scheduleOneOnOneAction}
-          tz={derivedTimezone}
         />
       </StyledModal>
     </div>
