@@ -8,7 +8,6 @@ import { Typography, List, Row, Col, Alert, Empty, Card, Icon } from 'antd';
 import { Spinner } from 'components/PageSpinner';
 import { ICheckinData } from 'apollo/types/checkin';
 import { MEMBER_CHECKINS } from 'apollo/queries/member';
-import { useUserContextValue } from 'contexts/UserContext';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -26,7 +25,6 @@ const StyledList = styled(List)`
 `;
 
 const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
-  const { account } = useUserContextValue();
   const { data, loading, error } = useQuery(MEMBER_CHECKINS, {
     variables: { memberId },
   });
@@ -52,7 +50,6 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
           <StyledList>
             {data.memberCheckIns.map((checkin: ICheckinData) => {
               const { scheduleId, name, nextCheckInDate, frequency } = checkin;
-              const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
               return (
                 <List.Item
                   key={scheduleId}
@@ -61,7 +58,7 @@ const CheckIns: React.FC<{ memberId: string }> = ({ memberId }) => {
                     <Link to={`/checkins/${scheduleId}`} className="text-muted">
                       <Icon type="clock-circle" className="mr-2" />
                       <Text className="text-muted">
-                        {moment(nextCheckInDate).tz(derivedTimezone).format('MMM DD, hh:mm A')}
+                        {moment(nextCheckInDate).format('MMM DD, hh:mm A')}
                       </Text>
                       <Icon type="right" className="ml-5" />
                     </Link>,
