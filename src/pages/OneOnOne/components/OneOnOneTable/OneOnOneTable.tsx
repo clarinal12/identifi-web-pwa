@@ -82,10 +82,10 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
             {
               key: 'frequency',
               title: 'Frequency',
-              render: ({ info }: IOneOnOnes) => info?.recursAt && (
+              render: ({ info }: IOneOnOnes) => info?.time && (
                 <Text className="text-muted">
                   <Icon type="reload" className="mr-2" />
-                  {info?.recursAt}
+                  {info?.time}
                 </Text>
               ),
             },

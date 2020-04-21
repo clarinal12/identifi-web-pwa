@@ -10,6 +10,7 @@ export const SCHEDULE_ONE_ON_ONE = gql`
       currentSessionId
       currentSessionStatus
       status
+      time
     }
   }
 `;
@@ -20,9 +21,11 @@ export const UPDATE_ONE_ON_ONE_ESCHEDULE = gql`
       scheduleId
       upcomingSessionDate
       frequency
-      currentSessionId
-      status
       duration
+      currentSessionId
+      currentSessionStatus
+      status
+      time
     }
   }
 `;
