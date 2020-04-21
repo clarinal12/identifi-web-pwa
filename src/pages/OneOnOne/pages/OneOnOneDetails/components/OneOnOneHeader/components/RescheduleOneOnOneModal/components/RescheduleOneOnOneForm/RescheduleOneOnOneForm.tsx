@@ -16,6 +16,7 @@ interface IExternalProps {
     setSubmitting: (isSubmitting: boolean) => void,
     resetForm: () => void,
   ) => void,
+  tz: string,
 }
 
 export interface IRescheduleOneOnOneFormValues {
@@ -124,14 +125,14 @@ const RescheduleOneOnOneForm: React.FC<FormikProps<IRescheduleOneOnOneFormValues
 
 export default withFormik<IExternalProps, IRescheduleOneOnOneFormValues>({
   validationSchema: rescheduleOneOnOneFormSchema,
-  isInitialValid: ({ data }) => {
+  isInitialValid: ({ data, tz }) => {
     return rescheduleOneOnOneFormSchema.isValidSync({
-      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+      time: data ? moment(data.upcomingSessionDate).tz(tz) : moment().tz(tz).add(15, 'minutes'),
     });
   },
-  mapPropsToValues: ({ data }) => {
+  mapPropsToValues: ({ data, tz }) => {
     return {
-      time: data ? moment(data.upcomingSessionDate) : moment().add(15, 'minutes'),
+      time: data ? moment(data.upcomingSessionDate).tz(tz) : moment().tz(tz).add(15, 'minutes'),
     };
   },
   handleSubmit: (values, { props, setSubmitting, resetForm }) => {
