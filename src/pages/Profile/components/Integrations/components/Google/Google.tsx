@@ -25,7 +25,7 @@ interface IGoogle extends RouteComponentProps {
   integrationInfo: IGoogleIntegrationInfo
 }
 
-const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
+const Google: React.FC<IGoogle>  = ({ integrationInfo, location, history }) => {
   const { code: codeFromURL, scope: scopeFromURL, error: errorFromURL } = queryString.parse(location.search);
   const defaultToggleState = integrationInfo.calendar.enabled || Boolean(codeFromURL && scopeFromURL);
 
@@ -60,6 +60,7 @@ const Google: React.FC<IGoogle>  = ({ integrationInfo, location }) => {
           scopes: scopeFromURL?.toString().split(' '),
         }),
       });
+      history.replace(location.pathname);
       alertSuccess('Google calendar integration success!');
     } catch (error) {
       let errorMessage = "Network error";

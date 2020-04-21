@@ -8,8 +8,10 @@ import { Spinner } from 'components/PageSpinner';
 import ScheduleOneOnOneModal from '../ScheduleOneOnOneModal';
 import { getDisplayName } from 'utils/userUtils';
 import { COLOR_MAP } from 'utils/colorUtils';
-import { IOneOnOnes } from 'apollo/types/oneOnOne';
+import { IOneOnOnes, TOneOnOneInfo } from 'apollo/types/oneOnOne';
+import { IAccount } from 'apollo/types/user';
 import { useOneOnOneContextValue } from 'contexts/OneOnOneContext';
+import { useUserContextValue } from 'contexts/UserContext';
 
 const { Text } = Typography;
 
@@ -36,8 +38,18 @@ const StyledTable = styled(Table)`
   }
 `;
 
+const getRecursAt = (scheduleInfo: TOneOnOneInfo, account?: IAccount) => {
+  const derivedTimezone = account?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const reference = moment(scheduleInfo.time).tz(derivedTimezone);
+  const day = reference.format('dddd');
+  const time = reference.format('h:mm A');
+  const frequency = scheduleInfo.frequency === 'BI_WEEKLY' ? 'Bi-weekly' : 'Weekly';
+  return `Every ${day} at ${time}, ${frequency}`;
+}
+
 const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
   const { oneOnOnes, loading } = useOneOnOneContextValue();
+  const { account } = useUserContextValue();
   return loading ? (
     <Spinner />
   ) : (
@@ -82,10 +94,10 @@ const OneOnOneList: React.FC<RouteComponentProps> = ({ history }) => {
             {
               key: 'frequency',
               title: 'Frequency',
-              render: ({ info }: IOneOnOnes) => info?.recursAt && (
+              render: ({ info }: IOneOnOnes) => info && (
                 <Text className="text-muted">
                   <Icon type="reload" className="mr-2" />
-                  {info?.recursAt}
+                  {getRecursAt(info, account)}
                 </Text>
               ),
             },

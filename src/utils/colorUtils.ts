@@ -8,4 +8,5 @@ export const COLOR_MAP: { [key: string]: string } = {
   INCOMPLETE: 'gold',
   COMPLETED: 'green',
   SKIPPED: 'red',
+  INACTIVE: '#E8E8E8',
 };
