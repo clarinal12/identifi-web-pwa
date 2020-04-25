@@ -151,6 +151,16 @@ jobs:
       - deploy:
           service: identifi_production_web
           host: web.identifi.com
+  deploy_staging:
+    docker:
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - deploy:
+          service: identifi_staging_web
+          host: web.identifi.com
 workflows:
   version: 2
   build:
@@ -170,6 +180,7 @@ workflows:
               only:
                 - production
                 - master
+                - staging
       - deploy_dev:
           requires:
             - build_image
@@ -184,3 +195,10 @@ workflows:
             branches:
               only:
                 - production
+      - deploy_staging:
+          requires:
+            - build_image
+          filters:
+            branches:
+              only:
+                - staging
