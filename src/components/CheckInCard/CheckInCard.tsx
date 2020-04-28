@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { Card, Icon, Tag, Typography, Row, Col, Spin } from 'antd';
 
 import { LoadingIcon } from 'components/PageSpinner';

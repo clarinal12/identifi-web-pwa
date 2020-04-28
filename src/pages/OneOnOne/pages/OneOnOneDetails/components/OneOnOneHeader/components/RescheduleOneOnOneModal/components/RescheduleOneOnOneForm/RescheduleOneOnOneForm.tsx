@@ -1,6 +1,6 @@
 import React from 'react';
 import { Moment } from 'moment';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { withFormik, FormikProps } from 'formik';
 import { Row, Col, Form, TimePicker, DatePicker, Button } from 'antd';
 
