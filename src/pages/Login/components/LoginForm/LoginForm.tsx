@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { withFormik, FormikProps } from 'formik';
 import { Form, Input, Button, Typography } from 'antd';
 
@@ -7,7 +6,6 @@ import { loginFormSchema } from './validation';
 
 export interface ILoginFormValues {
   username: string,
-  password: string,
 }
 
 const { Text } = Typography;
@@ -34,26 +32,9 @@ const LoginForm: React.FC<FormikProps<ILoginFormValues>> = ({
           disabled={isSubmitting}
         />
       </Form.Item>
-      <Form.Item
-        className="mb-2"
-        label="Password"
-        {...((touched.password && errors.password) && {
-          validateStatus: "error",
-          help: errors.password,
-        })}
-      >
-        <Input.Password
-          size="large"
-          placeholder="******"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={isSubmitting}
-        />
-      </Form.Item>
-      <div className="mb-4 text-right">
-        <Link to="/forgot-password">Forgot password?</Link>
+      <div className="mb-4">
+        <Text strong>Identifi is using passwordless login.</Text>&nbsp;
+        <Text>Enter your email address to join and we’ll send you a magic link to login.</Text>
       </div>
       <Form.Item>
         <Button
@@ -64,13 +45,9 @@ const LoginForm: React.FC<FormikProps<ILoginFormValues>> = ({
           disabled={isSubmitting || !isValid}
           loading={isSubmitting}
         >
-          Sign in
+          Send me the magic link
         </Button>
       </Form.Item>
-      <Text>
-        Don’t have an account?{' '}
-        <Link to="/register">Create account</Link>
-      </Text>
     </Form>
   );
 };

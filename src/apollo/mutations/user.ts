@@ -39,3 +39,9 @@ export const REMOVE_DIRECT_REPORT = gql`
     removeDirectReport(managerId: $managerId, directReportId: $directReportId)
   }
 `;
+
+export const SEND_MAGIC_LINK = gql`
+  mutation SendMagicLink($email: EmailAddress!) {
+    sendMagicLink(email: $email)
+  }
+`;
