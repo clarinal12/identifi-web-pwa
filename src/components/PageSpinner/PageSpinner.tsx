@@ -6,6 +6,7 @@ interface IPageSpinner {
   loading?: boolean,
   label?: string,
   children?: any,
+  style?: { [key: string]: string | number },
 }
 
 const StyledPageSpinnerWrapper = styled.div`
@@ -34,8 +35,8 @@ const StyledSpinnerWrapper = styled.div`
 
 export const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
-export const Spinner: React.FC<IPageSpinner> = ({ loading = true, label = "Loading..." }) => (
-  <StyledSpinnerWrapper className="d-flex mini-spinner">
+export const Spinner: React.FC<IPageSpinner> = ({ loading = true, label = "Loading...", style = {} }) => (
+  <StyledSpinnerWrapper className="d-flex mini-spinner" style={style}>
     <Spin
       indicator={LoadingIcon}
       {...(label && {
