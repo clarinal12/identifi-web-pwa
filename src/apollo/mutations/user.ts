@@ -41,7 +41,7 @@ export const REMOVE_DIRECT_REPORT = gql`
 `;
 
 export const SEND_MAGIC_LINK = gql`
-  mutation SendMagicLink($email: EmailAddress!) {
-    sendMagicLink(email: $email)
+  mutation SendMagicLink($input: SendMagicLinkInput!) {
+    sendMagicLink(input: $input)
   }
 `;
