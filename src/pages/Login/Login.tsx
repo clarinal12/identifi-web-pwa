@@ -67,7 +67,9 @@ const Login: React.FC<RouteComponentProps> = ({ history, location }) => {
   const sendMagicLinkAction = async (values: ILoginFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     try {
       await sendMagicLinkMutation({
-        variables: { email: values.username },
+        variables: {
+          input: { email: values.username },
+        },
       });
       alertSuccess(`An email has been sent to ${values.username}.`);
     } catch(error) {
