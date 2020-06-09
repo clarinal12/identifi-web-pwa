@@ -25,7 +25,8 @@ commands:
             - version-{{ checksum ".circle-sha" }}
       - run:
           name: ecr login
-          command: eval `aws ecr get-login --no-include-email --region ap-southeast-1`
+          command: >
+            cd /home/circleci/ansible && sudo ansible-playbook ecr_login.yml
       - run:
           name: update api service image
           command: >
