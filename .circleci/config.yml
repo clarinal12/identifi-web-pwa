@@ -88,7 +88,7 @@ jobs:
             - build
   build_image:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:8
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -136,7 +136,7 @@ jobs:
             - .version
   deploy_dev:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:8
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -146,7 +146,7 @@ jobs:
           host: development-web.identifi.com
   deploy_production:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:8
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
