@@ -10,6 +10,9 @@ commands:
       host:
         type: string
         default: development-web.identifi.com
+      cert:
+        type: string
+        default: highoutput.pem
     steps:
       - run:
           name: save SHA to a file
@@ -27,7 +30,7 @@ commands:
       - run:
           name: update api service image
           command: >
-            sudo ssh -i /home/circleci/.ssh/highoutput.pem -o ServerAliveInterval=100 -o "StrictHostKeyChecking no"
+            sudo ssh -i /home/circleci/.ssh/<< parameters.cert >> -o ServerAliveInterval=100 -o "StrictHostKeyChecking no"
             ubuntu@<< parameters.host >>
             sudo docker service update --image $DOCKER_REGISTRY/${PROJECT_NAME}:`cat .version` --with-registry-auth << parameters.service >>
 
@@ -85,7 +88,7 @@ jobs:
             - build
   build_image:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -133,7 +136,7 @@ jobs:
             - .version
   deploy_dev:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
@@ -143,14 +146,15 @@ jobs:
           host: development-web.identifi.com
   deploy_production:
     docker:
-      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:7
+      - image: 498457837717.dkr.ecr.ap-southeast-1.amazonaws.com/circleci:9
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
     steps:
       - deploy:
-          service: identifi_production_web
-          host: web.identifi.com
+          service: identifi_web
+          cert: identifi.pem
+          host: 52.220.102.8
 workflows:
   version: 2
   build:
