@@ -1,0 +1,12 @@
+[[redirects]]
+  from = "/graphql"
+  to = "https://api.identifi.com/graphql"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/auth"
+  to = "https://api.identifi.com/v1/auth"
+  status = 200
+  force = true
+
