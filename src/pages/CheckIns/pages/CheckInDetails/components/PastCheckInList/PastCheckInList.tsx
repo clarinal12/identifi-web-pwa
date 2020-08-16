@@ -1,41 +1,41 @@
-import React from 'react';
-import { useQuery } from 'react-apollo';
-import cx from 'classnames';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import moment from 'moment';
-import styled from 'styled-components';
-import { Icon, Typography, Row, Col, List, Spin, Alert } from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
+import React from "react";
+import { useQuery } from "react-apollo";
+import cx from "classnames";
+import { withRouter, RouteComponentProps } from "react-router-dom";
+import moment from "moment";
+import styled from "styled-components";
+import { Icon, Typography, Row, Col, List, Spin, Alert } from "antd";
+import InfiniteScroll from "react-infinite-scroller";
 
-import { LoadingIcon } from 'components/PageSpinner';
-import { PAST_CHECKINS } from 'apollo/queries/checkin';
-import { useCheckInScheduleContextValue } from 'contexts/CheckInScheduleContext';
-import { scrollToTop } from 'utils/scrollUtils';
-import { PastClockIcon } from 'utils/iconUtils';
-import { StyledListWrapper } from 'utils/styledComponentUtils';
-import { elemT } from 'utils/typescriptUtils';
+import { LoadingIcon } from "components/PageSpinner";
+import { PAST_CHECKINS } from "apollo/queries/checkin";
+import { useCheckInScheduleContextValue } from "contexts/CheckInScheduleContext";
+import { scrollToTop } from "utils/scrollUtils";
+import { PastClockIcon } from "utils/iconUtils";
+import { StyledListWrapper } from "utils/styledComponentUtils";
+import { elemT } from "utils/typescriptUtils";
 
 const { Title, Text } = Typography;
 
 type TEdge = {
-  cursor: string,
+  cursor: string;
   node: {
-    id: string,
-    date: string,
-    __typename: string,
-  },
-  __typename: string,
-}
+    id: string;
+    date: string;
+    __typename: string;
+  };
+  __typename: string;
+};
 
 interface ICheckInHistoryQuery {
   pastCheckIns: {
-    edges: TEdge[],
+    edges: TEdge[];
     pageInfo: {
-      endCursor: string,
-      hasNextPage: boolean,
-    },
-    totalCount: number,
-  }
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
 }
 
 const StyledEmptyRow = styled(Row)`
@@ -56,18 +56,22 @@ const EmptyState = () => (
       <PastClockIcon />
       <Title className="mt-4 fs-16">No past check-ins yet</Title>
       <Text type="secondary">
-        Once you go through your first cycle for this check-in, all past check-ins will appear here.
+        Once you go through your first cycle for this check-in, all past
+        check-ins will appear here.
       </Text>
     </Col>
   </StyledEmptyRow>
 );
 
-const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_checkin_id: string }>> = ({
-  match, history, location,
-}) => {
+const PastCheckInList: React.FC<RouteComponentProps<{
+  checkin_id: string;
+  past_checkin_id: string;
+}>> = ({ match, history, location }) => {
   const { selectedCheckInCard } = useCheckInScheduleContextValue();
 
-  const { data, loading, fetchMore, networkStatus, error } = useQuery<ICheckInHistoryQuery>(PAST_CHECKINS, {
+  const { data, loading, fetchMore, networkStatus, error } = useQuery<
+    ICheckInHistoryQuery
+  >(PAST_CHECKINS, {
     variables: { checkInScheduleId: match.params.checkin_id },
     skip: !Boolean(match.params.checkin_id),
     notifyOnNetworkStatusChange: true,
@@ -79,11 +83,14 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
         checkInScheduleId: match.params.checkin_id,
         ...(endCursor && {
           pagination: { after: endCursor },
-        })
+        }),
       },
-      updateQuery: (previousResult: ICheckInHistoryQuery, { fetchMoreResult }) => {
+      updateQuery: (
+        previousResult: ICheckInHistoryQuery,
+        { fetchMoreResult }
+      ) => {
         if (!fetchMoreResult) return previousResult;
-        const prevEdges =  previousResult.pastCheckIns.edges;
+        const prevEdges = previousResult.pastCheckIns.edges;
         const newEdges = fetchMoreResult.pastCheckIns.edges;
         const newCheckInHistoryData = {
           ...previousResult.pastCheckIns,
@@ -97,20 +104,20 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
         return { pastCheckIns: newCheckInHistoryData };
       },
     });
-  }
+  };
 
-  if (error) {
+  if (error && error.graphQLErrors.length) {
     return (
       <Alert
         showIcon
         type="warning"
-        message={function() {
+        message={(function () {
           let errorMessage = "Network error";
           if (error.graphQLErrors[0]) {
             errorMessage = error.graphQLErrors[0].message;
           }
           return errorMessage;
-        }()}
+        })()}
         description="There was an error fetching check-in history."
       />
     );
@@ -119,7 +126,13 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
   if (loading && networkStatus === 1) {
     return (
       <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
-        <Spin className="py-4" size="small" indicator={LoadingIcon} spinning tip="Fetching check-in history..." />
+        <Spin
+          className="py-4"
+          size="small"
+          indicator={LoadingIcon}
+          spinning
+          tip="Fetching check-in history..."
+        />
       </StyledSpinnerWrapper>
     );
   }
@@ -135,27 +148,32 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
     },
   };
 
-  const derivedPastCheckinId = match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
+  const derivedPastCheckinId =
+    match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const dataSource = elemT(derivedResult.pastCheckIns.edges);
 
-  return (dataSource.length > 0) ? (
+  return dataSource.length > 0 ? (
     <StyledListWrapper>
       <InfiniteScroll
         initialLoad={false}
         pageStart={0}
         hasMore={!loading && derivedResult.pastCheckIns.pageInfo.hasNextPage}
-        loadMore={() => fetchMoreCheckins(derivedResult.pastCheckIns.pageInfo.endCursor)}
+        loadMore={() =>
+          fetchMoreCheckins(derivedResult.pastCheckIns.pageInfo.endCursor)
+        }
         useWindow={false}
       >
         <List
           size="large"
-          dataSource={[{
-            id: selectedCheckInCard?.currentCheckInInfo?.id,
-            date: selectedCheckInCard?.currentCheckInInfo?.date,
-          }].concat(dataSource.map(({ node }) => node))}
+          dataSource={[
+            {
+              id: selectedCheckInCard?.currentCheckInInfo?.id,
+              date: selectedCheckInCard?.currentCheckInInfo?.date,
+            },
+          ].concat(dataSource.map(({ node }) => node))}
           renderItem={({ date, id }) => {
-            const isActive = (id === derivedPastCheckinId);
-            const isPastCheckIn = (date && id);
+            const isActive = id === derivedPastCheckinId;
+            const isPastCheckIn = date && id;
             return (
               <List.Item
                 className={cx({ active: isActive })}
@@ -167,14 +185,16 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
                       pathname: `/checkins/${match.params.checkin_id}/${id}`,
                       state: {
                         ...location.state,
-                        past_checkin_id_alias: moment(date).format('MMM DD, YYYY'),
+                        past_checkin_id_alias: moment(date).format(
+                          "MMM DD, YYYY"
+                        ),
                       },
                     });
                   } else {
                     history.push({
                       pathname: `/checkins/${match.params.checkin_id}`,
                       state: {
-                        checkin_id_alias: 'name',
+                        checkin_id_alias: "name",
                       },
                     });
                   }
@@ -182,10 +202,10 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
               >
                 <div className="d-flex list-content-wrapper">
                   <Text
-                    type={isActive ? undefined : 'secondary'}
+                    type={isActive ? undefined : "secondary"}
                     strong={isActive}
                   >
-                    {moment(date).format('MMM DD, YYYY hh:mm A')}
+                    {moment(date).format("MMM DD, YYYY hh:mm A")}
                   </Text>
                   <Icon className="float-right" type="right" />
                 </div>
@@ -195,7 +215,12 @@ const PastCheckInList: React.FC<RouteComponentProps<{ checkin_id: string, past_c
         >
           {(networkStatus === 3 || (loading && networkStatus !== 3)) && (
             <StyledSpinnerWrapper className="d-flex align-items-center justify-content-center">
-              <Spin className="py-3" size="small" indicator={LoadingIcon} spinning />
+              <Spin
+                className="py-3"
+                size="small"
+                indicator={LoadingIcon}
+                spinning
+              />
             </StyledSpinnerWrapper>
           )}
         </List>

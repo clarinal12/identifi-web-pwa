@@ -67,10 +67,10 @@ export default <P extends object>(
 
     console.log({ error, token, data, isLoggedIn: isLoggedIn() });
 
-    // if (error) {
-    //   localStorage.clear();
-    //   return <ErrorPage errorMessage={error.graphQLErrors[0].message} />;
-    // }
+    if (error && error.graphQLErrors.length) {
+      localStorage.clear();
+      return <ErrorPage errorMessage={error.graphQLErrors[0].message} />;
+    }
 
     return loading ? (
       <PageSpinner />
