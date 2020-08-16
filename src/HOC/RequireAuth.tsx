@@ -37,6 +37,8 @@ export default <P extends object>(
       {
         variables: { token },
         skip: !isLoggedIn(),
+        fetchPolicy: "cache-and-network",
+        onCompleted: (response) => console.log("completed", response),
       }
     );
 
@@ -63,12 +65,12 @@ export default <P extends object>(
       requireAuth ? redirectToLogin() : redirectToHome();
     }, [props]);
 
-    console.log({ error, token, isLoggedIn: isLoggedIn() });
+    console.log({ error, token, data, isLoggedIn: isLoggedIn() });
 
-    if (error) {
-      localStorage.clear();
-      return <ErrorPage errorMessage={error.graphQLErrors[0].message} />;
-    }
+    // if (error) {
+    //   localStorage.clear();
+    //   return <ErrorPage errorMessage={error.graphQLErrors[0].message} />;
+    // }
 
     return loading ? (
       <PageSpinner />
