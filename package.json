@@ -10,7 +10,6 @@
     "@types/jest": "24.0.19",
     "@types/loadable__component": "^5.10.0",
     "@types/lodash": "^4.14.149",
-    "@types/moment-timezone": "^0.5.12",
     "@types/node": "12.11.1",
     "@types/node-emoji": "^1.8.1",
     "@types/pluralize": "0.0.29",
@@ -83,6 +82,7 @@
     ]
   },
   "devDependencies": {
+    "@types/moment-timezone": "^0.5.30",
     "babel-plugin-import": "^1.13.0",
     "concurrently": "^5.0.0",
     "customize-cra": "^0.9.1",
