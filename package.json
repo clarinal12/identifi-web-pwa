@@ -55,7 +55,7 @@
     "react-lazyload": "^2.6.5",
     "react-mentions": "^3.3.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
+    "react-scripts": "^3.4.3",
     "styled-components": "^4.4.1",
     "typescript": "^3.8.3",
     "use-persisted-state": "^0.3.0",
