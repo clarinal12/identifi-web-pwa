@@ -1,11 +1,9 @@
 import React from "react";
 import { render, hydrate } from "react-dom";
-import { ApolloProvider } from "react-apollo";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 
 import App from "./App";
-import client from "config/apolloClient";
 import "bootstrap-utilities/bootstrap-utilities.css";
 import "./stylesheets/app.css";
 
@@ -17,11 +15,9 @@ const rootElement: HTMLElement | null = document.getElementById("root");
 const AppRenderer = rootElement?.hasChildNodes() ? hydrate : render;
 
 AppRenderer(
-  <ApolloProvider client={client}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </ApolloProvider>,
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
   rootElement
 );
 
