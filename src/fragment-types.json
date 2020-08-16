@@ -1,1 +1,1 @@
-{"__schema":{"types":[{"kind":"INTERFACE","name":"UserInterface","possibleTypes":[{"name":"Member"},{"name":"Me"},{"name":"User"}]}]}}
+{"__schema":{"types":[{"kind":"INTERFACE","name":"User","possibleTypes":[{"name":"Member"},{"name":"Me"}]}]}}
