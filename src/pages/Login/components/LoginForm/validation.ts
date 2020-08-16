@@ -5,7 +5,4 @@ export const loginFormSchema = Yup.object().shape({
     .string()
     .email("Invalid email")
     .required("Email is required."),
-  password: Yup
-    .string()
-    .required("Password is required.")
 });

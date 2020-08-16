@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment-timezone";
+import moment from "moment";
 import styled from "styled-components";
 import { useQuery } from "react-apollo";
 import { Link } from "react-router-dom";
