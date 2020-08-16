@@ -1,31 +1,38 @@
-import React, { useState } from 'react';
-import { useQuery } from 'react-apollo';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation } from 'react-apollo';
-import { Row, Col, Typography, Spin, Alert } from 'antd';
+import React, { useState } from "react";
+import { useQuery } from "react-apollo";
+import { withRouter, RouteComponentProps } from "react-router-dom";
+import { useMutation } from "react-apollo";
+import { Row, Col, Typography, Spin, Alert } from "antd";
 
-import AppLayout from 'components/AppLayout';
-import CheckInForm from '../../components/CheckInForm';
-import { IFinalValues } from '../../components/CheckInForm/components/CheckInFormTabs/CheckInFormTabs';
-import { CHECKIN_CARDS, CHECKIN_SCHEDULE } from 'apollo/queries/checkin';
-import { UPDATE_CHECKIN_SCHEDULE } from 'apollo/mutations/checkin';
-import { useMessageContextValue } from 'contexts/MessageContext';
-import { LoadingIcon, Spinner } from 'components/PageSpinner';
+import AppLayout from "components/AppLayout";
+import CheckInForm from "../../components/CheckInForm";
+import { IFinalValues } from "../../components/CheckInForm/components/CheckInFormTabs/CheckInFormTabs";
+import { CHECKIN_CARDS, CHECKIN_SCHEDULE } from "apollo/queries/checkin";
+import { UPDATE_CHECKIN_SCHEDULE } from "apollo/mutations/checkin";
+import { useMessageContextValue } from "contexts/MessageContext";
+import { LoadingIcon, Spinner } from "components/PageSpinner";
 
 const { Title } = Typography;
 
-const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ history, match }) => {
+const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({
+  history,
+  match,
+}) => {
   const [loadingState, setLoadingState] = useState(false);
   const { alertSuccess, alertError } = useMessageContextValue();
   const [updateCheckInSchedule] = useMutation(UPDATE_CHECKIN_SCHEDULE);
 
   const { data, loading, error } = useQuery(CHECKIN_SCHEDULE, {
     variables: { id: match.params.checkin_id },
-    onCompleted: data => data.checkInSchedule && history.replace({ state: { checkin_id_alias: data.checkInSchedule.name } }),
+    onCompleted: (data) =>
+      data.checkInSchedule &&
+      history.replace({
+        state: { checkin_id_alias: data.checkInSchedule.name },
+      }),
   });
 
   let errorMessage = "Network error";
-  if (error && error.graphQLErrors[0]) {
+  if (error && error.graphQLErrors.length) {
     errorMessage = error.graphQLErrors[0].message;
   }
 
@@ -41,23 +48,26 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
             ...others,
             timings: {
               ...timings,
-              time: timings.time.format('HH:mm'),
+              time: timings.time.format("HH:mm"),
             },
           },
         },
-        refetchQueries: [{
-          query: CHECKIN_CARDS,
-        }, {
-          query: CHECKIN_SCHEDULE,
-          variables: { id: match.params.checkin_id },
-        }],
+        refetchQueries: [
+          {
+            query: CHECKIN_CARDS,
+          },
+          {
+            query: CHECKIN_SCHEDULE,
+            variables: { id: match.params.checkin_id },
+          },
+        ],
         awaitRefetchQueries: true,
       });
       if (result.data.updateCheckInSchedule) {
         alertSuccess("Check-in has been updated");
-        history.push('/checkins');
+        history.push("/checkins");
       }
-    } catch(error) {
+    } catch (error) {
       let errorMessage = null;
       if (error.graphQLErrors[0]) {
         errorMessage = error.graphQLErrors[0].message;
@@ -65,7 +75,7 @@ const EditCheckIn: React.FC<RouteComponentProps<{ checkin_id: string }>> = ({ hi
       alertError(errorMessage);
       setLoadingState(false);
     }
-  }
+  };
 
   return (
     <AppLayout>

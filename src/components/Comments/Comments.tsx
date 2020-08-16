@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import cx from 'classnames';
-import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
-import { useQuery } from 'react-apollo';
-import moment from 'moment';
-import styled from 'styled-components';
-import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from 'antd';
-import queryString from 'query-string';
+import React, { useState, useEffect } from "react";
+import cx from "classnames";
+import { withRouter, RouteComponentProps, Link } from "react-router-dom";
+import { useQuery } from "react-apollo";
+import moment from "moment";
+import styled from "styled-components";
+import { Collapse, Typography, List, Avatar, Spin, Icon, Alert } from "antd";
+import queryString from "query-string";
 
-import Reactions from '../Reactions';
-import UserCommentForm from './components/UserCommentForm';
-import CommentActions from './components/CommentActions';
-import { useUserContextValue } from 'contexts/UserContext';
-import { getDisplayName } from 'utils/userUtils';
-import { getMultipleLines } from 'utils/textUtils';
-import { transformComment } from 'utils/commentsUtils';
-import { CollapsedDownIcon, CollapsedUpIcon } from 'utils/iconUtils';
-import { COMMENTS } from 'apollo/queries/comments';
-import { IComment, TReaction } from 'apollo/types/checkin';
+import Reactions from "../Reactions";
+import UserCommentForm from "./components/UserCommentForm";
+import CommentActions from "./components/CommentActions";
+import { useUserContextValue } from "contexts/UserContext";
+import { getDisplayName } from "utils/userUtils";
+import { getMultipleLines } from "utils/textUtils";
+import { transformComment } from "utils/commentsUtils";
+import { CollapsedDownIcon, CollapsedUpIcon } from "utils/iconUtils";
+import { COMMENTS } from "apollo/queries/comments";
+import { IComment, TReaction } from "apollo/types/checkin";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
 
 interface IComments extends RouteComponentProps {
-  responseId: string,
-  numberOfComments: number,
-  reactions: TReaction[],
+  responseId: string;
+  numberOfComments: number;
+  reactions: TReaction[];
 }
 
 const StyledCollapse = styled(Collapse)`
@@ -97,8 +97,15 @@ const CommentLoading = () => (
   </StyledSpinnerWrapper>
 );
 
-const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions, location }) => {
-  const [editCommentId, setEditCommentId] = useState<string | undefined>(undefined);
+const Comments: React.FC<IComments> = ({
+  numberOfComments,
+  responseId,
+  reactions,
+  location,
+}) => {
+  const [editCommentId, setEditCommentId] = useState<string | undefined>(
+    undefined
+  );
   const [collapseKey, setCollapseKey] = useState<string | undefined>(undefined);
   const { account } = useUserContextValue();
   const emptyComments = numberOfComments === 0;
@@ -113,7 +120,7 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
   useEffect(() => {
     const queryParams = queryString.parse(location.search);
     if (emptyComments || Boolean(queryParams.memberId)) {
-      setCollapseKey('1');
+      setCollapseKey("1");
     }
   }, [emptyComments, location.search]);
 
@@ -130,95 +137,109 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [loading]);
 
-  const contentBody = error ? (
-    <Alert
-      showIcon
-      type="warning"
-      message={function() {
-        let errorMessage = "Network error";
-        if (error.graphQLErrors[0]) {
-          errorMessage = error.graphQLErrors[0].message;
-        }
-        return errorMessage;
-      }()}
-      description="Could not load the comments at the moment"
-    />
-  ) : (
-    <StyledList>
-      {data?.checkInResponseComments.map(({ author, comment, id, createdAt, updatedAt, mentions }: IComment) => {
-        const nameString = getDisplayName(author);
-        const commentOwner = author.id === account?.id;
-        const isEditing = (editCommentId === id);
-        const isCommentEdited = createdAt !== updatedAt;
+  const contentBody =
+    error && error.graphQLErrors.length ? (
+      <Alert
+        showIcon
+        type="warning"
+        message={(function () {
+          let errorMessage = "Network error";
+          if (error.graphQLErrors[0]) {
+            errorMessage = error.graphQLErrors[0].message;
+          }
+          return errorMessage;
+        })()}
+        description="Could not load the comments at the moment"
+      />
+    ) : (
+      <StyledList>
+        {data?.checkInResponseComments.map(
+          ({
+            author,
+            comment,
+            id,
+            createdAt,
+            updatedAt,
+            mentions,
+          }: IComment) => {
+            const nameString = getDisplayName(author);
+            const commentOwner = author.id === account?.id;
+            const isEditing = editCommentId === id;
+            const isCommentEdited = createdAt !== updatedAt;
 
-        const transformedComment = transformComment(comment, mentions);
-        const stringComment = getMultipleLines(transformedComment).join("<br/>");
-        const isOptimisticResponse = id.includes('optimistic');
+            const transformedComment = transformComment(comment, mentions);
+            const stringComment = getMultipleLines(transformedComment).join(
+              "<br/>"
+            );
+            const isOptimisticResponse = id.includes("optimistic");
 
-        return isEditing ? (
-          <UserCommentForm
-            key={id}
-            responseId={responseId}
-            commentId={id}
-            defaultComment={comment}
-            defaultMentions={mentions}
-            setEditCommentId={setEditCommentId}
-          />
-        ) : (
-          <List.Item
-            key={id}
-            id={id}
-            {...(commentOwner && !isOptimisticResponse && {
-              actions: [
-                <CommentActions
-                  commentId={id}
-                  responseId={responseId}
-                  setEditCommentId={setEditCommentId}
-                />,
-              ],
-            })}
-          >
-            <List.Item.Meta
-              className="user-comment-content"
-              avatar={(
-                <Link to={`/profile/${author.id}`}>
-                  <Avatar style={{ width: 36, height: 36 }} {...(author.avatar && { src: author.avatar })} />
-                </Link>
-              )}
-              title={
-                <>
-                  <Link
-                    to={`/profile/${author.id}`}
-                    className="mr-2"
-                  >
-                    {nameString}
-                  </Link>
-                  {!isOptimisticResponse && (
-                    <Text className="font-weight-normal">
-                      {moment(createdAt).fromNow()} {isCommentEdited && '(edited)'}
-                    </Text>
-                  )}
-                </>                
-              }
-              description={(
-                <div
-                  dangerouslySetInnerHTML={{ __html: stringComment }}
-                  className={cx({ 'text-muted': isOptimisticResponse })}
+            return isEditing ? (
+              <UserCommentForm
+                key={id}
+                responseId={responseId}
+                commentId={id}
+                defaultComment={comment}
+                defaultMentions={mentions}
+                setEditCommentId={setEditCommentId}
+              />
+            ) : (
+              <List.Item
+                key={id}
+                id={id}
+                {...(commentOwner &&
+                  !isOptimisticResponse && {
+                    actions: [
+                      <CommentActions
+                        commentId={id}
+                        responseId={responseId}
+                        setEditCommentId={setEditCommentId}
+                      />,
+                    ],
+                  })}
+              >
+                <List.Item.Meta
+                  className="user-comment-content"
+                  avatar={
+                    <Link to={`/profile/${author.id}`}>
+                      <Avatar
+                        style={{ width: 36, height: 36 }}
+                        {...(author.avatar && { src: author.avatar })}
+                      />
+                    </Link>
+                  }
+                  title={
+                    <>
+                      <Link to={`/profile/${author.id}`} className="mr-2">
+                        {nameString}
+                      </Link>
+                      {!isOptimisticResponse && (
+                        <Text className="font-weight-normal">
+                          {moment(createdAt).fromNow()}{" "}
+                          {isCommentEdited && "(edited)"}
+                        </Text>
+                      )}
+                    </>
+                  }
+                  description={
+                    <div
+                      dangerouslySetInnerHTML={{ __html: stringComment }}
+                      className={cx({ "text-muted": isOptimisticResponse })}
+                    />
+                  }
                 />
-              )}
-            />
-          </List.Item>
-        );
-      })}
-      <UserCommentForm responseId={responseId} />
-    </StyledList>
-  );
+              </List.Item>
+            );
+          }
+        )}
+        <UserCommentForm responseId={responseId} />
+      </StyledList>
+    );
 
   return (
     <StyledCollapse
       bordered={false}
-      onChange={key => {
-        const derivedKey = (key.length > 0) ? key[0] : undefined;
+      onChange={(key) => {
+        const derivedKey = key.length > 0 ? key[0] : undefined;
         setCollapseKey(derivedKey);
       }}
       activeKey={collapseKey}
@@ -228,24 +249,22 @@ const Comments: React.FC<IComments> = ({ numberOfComments, responseId, reactions
         showArrow={false}
         disabled={emptyComments}
         className={cx({
-          'empty-comments': emptyComments,
+          "empty-comments": emptyComments,
         })}
-        header={(
-          <div className="d-flex" style={{ justifyContent: 'space-between' }}>
+        header={
+          <div className="d-flex" style={{ justifyContent: "space-between" }}>
             <Text className="fs-16">
               {collapseKey ? <CollapsedUpIcon /> : <CollapsedDownIcon />}
               Comments {!emptyComments && `(${numberOfComments})`}
             </Text>
             <Reactions reactions={reactions} responseId={responseId} />
           </div>
-        )}
+        }
       >
-        {loading ? (
-          <CommentLoading />
-        ) : contentBody}
+        {loading ? <CommentLoading /> : contentBody}
       </Panel>
     </StyledCollapse>
   );
-}
+};
 
 export default withRouter(Comments);

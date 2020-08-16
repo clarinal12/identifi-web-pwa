@@ -1,18 +1,18 @@
-import React from 'react';
-import { useQuery } from 'react-apollo';
-import styled from 'styled-components';
-import { Card, Typography, Alert } from 'antd';
+import React from "react";
+import { useQuery } from "react-apollo";
+import styled from "styled-components";
+import { Card, Typography, Alert } from "antd";
 
-import { Spinner } from 'components/PageSpinner';
-import Feedback from './components/Feedback';
-import Agenda from './components/Agenda';
-import { ONE_ON_ONE_SESSION } from 'apollo/queries/oneOnOne';
-import { IOneOnOneSession } from 'apollo/types/oneOnOne';
+import { Spinner } from "components/PageSpinner";
+import Feedback from "./components/Feedback";
+import Agenda from "./components/Agenda";
+import { ONE_ON_ONE_SESSION } from "apollo/queries/oneOnOne";
+import { IOneOnOneSession } from "apollo/types/oneOnOne";
 
 const { Title } = Typography;
 
 interface IOneOnOneSessionQuery {
-  oneOnOneSession: IOneOnOneSession,
+  oneOnOneSession: IOneOnOneSession;
 }
 
 const StyledCard = styled(Card)`
@@ -29,31 +29,37 @@ const StyledCard = styled(Card)`
 `;
 
 const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
-  const { data, loading, error } = useQuery<IOneOnOneSessionQuery>(ONE_ON_ONE_SESSION, {
-    variables: { sessionId },
-  });
+  const { data, loading, error } = useQuery<IOneOnOneSessionQuery>(
+    ONE_ON_ONE_SESSION,
+    {
+      variables: { sessionId },
+    }
+  );
 
-  return (loading && !data) ? (
+  return loading && !data ? (
     <Spinner label="Loading session details" />
   ) : (
     <>
-      {error ? (
+      {error && error.graphQLErrors.length ? (
         <Alert
           showIcon
           type="warning"
-          message={function() {
+          message={(function () {
             let errorMessage = "Network error";
             if (error.graphQLErrors[0]) {
               errorMessage = error.graphQLErrors[0].message;
             }
             return errorMessage;
-          }()}
+          })()}
           description="Could not load session details at the moment"
         />
       ) : (
         <>
           {data?.oneOnOneSession?.showFeedback && (
-            <StyledCard title={<Title level={4}>Feedback</Title>} className="mb-3">
+            <StyledCard
+              title={<Title level={4}>Feedback</Title>}
+              className="mb-3"
+            >
               <Feedback
                 sessionId={sessionId}
                 canModifyFeedback={data?.oneOnOneSession?.canModifyFeedback}
@@ -67,10 +73,10 @@ const OneOnOneSession: React.FC<{ sessionId: string }> = ({ sessionId }) => {
               agenda={data?.oneOnOneSession?.agenda}
             />
           </StyledCard>
-        </>        
+        </>
       )}
     </>
   );
-}
+};
 
 export default OneOnOneSession;

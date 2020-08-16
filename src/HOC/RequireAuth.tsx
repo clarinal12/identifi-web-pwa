@@ -38,15 +38,12 @@ export default <P extends object>(
         variables: { token },
         skip: !isLoggedIn(),
         fetchPolicy: "cache-and-network",
-        onCompleted: (response) => console.log("completed", response),
       }
     );
 
     useEffect(() => {
       const redirectToHome = () => {
-        console.log("CHECK REDIRECT HOME");
         if (isLoggedIn()) {
-          console.log("REDIRECT HOME");
           const { history } = props;
           const { pathname } = window.location;
           if (redirectToRootPaths.includes(pathname)) {
@@ -55,17 +52,13 @@ export default <P extends object>(
         }
       };
       const redirectToLogin = () => {
-        console.log("CHECK REDIRECT LOGIN");
         if (!isLoggedIn()) {
-          console.log("REDIRECT LOGIN");
           const { history } = props;
           history.replace("/login");
         }
       };
       requireAuth ? redirectToLogin() : redirectToHome();
     }, [props]);
-
-    console.log({ error, token, data, isLoggedIn: isLoggedIn() });
 
     if (error && error.graphQLErrors.length) {
       localStorage.clear();

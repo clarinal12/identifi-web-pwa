@@ -109,7 +109,7 @@ const OneOnOneHeader: React.FC<IOneOnOneHeaderComponent> = ({
       });
     } catch (error) {
       let errorMessage = null;
-      if (error.graphQLErrors[0]) {
+      if (error && error.graphQLErrors.length) {
         errorMessage = error.graphQLErrors[0].message;
       }
       alertError(errorMessage);
