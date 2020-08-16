@@ -86,7 +86,7 @@ const getApolloClient = async () => {
         fetchPolicy: "cache-and-network",
       },
       query: {
-        fetchPolicy: "network-only",
+        fetchPolicy: "cache-and-network",
       },
     },
   });
