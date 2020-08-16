@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Switch, Route, RouteComponentProps, Redirect } from "react-router-dom";
 import routes from "./config/routes";
 import FourOhFour from "./pages/FourOhFour";
+import PageSpinner from "components/PageSpinner";
 import { ApolloProvider } from "react-apollo";
 import getApolloClient from "config/apolloClient";
 
@@ -24,7 +25,7 @@ const App = () => {
   }, []);
 
   if (loading) {
-    return <>Loading Client...</>;
+    return <PageSpinner />;
   }
 
   return (
