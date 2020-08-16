@@ -28,15 +28,6 @@ const getApolloClient = async () => {
     storage: window.localStorage as any,
   });
 
-  const currentVersion = window.localStorage.getItem(SCHEMA_VERSION_KEY);
-
-  if (currentVersion === SCHEMA_VERSION) {
-    await persistor.restore();
-  } else {
-    await persistor.purge();
-    window.localStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-  }
-
   const request = async (operation: Operation) => {
     operation.setContext({
       ...(isLoggedIn() && {
@@ -67,6 +58,15 @@ const getApolloClient = async () => {
         };
       })
   );
+
+  const currentVersion = window.localStorage.getItem(SCHEMA_VERSION_KEY);
+
+  if (currentVersion === SCHEMA_VERSION) {
+    await persistor.restore();
+  } else {
+    await persistor.purge();
+    window.localStorage.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
+  }
 
   const client = new ApolloClient({
     link: ApolloLink.from([
