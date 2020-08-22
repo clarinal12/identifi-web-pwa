@@ -35,12 +35,13 @@
 //   }
 // }
 
-function handleFetch(event) {
+async function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
   const requestUrl = event.request.url;
   const requestHeader = event.request.headers;
   const requestBody = event.request.body;
-  console.log({ requestUrl, requestHeader, requestBody });
+  const requestJson = await event.request.json();
+  console.log({ requestUrl, requestHeader, requestBody, requestJson });
   // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
   //   event.respondWith(
   //     caches.match(event.request).then((response) => {
