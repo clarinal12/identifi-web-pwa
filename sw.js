@@ -35,12 +35,12 @@
 //   }
 // }
 
-async function handleFetch(event) {
+function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
   const requestUrl = event.request.url;
   const requestHeader = event.request.headers;
   const requestBody = event.request.body;
-  const requestJson = await event.request.json();
+  const requestJson = event.request.json();
   console.log({ requestUrl, requestHeader, requestBody, requestJson });
   // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
   //   event.respondWith(
