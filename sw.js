@@ -37,8 +37,10 @@
 
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
-  const requestUrl = new URL(event.request.url);
-  console.log({ requestUrl }, { event });
+  const requestUrl = event.request.url;
+  const requestHeader = event.request.headers;
+  const requestBody = event.request.body;
+  console.log({ requestUrl, requestHeader, requestBody });
   // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
   //   event.respondWith(
   //     caches.match(event.request).then((response) => {
