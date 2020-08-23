@@ -40,8 +40,8 @@ function handleFetch(event) {
   const requestUrl = event.request.url;
   const requestHeader = event.request.headers;
   const requestBody = event.request.body;
-  const requestJson = event.request.json();
-  console.log({ requestUrl, requestHeader, requestBody, requestJson });
+  event.request.json().then((result) => console.log({ result }));
+  console.log({ requestUrl, requestHeader, requestBody });
   // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
   //   event.respondWith(
   //     caches.match(event.request).then((response) => {
