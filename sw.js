@@ -38,7 +38,7 @@
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
   const requestUrl = event.request.url;
-  const requestHeader = new Headers(event.request.headers);
+  const requestHeader = event.request.headers;
   const requestBody = event.request.body;
   const requestJson = event.request.json();
   console.log({ requestUrl, requestHeader, requestBody, requestJson });
