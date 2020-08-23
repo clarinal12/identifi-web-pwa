@@ -40,7 +40,9 @@ function handleFetch(event) {
   // const requestUrl = event.request.url;
   // const requestHeader = event.request.headers;
   // const requestBody = event.request.body;
-  event.request.json().then((result) => console.log({ result }));
+  event.request.json().then((result) => {
+    console.log(result);
+  });
   // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
   //   event.respondWith(
   //     caches.match(event.request).then((response) => {
