@@ -60,7 +60,7 @@ function createDB() {
   };
 }
 
-function handleActivate() {
+function handleActivate(event) {
   console.log("activating");
   event.waitUntil(createDB());
 }
