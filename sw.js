@@ -36,14 +36,27 @@
 // }
 
 function createDB() {
-  idb.open("products", 1, function (upgradeDB) {
-    var store = upgradeDB.createObjectStore("beverages", {
-      keyPath: "id",
-    });
-    store.put({ id: 123, name: "coke", price: 10.99, quantity: 200 });
-    store.put({ id: 321, name: "pepsi", price: 8.99, quantity: 100 });
-    store.put({ id: 222, name: "water", price: 11.99, quantity: 300 });
-  });
+  const request = indexedDB.open("checkins", 1);
+  const data = [
+    { id: "checkin-1", question: "Who are you?", answer: "I am who I am" },
+    { id: "checkin-2", name: "Where are you?", answer: "I am everywhere" },
+  ];
+
+  request.onsuccess = function (event) {
+    // Do something with request.result!
+    const db = event.target.result;
+    var objectStore = db.createObjectStore("checkins", { keyPath: "id" });
+
+    objectStore.transaction.oncomplete = function (event) {
+      // Store values in the newly created objectStore.
+      const checkinObjectStore = db
+        .transaction("checkins", "readwrite")
+        .objectStore("checkins");
+      data.forEach(function (checkin) {
+        checkinObjectStore.add(checkin);
+      });
+    };
+  };
 }
 
 function handleActivate() {
