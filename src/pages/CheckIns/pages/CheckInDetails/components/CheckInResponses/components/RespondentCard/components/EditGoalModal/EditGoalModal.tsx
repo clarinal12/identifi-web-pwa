@@ -59,6 +59,7 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
         answer: "I don't think so.",
       });
       await tx.done;
+      console.log("DONE", store);
       alertSuccess("Checkin goal updated");
       setModalState(false);
     } catch (error) {
