@@ -37,7 +37,7 @@
 
 function createDB() {
   console.log("creating indexed db");
-  const request = indexedDB.open("checkins", 1);
+  const request = indexedDB.open("identifi-web-db", 1);
   const data = [
     { id: "checkin-1", question: "Who are you?", answer: "I am who I am" },
     { id: "checkin-2", name: "Where are you?", answer: "I am everywhere" },

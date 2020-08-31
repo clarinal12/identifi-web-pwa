@@ -130,9 +130,8 @@ export default withFormik<IExternalProps, Partial<TCheckInGoal>>({
     completed: data.completed,
   }),
   handleSubmit: (values, { props, setSubmitting }) => {
-    console.log("Hello WOrld");
-    // setSubmitting(false);
-    // props.onSubmitAction(values);
+    setSubmitting(false);
+    props.onSubmitAction(values);
   },
   displayName: "EditGoalForm",
 })(EditGoalForm);
