@@ -43,7 +43,7 @@ function createDB() {
     { id: "checkin-2", name: "Where are you?", answer: "I am everywhere" },
   ];
 
-  request.onsuccess = function (event) {
+  request.onupgradeneeded = function (event) {
     // Do something with request.result!
     const db = event.target.result;
     var objectStore = db.createObjectStore("checkins", { keyPath: "id" });
