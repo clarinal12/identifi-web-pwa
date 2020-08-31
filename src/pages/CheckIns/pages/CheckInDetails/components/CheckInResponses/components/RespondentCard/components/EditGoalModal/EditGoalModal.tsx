@@ -58,8 +58,9 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
         name: "Are we good?",
         answer: "I don't think so.",
       });
+      const records = await store.getAll();
       await tx.done;
-      console.log("DONE", store);
+      console.log({ records });
       alertSuccess("Checkin goal updated");
       setModalState(false);
     } catch (error) {
