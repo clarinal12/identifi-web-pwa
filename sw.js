@@ -41,12 +41,12 @@ function sendRequests(e) {
         .then((res) => res.json())
         .then((res) => {
           console.log("Sending on background success", res);
-          db.transaction(["checkins"], "readwrite")
+          db
+            .transaction(["checkins"], "readwrite")
             .objectStore("checkins")
-            .delete(id)
-            .onsuccess((event) => {
-              console.log("Deleted IDB record", event);
-            });
+            .delete(id).onsuccess = (event) => {
+            console.log("Deleted IDB record", event);
+          };
           self.registration.showNotification(
             "Your check-in has been updated",
             options
