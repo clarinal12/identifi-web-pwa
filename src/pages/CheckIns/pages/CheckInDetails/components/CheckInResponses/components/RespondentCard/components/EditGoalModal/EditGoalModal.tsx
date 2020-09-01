@@ -79,10 +79,8 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
           token,
         });
 
-        const records = await store.getAll();
         await tx.done;
         fireSync();
-        console.log({ records });
       } else {
         updateCheckInGoal({
           variables,

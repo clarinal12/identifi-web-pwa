@@ -40,7 +40,6 @@ function sendRequests(e) {
       })
         .then((res) => res.json())
         .then((res) => {
-          console.log({ res });
           self.registration.showNotification(
             "Your check-in has been updated",
             options
@@ -57,17 +56,14 @@ function handleSync(event) {
 }
 
 function createDB() {
-  console.log("creating indexed db");
   const request = indexedDB.open("identifi-web-db", 1);
   const data = [];
 
   request.onupgradeneeded = function (event) {
-    // Do something with request.result!
     const db = event.target.result;
     var objectStore = db.createObjectStore("checkins", { keyPath: "id" });
 
     objectStore.transaction.oncomplete = function (event) {
-      // Store values in the newly created objectStore.
       const checkinObjectStore = db
         .transaction("checkins", "readwrite")
         .objectStore("checkins");
@@ -79,34 +75,32 @@ function createDB() {
 }
 
 function handleActivate(event) {
-  console.log("activating");
   event.waitUntil(createDB());
 }
 
-function handleFetch(event) {
-  console.log(event);
-  // console.log('[Service Worker] Fetch Received.', event);
-  // const requestUrl = event.request.url;
-  // const requestHeader = event.request.headers;
-  // const requestBody = event.request.body;
-  // event.request.json().then((result) => {
-  //   console.log(result);
-  // });
-  // if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
-  //   event.respondWith(
-  //     caches.match(event.request).then((response) => {
-  //       if (response) {
-  //         console.log('Return response from cache');
-  //         return response;
-  //       }
-  //       console.log('Return response from network');
-  //       return fetch(event.request);
-  //     })
-  //   );
-  // }
-}
+// function handleFetch(event) {
+//   console.log('[Service Worker] Fetch Received.', event);
+//   const requestUrl = event.request.url;
+//   const requestHeader = event.request.headers;
+//   const requestBody = event.request.body;
+//   event.request.json().then((result) => {
+//     console.log(result);
+//   });
+//   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
+//     event.respondWith(
+//       caches.match(event.request).then((response) => {
+//         if (response) {
+//           console.log('Return response from cache');
+//           return response;
+//         }
+//         console.log('Return response from network');
+//         return fetch(event.request);
+//       })
+//     );
+//   }
+// }
 
 self.addEventListener("notificationclick", openPushNotification);
 self.addEventListener("sync", handleSync);
-self.addEventListener("fetch", handleFetch);
+// self.addEventListener("fetch", handleFetch);
 self.addEventListener("activate", handleActivate);
