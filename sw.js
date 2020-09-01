@@ -10,18 +10,19 @@ function sendRequests() {
   const request = indexedDB.open("identifi-web-db", 1);
   let requestData = null;
 
-  request.onsuccess = function (event) {
+  request.onsuccess = (event) => {
     const db = event.target.result;
-    db
-      .transaction("checkins")
-      .objectStore("checkins")
-      .getAll().onsuccess = function (event) {
+    db.transaction("checkins").objectStore("checkins").getAll().onsuccess = (
+      event
+    ) => {
       console.log("Requests", event.target.result);
       requestData = event.target.result[0];
     };
   };
 
+  console.log({ requestData });
   const { operationName, query, variables, token } = requestData;
+  console.log("Spread done");
   fetch("https://api.identifi.com/graphql", {
     method: "POST",
     headers: {
