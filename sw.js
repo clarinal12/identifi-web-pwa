@@ -29,7 +29,7 @@ function sendRequests(e) {
       event
     ) => {
       const requestData = event.target.result[0];
-      const { operationName, query, variables, token } = requestData;
+      const { id, operationName, query, variables, token } = requestData;
       fetch("https://api.identifi.com/graphql", {
         method: "POST",
         headers: {
@@ -40,6 +40,13 @@ function sendRequests(e) {
       })
         .then((res) => res.json())
         .then((res) => {
+          console.log("Sending on background success", res);
+          db.transaction(["checkins"], "readwrite")
+            .objectStore("checkins")
+            .delete(id)
+            .onsuccess((event) => {
+              console.log("Deleted IDB record", event);
+            });
           self.registration.showNotification(
             "Your check-in has been updated",
             options
