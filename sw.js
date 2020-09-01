@@ -5,8 +5,8 @@ function openPushNotification(event) {
   event.waitUntil(clients.openWindow(event.notification.data));
 }
 
-function sendRequests(e) {
-  const request = indexedDB.open("identifi-web-db", 1);
+function sendRequests() {
+  const dbRequest = indexedDB.open("identifi-web-db", 1);
   const URL =
     "https://identifi-web-pwa.vercel.app/checkins/d3385b0f-2aa8-4e7e-8b7f-0ee5be0523c7?memberId=a004d644-13fc-4842-96c6-11766df7bec0&responseId=2bd683e0-811c-4d76-86cc-927528c91587";
   const options = {
@@ -23,13 +23,20 @@ function sendRequests(e) {
     ],
   };
 
-  request.onsuccess = (event) => {
+  dbRequest.onupgradeneeded = (event) => {
     const db = event.target.result;
-    db.transaction("checkins").objectStore("checkins").getAll().onsuccess = (
-      event
-    ) => {
-      const requestData = event.target.result[0];
-      const { operationName, query, variables, token } = requestData;
+
+    const transaction = db.transaction(["checkins"], "readwrite");
+    const objectStore = transaction.objectStore("checkins");
+    const getRequest = objectStore.getAll();
+
+    getRequest.onerror = (event) => {
+      console.log("Error retrieving db records", { event });
+    };
+
+    getRequest.onsuccess = (event) => {
+      const checkinData = event.target.result[0];
+      const { id, operationName, query, variables, token } = checkinData;
       fetch("https://api.identifi.com/graphql", {
         method: "POST",
         headers: {
@@ -40,18 +47,48 @@ function sendRequests(e) {
       })
         .then((res) => res.json())
         .then((res) => {
+          console.log("update success", { res });
           self.registration.showNotification(
             "Your check-in has been updated",
             options
           );
+
+          const deleteRequest = objectStore.delete(id);
+
+          deleteRequest.onsuccess = (event) => {
+            console.log("Delete db record success", { event });
+          };
         });
     };
+
+    // db.transaction("checkins").objectStore("checkins").getAll().onsuccess = (
+    //   event
+    // ) => {
+    //   const requestData = event.target.result[0];
+    //   const { operationName, query, variables, token } = requestData;
+    //   fetch("https://api.identifi.com/graphql", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       authorization: `Bearer ${token}`,
+    //     },
+    //     body: JSON.stringify({ operationName, query, variables }),
+    //   })
+    //     .then((res) => res.json())
+    //     .then((res) => {
+    //       console.log("update success", { res });
+    //       self.registration.showNotification(
+    //         "Your check-in has been updated",
+    //         options
+    //       );
+    //     });
+    // };
   };
 }
 
 function handleSync(event) {
   if (event.tag === "update-checkin-sync") {
-    event.waitUntil(sendRequests(event));
+    event.waitUntil(sendRequests());
   }
 }
 
