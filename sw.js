@@ -15,7 +15,7 @@ function sendRequests() {
       .transaction("checkins")
       .objectStore("checkins")
       .getAll().onsuccess = function (event) {
-      console.log("Requests" + event.target.result);
+      console.log("Requests", event.target.result);
     };
   };
 }
