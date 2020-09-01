@@ -41,11 +41,9 @@ function sendRequests(e) {
         .then((res) => res.json())
         .then((res) => {
           console.log({ res });
-          e.waitUntil(
-            self.registration.showNotification(
-              "Your check-in has been updated",
-              options
-            )
+          self.registration.showNotification(
+            "Your check-in has been updated",
+            options
           );
         });
     };
