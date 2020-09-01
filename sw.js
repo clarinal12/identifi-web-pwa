@@ -1,24 +1,35 @@
 /* eslint-disable no-restricted-globals */
 
-// function openPushNotification(event) {
-//   event.notification.close();
-//   event.waitUntil(clients.openWindow(event.notification.data));
-// }
+function openPushNotification(event) {
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data));
+}
 
-function sendRequests() {
-  console.log("Retrieving data");
+function sendRequests(e) {
   const request = indexedDB.open("identifi-web-db", 1);
+  const URL =
+    "https://identifi-web-pwa-mxv4yl2dj.vercel.app/checkins/d3385b0f-2aa8-4e7e-8b7f-0ee5be0523c7?memberId=a004d644-13fc-4842-96c6-11766df7bec0&responseId=2bd683e0-811c-4d76-86cc-927528c91587";
+  const options = {
+    requireInteraction: true,
+    data: URL,
+    icon: "https://identifi-web-pwa-mxv4yl2dj.vercel.app/favicon.ico",
+    badge: "https://identifi-web-pwa-mxv4yl2dj.vercel.app/favicon.ico",
+    body: "Click to view your check-in",
+    actions: [
+      {
+        action: "Detail",
+        title: "View",
+      },
+    ],
+  };
 
   request.onsuccess = (event) => {
     const db = event.target.result;
     db.transaction("checkins").objectStore("checkins").getAll().onsuccess = (
       event
     ) => {
-      console.log("Requests", event.target.result);
       const requestData = event.target.result[0];
-      console.log({ requestData });
       const { operationName, query, variables, token } = requestData;
-      console.log("Spread done");
       fetch("https://api.identifi.com/graphql", {
         method: "POST",
         headers: {
@@ -28,38 +39,22 @@ function sendRequests() {
         body: JSON.stringify({ operationName, query, variables }),
       })
         .then((res) => res.json())
-        .then((res) => console.log("response", res));
+        .then((res) => {
+          console.log({ res });
+          e.waitUntil(
+            self.registration.showNotification(
+              "Your check-in has been updated",
+              options
+            )
+          );
+        });
     };
   };
 }
 
 function handleSync(event) {
-  // console.log('[Service Worker] Sync Received.', event);
-  // const URL = "https://programming-quotes-api.herokuapp.com/quotes/random";
-  // const options = {
-  //   requireInteraction: true,
-  //   data: "https://pwa-client.netlify.app",
-  //   icon: "https://via.placeholder.com/128/ff0000",
-  //   badge: "https://via.placeholder.com/128/ff0000",
-  //   body: "Click to view the quote",
-  //   actions: [
-  //     {
-  //       action: "Detail",
-  //       title: "View",
-  //     },
-  //   ],
-  // };
-
   if (event.tag === "update-checkin-sync") {
-    // fetch(URL).then((response) => {
-    //   caches.open("v1").then((cache) => {
-    //     cache.put(URL, response.clone());
-    //   });
-    // });
-    // event.waitUntil(
-    //   self.registration.showNotification("Quote is now available!", options)
-    // );
-    event.waitUntil(sendRequests());
+    event.waitUntil(sendRequests(event));
   }
 }
 
@@ -113,7 +108,7 @@ function handleFetch(event) {
   // }
 }
 
-// self.addEventListener('notificationclick', openPushNotification);
+self.addEventListener("notificationclick", openPushNotification);
 self.addEventListener("sync", handleSync);
 self.addEventListener("fetch", handleFetch);
 self.addEventListener("activate", handleActivate);

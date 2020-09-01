@@ -1,19 +1,19 @@
-import React, { PropsWithChildren } from 'react';
-import styled from 'styled-components';
-import { Layout } from 'antd';
+import React, { PropsWithChildren } from "react";
+import styled from "styled-components";
+import { Layout } from "antd";
 
-import AppMenu from './components/AppMenu';
-import UserMenu from './components/UserMenu';
-import AppBreadcrumb from './components/AppBreadcrumb';
-import AccountVerifier from 'HOC/AccountVerifier';
-import { BreadcrumbProviderWithRouter } from 'contexts/BreadcrumbContext';
+import AppMenu from "./components/AppMenu";
+import UserMenu from "./components/UserMenu";
+import AppBreadcrumb from "./components/AppBreadcrumb";
+import AccountVerifier from "HOC/AccountVerifier";
+import { BreadcrumbProviderWithRouter } from "contexts/BreadcrumbContext";
 
 const { Sider, Header, Content } = Layout;
 
 const StyledLayout = styled(Layout)`
   min-height: 100vh !important;
   .main-content {
-    background: #F5F5F5;
+    background: #f5f5f5;
     @media (min-width: 576px) {
       margin-left: 256px;
     }
@@ -24,7 +24,7 @@ const StyledLayout = styled(Layout)`
 `;
 
 const StyledHeader = styled(Header)`
-  background: #FFF !important;
+  background: #fff !important;
   box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
   align-items: center;
@@ -67,9 +67,7 @@ const AppLayout: React.FC<PropsWithChildren<any>> = ({ children }) => (
           <UserMenu />
         </StyledHeader>
         <Content className="p-4">
-          <StyledMainWrapper>
-            {children}
-          </StyledMainWrapper>
+          <StyledMainWrapper>{children}</StyledMainWrapper>
         </Content>
       </Layout>
     </StyledLayout>

@@ -1,16 +1,19 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Row, Col, Typography, Affix, Icon, Card, Alert } from 'antd';
+import React from "react";
+import styled from "styled-components";
+import { Row, Col, Typography, Affix, Icon, Card, Alert } from "antd";
 
-import AppLayout from 'components/AppLayout';
-import CheckInHeader from './components/CheckInHeader';
-import CheckInResponses from './components/CheckInResponses';
-import PastCheckInList from './components/PastCheckInList';
-import CheckInNavigation from './components/CheckInNavigation';
-import { ReactionProvider } from 'contexts/ReactionContext';
-import { MentionSourceProviderWithRouter } from 'contexts/MentionSourceContext';
-import { CheckInScheduleProviderWithRouter, CheckInScheduleConsumer } from 'contexts/CheckInScheduleContext';
-import { CheckInResponseFilterProviderWithRouter } from 'contexts/CheckInResponseFilterContext';
+import AppLayout from "components/AppLayout";
+import CheckInHeader from "./components/CheckInHeader";
+import CheckInResponses from "./components/CheckInResponses";
+import PastCheckInList from "./components/PastCheckInList";
+import CheckInNavigation from "./components/CheckInNavigation";
+import { ReactionProvider } from "contexts/ReactionContext";
+import { MentionSourceProviderWithRouter } from "contexts/MentionSourceContext";
+import {
+  CheckInScheduleProviderWithRouter,
+  CheckInScheduleConsumer,
+} from "contexts/CheckInScheduleContext";
+import { CheckInResponseFilterProviderWithRouter } from "contexts/CheckInResponseFilterContext";
 
 const { Title } = Typography;
 
@@ -31,7 +34,7 @@ const CheckInDetails = () => {
         if (loading) return null;
         return (
           <Row className="mx-0" gutter={24}>
-            {(selectedCheckInCard) ? (
+            {selectedCheckInCard ? (
               <>
                 <Col sm={24} md={17} className="pl-0">
                   <CheckInHeader />
@@ -42,14 +45,17 @@ const CheckInDetails = () => {
                     <div>
                       <StyledCard
                         className="mb-3"
-                        title={(
-                          <div className="d-flex" style={{ alignItems: 'center' }}>
+                        title={
+                          <div
+                            className="d-flex"
+                            style={{ alignItems: "center" }}
+                          >
                             <Icon type="calendar" className="mr-2 text-muted" />
                             <Title className="mb-0 fs-16">
-                              Check-in history
+                              Check-in history xx
                             </Title>
                           </div>
-                        )}
+                        }
                       >
                         <PastCheckInList />
                       </StyledCard>
@@ -77,9 +83,7 @@ const CheckInDetails = () => {
       <MentionSourceProviderWithRouter>
         <CheckInScheduleProviderWithRouter>
           <ReactionProvider>
-            <AppLayout>
-              {contentBody}
-            </AppLayout>
+            <AppLayout>{contentBody}</AppLayout>
           </ReactionProvider>
         </CheckInScheduleProviderWithRouter>
       </MentionSourceProviderWithRouter>
