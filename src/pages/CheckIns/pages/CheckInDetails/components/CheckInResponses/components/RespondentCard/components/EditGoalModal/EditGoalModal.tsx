@@ -78,9 +78,13 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
           operationName,
           token,
         });
-
         await tx.done;
+
         fireSync();
+
+        alertSuccess(
+          "Check-in will be sent to server when you're back online."
+        );
       } else {
         updateCheckInGoal({
           variables,
@@ -95,9 +99,9 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
             },
           }),
         });
+        alertSuccess("Check-in goal updated");
       }
 
-      alertSuccess("Checkin goal updated");
       setModalState(false);
     } catch (error) {
       let errorMessage = null;
@@ -119,6 +123,7 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
       />
       {data && (
         <EditGoalForm
+          isOffline={isOffline}
           data={data}
           // key={data.goal?.length} // ugly hack to reset form values after updating content
           showSwitch={showSwitch}

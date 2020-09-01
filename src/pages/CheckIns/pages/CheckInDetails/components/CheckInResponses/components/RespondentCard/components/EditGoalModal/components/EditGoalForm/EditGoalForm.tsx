@@ -1,7 +1,15 @@
 import React, { useRef } from "react";
 import moment from "moment";
 import styled from "styled-components";
-import { Modal, Form, Typography, Switch, Icon } from "antd";
+import {
+  Modal,
+  Form,
+  Typography,
+  Switch,
+  Icon,
+  Button,
+  Popconfirm,
+} from "antd";
 import { withFormik, FormikProps } from "formik";
 
 import AppTextEditor from "components/AppTextEditor";
@@ -17,6 +25,7 @@ export interface IExternalProps {
   setModalState: (modalState: boolean) => void;
   showSwitch?: boolean;
   data: Partial<TCheckInGoal>;
+  isOffline: boolean;
 }
 
 const StyledModal = styled(Modal)`
@@ -47,6 +56,7 @@ const EditGoalForm: React.FC<
   isSubmitting,
   isValid,
   resetForm,
+  isOffline,
 }) => {
   const editorRef = useRef<IRefObject>(null);
   const timeAgo = moment(data.createdAt).calendar().toUpperCase().split(" AT");
@@ -58,23 +68,40 @@ const EditGoalForm: React.FC<
       destroyOnClose
       closable={false}
       visible={modalState}
-      okText="Save changes"
-      okButtonProps={{
-        disabled: !isValid,
-        loading: isSubmitting,
-        size: "large",
-      }}
-      cancelButtonProps={{
-        disabled: isSubmitting,
-        size: "large",
-      }}
-      onOk={() => handleSubmit()}
-      onCancel={() => {
-        resetForm();
-        setModalState(!modalState);
-      }}
       afterClose={() => editorRef.current?.resetEditor(data?.goal || "")}
       maskClosable={false}
+      footer={[
+        <Button
+          onClick={() => {
+            resetForm();
+            setModalState(!modalState);
+          }}
+          disabled={isSubmitting}
+          size="large"
+          key="back"
+          className="mr-2"
+        >
+          Cancel
+        </Button>,
+        <Popconfirm
+          title="You are currently offline. Do you want to send your check-in in the background when you're back online?"
+          onConfirm={() => handleSubmit()}
+          okText="Yes"
+          cancelText="No"
+          disabled={!isOffline}
+        >
+          <Button
+            onClick={isOffline ? () => {} : () => handleSubmit()}
+            disabled={!isValid}
+            loading={isSubmitting}
+            size="large"
+            key="submit"
+            type="primary"
+          >
+            Save Changes
+          </Button>
+        </Popconfirm>,
+      ]}
     >
       <Form.Item className="mb-0">
         <Text strong className="text-muted">
