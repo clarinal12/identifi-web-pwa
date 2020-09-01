@@ -5,35 +5,50 @@
 //   event.waitUntil(clients.openWindow(event.notification.data));
 // }
 
-// function handleSync(event) {
-//   // console.log('[Service Worker] Sync Received.', event);
-//   const URL = "https://programming-quotes-api.herokuapp.com/quotes/random";
-//   const options = {
-//     requireInteraction: true,
-//     data: "https://pwa-client.netlify.app",
-//     icon: "https://via.placeholder.com/128/ff0000",
-//     badge: "https://via.placeholder.com/128/ff0000",
-//     body: "Click to view the quote",
-//     actions: [
-//       {
-//         action: "Detail",
-//         title: "View",
-//       },
-//     ],
-//   };
+function sendRequests() {
+  console.log("Retrieving data");
+  const request = indexedDB.open("identifi-web-db", 1);
 
-//   if (event.tag === "quote-sync") {
-//     fetch(URL).then((response) => {
-//       caches.open("v1").then((cache) => {
-//         cache.put(URL, response.clone());
-//       });
-//     });
+  request.onsuccess = function (event) {
+    const db = event.target.result;
+    db
+      .transaction("checkins")
+      .objectStore("checkins")
+      .getAll().onsuccess = function (event) {
+      console.log("Requests" + event.target.result);
+    };
+  };
+}
 
-//     event.waitUntil(
-//       self.registration.showNotification("Quote is now available!", options)
-//     );
-//   }
-// }
+function handleSync(event) {
+  // console.log('[Service Worker] Sync Received.', event);
+  // const URL = "https://programming-quotes-api.herokuapp.com/quotes/random";
+  // const options = {
+  //   requireInteraction: true,
+  //   data: "https://pwa-client.netlify.app",
+  //   icon: "https://via.placeholder.com/128/ff0000",
+  //   badge: "https://via.placeholder.com/128/ff0000",
+  //   body: "Click to view the quote",
+  //   actions: [
+  //     {
+  //       action: "Detail",
+  //       title: "View",
+  //     },
+  //   ],
+  // };
+
+  if (event.tag === "update-checkin-sync") {
+    // fetch(URL).then((response) => {
+    //   caches.open("v1").then((cache) => {
+    //     cache.put(URL, response.clone());
+    //   });
+    // });
+    // event.waitUntil(
+    //   self.registration.showNotification("Quote is now available!", options)
+    // );
+    event.waitUntil(sendRequests());
+  }
+}
 
 function createDB() {
   console.log("creating indexed db");
@@ -86,6 +101,6 @@ function handleFetch(event) {
 }
 
 // self.addEventListener('notificationclick', openPushNotification);
-// self.addEventListener('sync', handleSync);
+self.addEventListener("sync", handleSync);
 self.addEventListener("fetch", handleFetch);
 self.addEventListener("activate", handleActivate);
