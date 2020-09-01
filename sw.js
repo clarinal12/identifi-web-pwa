@@ -8,7 +8,6 @@
 function sendRequests() {
   console.log("Retrieving data");
   const request = indexedDB.open("identifi-web-db", 1);
-  let requestData = null;
 
   request.onsuccess = (event) => {
     const db = event.target.result;
@@ -16,23 +15,22 @@ function sendRequests() {
       event
     ) => {
       console.log("Requests", event.target.result);
-      requestData = event.target.result[0];
+      const requestData = event.target.result[0];
+      console.log({ requestData });
+      const { operationName, query, variables, token } = requestData;
+      console.log("Spread done");
+      fetch("https://api.identifi.com/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ operationName, query, variables }),
+      })
+        .then((res) => res.json())
+        .then((res) => console.log("response", res));
     };
   };
-
-  console.log({ requestData });
-  const { operationName, query, variables, token } = requestData;
-  console.log("Spread done");
-  fetch("https://api.identifi.com/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ operationName, query, variables }),
-  })
-    .then((res) => res.json())
-    .then((res) => console.log("response", res));
 }
 
 function handleSync(event) {
