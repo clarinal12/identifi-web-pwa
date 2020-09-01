@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { useMutation } from "react-apollo";
+// import { useMutation } from "react-apollo";
 import { Button } from "antd";
 
 import EditGoalForm from "./components/EditGoalForm";
@@ -9,8 +9,8 @@ import { UPDATE_CHECKIN_GOAL } from "apollo/mutations/checkin";
 import { TCheckInGoal } from "apollo/types/checkin";
 import { useMessageContextValue } from "contexts/MessageContext";
 import { useUserContextValue } from "contexts/UserContext";
-import { useCheckInScheduleContextValue } from "contexts/CheckInScheduleContext";
-import updateCheckInGoalCacheHandler from "./cache-handler/updateCheckInGoal";
+// import { useCheckInScheduleContextValue } from "contexts/CheckInScheduleContext";
+// import updateCheckInGoalCacheHandler from "./cache-handler/updateCheckInGoal";
 import { openDB } from "idb";
 
 interface IEditGoalModal
@@ -23,15 +23,27 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
   match,
 }) => {
   const { alertSuccess, alertError } = useMessageContextValue();
-  const { account } = useUserContextValue();
-  const { selectedCheckInCard } = useCheckInScheduleContextValue();
-  const derivedCheckInId =
-    match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
+  const {
+    // account,
+    token,
+  } = useUserContextValue();
+  // const { selectedCheckInCard } = useCheckInScheduleContextValue();
+  // const derivedCheckInId =
+  //   match.params.past_checkin_id || selectedCheckInCard?.currentCheckInInfo?.id;
   const [modalState, setModalState] = useState(false);
-  const [updateCheckInGoal] = useMutation(UPDATE_CHECKIN_GOAL);
+  // const [updateCheckInGoal] = useMutation(UPDATE_CHECKIN_GOAL);
 
   const onSubmitAction = async (values: Partial<TCheckInGoal>) => {
     try {
+      const query = UPDATE_CHECKIN_GOAL?.loc?.source?.body;
+      const operationName = "UpdateCheckInGoal";
+      const variables = {
+        ...(data && {
+          goalId: data.id,
+        }),
+        input: values,
+      };
+
       // updateCheckInGoal({
       //   variables: {
       //     ...(data && {
@@ -54,9 +66,11 @@ const EditGoalModal: React.FC<IEditGoalModal> = ({
       const tx = db.transaction("checkins", "readwrite");
       const store = tx.objectStore("checkins");
       await store.add({
-        id: "checkin-3",
-        name: "Are we good?",
-        answer: "I don't think so.",
+        id: `update-${data?.id}`,
+        query,
+        variables,
+        operationName,
+        token,
       });
       const records = await store.getAll();
       await tx.done;
