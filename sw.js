@@ -8,12 +8,12 @@ function openPushNotification(event) {
 function sendRequests(e) {
   const request = indexedDB.open("identifi-web-db", 1);
   const URL =
-    "https://identifi-web-pwa-mxv4yl2dj.vercel.app/checkins/d3385b0f-2aa8-4e7e-8b7f-0ee5be0523c7?memberId=a004d644-13fc-4842-96c6-11766df7bec0&responseId=2bd683e0-811c-4d76-86cc-927528c91587";
+    "https://identifi-web-pwa.vercel.app/checkins/d3385b0f-2aa8-4e7e-8b7f-0ee5be0523c7?memberId=a004d644-13fc-4842-96c6-11766df7bec0&responseId=2bd683e0-811c-4d76-86cc-927528c91587";
   const options = {
     requireInteraction: true,
     data: URL,
-    icon: "https://identifi-web-pwa-mxv4yl2dj.vercel.app/favicon.ico",
-    badge: "https://identifi-web-pwa-mxv4yl2dj.vercel.app/favicon.ico",
+    icon: "https://identifi-web-pwa.vercel.app/favicon.ico",
+    badge: "https://identifi-web-pwa.vercel.app/favicon.ico",
     body: "Click to view your check-in",
     actions: [
       {
