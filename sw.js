@@ -31,7 +31,7 @@ function sendRequests() {
     body: JSON.stringify({ operationName, query, variables }),
   })
     .then((res) => res.json())
-    .then((res) => console.log("response", res.data));
+    .then((res) => console.log("response", res));
 }
 
 function handleSync(event) {
