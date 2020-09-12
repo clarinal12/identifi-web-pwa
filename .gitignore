@@ -12,8 +12,6 @@
 /build
 
 # misc
-/src/serviceWorker.ts
-/public/sw.js
 .DS_Store
 .env.local
 .env.development.local
